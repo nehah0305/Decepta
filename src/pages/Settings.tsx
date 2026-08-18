@@ -5,7 +5,7 @@ import { Input } from '../components/ui/Input'
 import { Toggle } from '../components/ui/Toggle'
 import { DEFAULT_SETTINGS, STORAGE_KEYS } from '../data/mockData'
 import { useToast } from '../hooks/useToast'
-import { SettingsState } from '../types'
+import type { SettingsState } from '../types'
 
 export const Settings = () => {
   const { showToast } = useToast()
