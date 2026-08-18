@@ -27,7 +27,7 @@ const itemClass = ({ isActive }: { isActive: boolean }) =>
 
 export const Sidebar = () => (
   <aside className="hidden h-screen w-[232px] flex-col border-r border-brand-border bg-brand-surface/70 p-5 backdrop-blur-md lg:flex">
-    <p className="text-lg font-semibold tracking-wide text-brand-text">Project Name</p>
+    <p className="text-lg font-semibold tracking-wide text-brand-text">Depecta</p>
 
     <nav className="mt-7 space-y-1">
       {primaryNav.map(({ label, to, icon: Icon }) => (

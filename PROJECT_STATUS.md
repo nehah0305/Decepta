@@ -1,4 +1,4 @@
-# Decepta Project - Status Report
+# Depecta Project - Status Report
 
 **Date**: August 18, 2026  
 **Status**: ✅ **COMPLETE & VERIFIED**
@@ -47,7 +47,7 @@ The `README.md` has been completely updated with:
 
 ## 📦 Project Summary
 
-**Decepta** is a modern deepfake detection platform built with:
+**Depecta** is a modern deepfake detection platform built with:
 - React 19 + TypeScript
 - Vite (for fast builds and HMR)
 - Tailwind CSS (responsive design)

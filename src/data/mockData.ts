@@ -1,10 +1,10 @@
 import type { DetectionRecord, SettingsState } from '../types'
 
 export const STORAGE_KEYS = {
-  auth: 'decepta_auth',
-  detections: 'decepta_detections',
-  settings: 'decepta_settings',
-  profile: 'decepta_profile',
+  auth: 'depecta_auth',
+  detections: 'depecta_detections',
+  settings: 'depecta_settings',
+  profile: 'depecta_profile',
 } as const
 
 export const INITIAL_DETECTIONS: DetectionRecord[] = [
@@ -35,7 +35,7 @@ export const INITIAL_DETECTIONS: DetectionRecord[] = [
 ]
 
 export const DEFAULT_SETTINGS: SettingsState = {
-  appName: 'Project Name',
+  appName: 'Depecta',
   theme: 'dark',
   language: 'en',
   defaultDetectionType: 'video',
