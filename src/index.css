@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -73,4 +73,65 @@ body {
 
 .animate-slide-in {
   animation: slide-in 320ms ease-out both;
+}
+
+/* Glassmorphism Effects */
+.glass-effect {
+  background: rgba(11, 36, 44, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(130, 220, 225, 0.18);
+}
+
+.glass-effect-sm {
+  background: rgba(11, 36, 44, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(130, 220, 225, 0.12);
+}
+
+.glass-effect-lg {
+  background: rgba(11, 36, 44, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(130, 220, 225, 0.22);
+}
+
+/* Unique Title Font */
+.font-orbitron {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.font-space-grotesk {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+/* Gradient Text Effect */
+.gradient-text {
+  background: linear-gradient(135deg, #50d6d1 0%, #26b8b5 50%, #82dce1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow Effect */
+.glow-effect {
+  box-shadow: 0 0 20px rgba(80, 214, 209, 0.3), 0 0 40px rgba(38, 184, 181, 0.2);
+}
+
+/* Animated Gradient */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
 }
