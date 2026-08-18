@@ -2,7 +2,7 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-brand-bg: #071a21;
+  --color-brand-bg: #0C111D;
   --color-brand-surface: #0b242c;
   --color-brand-card: #19383f;
   --color-brand-card2: #294a50;
@@ -28,10 +28,13 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 12% 16%, rgba(38, 184, 181, 0.14), transparent 35%),
-    radial-gradient(circle at 88% 7%, rgba(80, 214, 209, 0.12), transparent 28%),
+    linear-gradient(135deg, #0C111D 0%, #142633 50%, #0C111D 100%),
+    radial-gradient(circle at 12% 16%, rgba(38, 184, 181, 0.16), transparent 40%),
+    radial-gradient(circle at 88% 7%, rgba(80, 214, 209, 0.14), transparent 32%),
+    radial-gradient(circle at 50% 100%, rgba(38, 184, 181, 0.08), transparent 50%),
     var(--color-brand-bg);
   color: var(--color-brand-text);
+  background-attachment: fixed;
 }
 
 #root {
@@ -134,4 +137,216 @@ body {
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient-shift 6s ease infinite;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-slower {
+  animation: float 10s ease-in-out infinite;
+}
+
+/* Pulse Animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.6;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow-slow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Rotate Animation */
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+/* Shimmer Grid Animation */
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* Scan line animation for tech feel */
+@keyframes scan-line {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+.animate-scan-line {
+  animation: scan-line 8s linear infinite;
+}
+
+/* Glow drift animation */
+@keyframes glow-drift {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(20px, -20px);
+  }
+  50% {
+    transform: translate(-10px, 20px);
+  }
+  75% {
+    transform: translate(-20px, -10px);
+  }
+}
+
+.animate-glow-drift {
+  animation: glow-drift 12s ease-in-out infinite;
+}
+
+.animate-glow-drift-slow {
+  animation: glow-drift 16s ease-in-out infinite;
+}
+
+/* Twinkling stars animation */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.animate-twinkle-slow {
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+.animate-twinkle-slower {
+  animation: twinkle 5s ease-in-out infinite;
+}
+
+/* Shimmer effect on stars */
+@keyframes shimmer-star {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-shimmer-star {
+  animation: shimmer-star 2.5s ease-in-out infinite;
+}
+
+/* Floating particles animation */
+@keyframes particle-float {
+  0% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) translateX(50px);
+    opacity: 0;
+  }
+}
+
+.animate-particle-float {
+  animation: particle-float 6s ease-in infinite;
+}
+
+.animate-particle-float-slow {
+  animation: particle-float 8s ease-in infinite;
+}
+
+/* Pulse ring animation */
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(80, 214, 209, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(80, 214, 209, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(80, 214, 209, 0);
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Radial pulse animation - expanding ripples */
+@keyframes radial-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(80, 214, 209, 0.8), 0 0 0 10px rgba(38, 184, 181, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(80, 214, 209, 0.4), 0 0 0 30px rgba(38, 184, 181, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 40px rgba(80, 214, 209, 0), 0 0 0 50px rgba(38, 184, 181, 0);
+    transform: scale(1);
+  }
+}
+
+.animate-radial-pulse {
+  animation: radial-pulse 3s ease-out infinite;
+}
+
+.animate-radial-pulse-slow {
+  animation: radial-pulse 4s ease-out infinite;
 }
