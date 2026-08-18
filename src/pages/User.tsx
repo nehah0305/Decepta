@@ -6,7 +6,7 @@ import { Input } from '../components/ui/Input'
 import { STORAGE_KEYS } from '../data/mockData'
 import { useAuth } from '../hooks/useAuth'
 import { useToast } from '../hooks/useToast'
-import { AuthUser } from '../types'
+import type { AuthUser } from '../types'
 
 export const User = () => {
   const navigate = useNavigate()
