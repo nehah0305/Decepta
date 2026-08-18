@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Button } from '../components/ui/Button'
-import { Card } from '../components/ui/Card'
 import { Input } from '../components/ui/Input'
 import { Toggle } from '../components/ui/Toggle'
 import { DEFAULT_SETTINGS, STORAGE_KEYS } from '../data/mockData'
 import { useToast } from '../hooks/useToast'
 import type { SettingsState } from '../types'
+import { Sparkles, Save } from 'lucide-react'
 
 export const Settings = () => {
   const { showToast } = useToast()
@@ -28,107 +28,145 @@ export const Settings = () => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <header>
-        <h1 className="text-3xl font-semibold text-brand-text">Settings</h1>
+    <div className="space-y-8 animate-fade-in">
+      {/* Header */}
+      <header className="space-y-2">
+        <div className="inline-flex items-center gap-2 rounded-full glass-effect-sm px-4 py-2 text-xs uppercase tracking-widest text-brand-bright">
+          <Sparkles className="h-4 w-4" />
+          <span>Configuration</span>
+        </div>
+        <h1 className="text-4xl font-orbitron font-bold gradient-text">Settings</h1>
+        <p className="text-brand-subtle text-lg">Customize your detection preferences and account settings.</p>
       </header>
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-brand-text">General</h2>
-          <Input
-            label="Application Name"
-            value={settings.appName}
-            onChange={(event) => setSettings((prev) => ({ ...prev, appName: event.target.value }))}
-          />
-          <label className="space-y-1.5">
-            <span className="text-sm text-brand-subtle">Theme</span>
-            <select
-              className="w-full rounded-xl border border-brand-border bg-brand-card2/70 px-3 py-2.5 text-sm text-brand-subtle"
-              value={settings.theme}
-              onChange={(event) =>
-                setSettings((prev) => ({ ...prev, theme: event.target.value as SettingsState['theme'] }))
-              }
-            >
-              <option value="dark">Dark</option>
-              <option value="system">System</option>
-            </select>
-          </label>
-          <label className="space-y-1.5">
-            <span className="text-sm text-brand-subtle">Language</span>
-            <select
-              className="w-full rounded-xl border border-brand-border bg-brand-card2/70 px-3 py-2.5 text-sm text-brand-subtle"
-              value={settings.language}
-              onChange={(event) =>
-                setSettings((prev) => ({ ...prev, language: event.target.value as SettingsState['language'] }))
-              }
-            >
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="de">German</option>
-            </select>
-          </label>
-        </Card>
+      {/* Settings Grid */}
+      <div className="grid gap-6 xl:grid-cols-2">
+        {/* General Settings */}
+        <div className="glass-effect rounded-2xl p-8 space-y-6 border border-brand-border/50">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold text-brand-text">General</h2>
+            <p className="text-sm text-brand-subtle">Basic application preferences</p>
+          </div>
+          
+          <div className="space-y-4">
+            <Input
+              label="Application Name"
+              value={settings.appName}
+              onChange={(event) => setSettings((prev) => ({ ...prev, appName: event.target.value }))}
+            />
+            <label className="space-y-2">
+              <span className="text-sm font-medium text-brand-text">Theme</span>
+              <select
+                className="w-full rounded-xl border border-brand-border bg-brand-card2/40 px-4 py-3 text-base text-brand-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-bright transition-all"
+                value={settings.theme}
+                onChange={(event) =>
+                  setSettings((prev) => ({ ...prev, theme: event.target.value as SettingsState['theme'] }))
+                }
+              >
+                <option value="dark">Dark</option>
+                <option value="system">System</option>
+              </select>
+            </label>
+            <label className="space-y-2">
+              <span className="text-sm font-medium text-brand-text">Language</span>
+              <select
+                className="w-full rounded-xl border border-brand-border bg-brand-card2/40 px-4 py-3 text-base text-brand-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-bright transition-all"
+                value={settings.language}
+                onChange={(event) =>
+                  setSettings((prev) => ({ ...prev, language: event.target.value as SettingsState['language'] }))
+                }
+              >
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="de">German</option>
+              </select>
+            </label>
+          </div>
+        </div>
 
-        <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-brand-text">Detection</h2>
-          <label className="space-y-1.5">
-            <span className="text-sm text-brand-subtle">Default Detection Type</span>
-            <select
-              className="w-full rounded-xl border border-brand-border bg-brand-card2/70 px-3 py-2.5 text-sm text-brand-subtle"
-              value={settings.defaultDetectionType}
+        {/* Detection Settings */}
+        <div className="glass-effect rounded-2xl p-8 space-y-6 border border-brand-border/50">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold text-brand-text">Detection</h2>
+            <p className="text-sm text-brand-subtle">AI detection preferences</p>
+          </div>
+          
+          <div className="space-y-4">
+            <label className="space-y-2">
+              <span className="text-sm font-medium text-brand-text">Default Detection Type</span>
+              <select
+                className="w-full rounded-xl border border-brand-border bg-brand-card2/40 px-4 py-3 text-base text-brand-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-bright transition-all"
+                value={settings.defaultDetectionType}
+                onChange={(event) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    defaultDetectionType: event.target.value as SettingsState['defaultDetectionType'],
+                  }))
+                }
+              >
+                <option value="video">Video</option>
+                <option value="audio">Audio</option>
+              </select>
+            </label>
+            <Input
+              label="Confidence Threshold (%)"
+              type="number"
+              min={0}
+              max={100}
+              value={String(settings.confidenceThreshold)}
               onChange={(event) =>
-                setSettings((prev) => ({
-                  ...prev,
-                  defaultDetectionType: event.target.value as SettingsState['defaultDetectionType'],
-                }))
+                setSettings((prev) => ({ ...prev, confidenceThreshold: Number(event.target.value) }))
               }
-            >
-              <option value="video">Video</option>
-              <option value="audio">Audio</option>
-            </select>
-          </label>
-          <Input
-            label="Confidence Threshold"
-            type="number"
-            min={0}
-            max={100}
-            value={String(settings.confidenceThreshold)}
-            onChange={(event) =>
-              setSettings((prev) => ({ ...prev, confidenceThreshold: Number(event.target.value) }))
-            }
-          />
-          <Toggle
-            label="Automatic processing"
-            checked={settings.autoProcessing}
-            onChange={(checked) => setSettings((prev) => ({ ...prev, autoProcessing: checked }))}
-          />
-        </Card>
+            />
+            <Toggle
+              label="Automatic Processing"
+              checked={settings.autoProcessing}
+              onChange={(checked) => setSettings((prev) => ({ ...prev, autoProcessing: checked }))}
+            />
+          </div>
+        </div>
 
-        <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-brand-text">Notifications</h2>
-          <Toggle
-            label="Email notifications"
-            checked={settings.emailNotifications}
-            onChange={(checked) => setSettings((prev) => ({ ...prev, emailNotifications: checked }))}
-          />
-          <Toggle
-            label="Detection completion notifications"
-            checked={settings.completionNotifications}
-            onChange={(checked) => setSettings((prev) => ({ ...prev, completionNotifications: checked }))}
-          />
-        </Card>
+        {/* Notifications */}
+        <div className="glass-effect rounded-2xl p-8 space-y-6 border border-brand-border/50">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold text-brand-text">Notifications</h2>
+            <p className="text-sm text-brand-subtle">Alert preferences</p>
+          </div>
+          
+          <div className="space-y-4">
+            <Toggle
+              label="Email Notifications"
+              checked={settings.emailNotifications}
+              onChange={(checked) => setSettings((prev) => ({ ...prev, emailNotifications: checked }))}
+            />
+            <Toggle
+              label="Detection Completion Alerts"
+              checked={settings.completionNotifications}
+              onChange={(checked) => setSettings((prev) => ({ ...prev, completionNotifications: checked }))}
+            />
+          </div>
+        </div>
 
-        <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-brand-text">Security</h2>
-          <Input label="Change Password" type="password" placeholder="••••••••" />
-          <Button variant="secondary">Session management</Button>
-        </Card>
+        {/* Security */}
+        <div className="glass-effect rounded-2xl p-8 space-y-6 border border-brand-border/50">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold text-brand-text">Security</h2>
+            <p className="text-sm text-brand-subtle">Protect your account</p>
+          </div>
+          
+          <div className="space-y-4">
+            <Input label="Change Password" type="password" placeholder="••••••••" />
+            <Button variant="secondary" fullWidth>Manage Sessions</Button>
+          </div>
+        </div>
       </div>
 
-      <Button type="button" onClick={save} disabled={saving}>
-        {saving ? 'Saving...' : 'Save Changes'}
-      </Button>
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <Button type="button" onClick={save} disabled={saving} className="glow-effect px-8 py-3 font-semibold text-base" leftIcon={<Save className="h-5 w-5" />}>
+          {saving ? 'Saving...' : 'Save All Changes'}
+        </Button>
+      </div>
     </div>
   )
 }
