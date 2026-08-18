@@ -1,5 +1,5 @@
 import { formatDate } from '../../data/mockData'
-import { DetectionRecord } from '../../types'
+import type { DetectionRecord } from '../../types'
 import { Badge } from '../ui/Badge'
 import { Card } from '../ui/Card'
 import { ConfidenceScore } from './ConfidenceScore'

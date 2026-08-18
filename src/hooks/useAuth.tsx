@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
 import { STORAGE_KEYS } from '../data/mockData'
-import { AuthUser } from '../types'
+import type { AuthUser } from '../types'
 
 interface RegisterInput {
   name: string

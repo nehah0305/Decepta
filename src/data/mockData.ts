@@ -1,4 +1,4 @@
-import { DetectionRecord, SettingsState } from '../types'
+import type { DetectionRecord, SettingsState } from '../types'
 
 export const STORAGE_KEYS = {
   auth: 'decepta_auth',

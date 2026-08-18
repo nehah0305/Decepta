@@ -1,6 +1,6 @@
 import { UploadCloud, X } from 'lucide-react'
 import { useRef, useState } from 'react'
-import { DetectionType } from '../../types'
+import type { DetectionType } from '../../types'
 import { Button } from './Button'
 
 interface FileUploaderProps {

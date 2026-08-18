@@ -1,6 +1,14 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import type { ReactNode } from 'react'
 import { INITIAL_DETECTIONS, STORAGE_KEYS } from '../data/mockData'
-import { DetectionRecord, DetectionStatus, DetectionType } from '../types'
+import type { DetectionRecord, DetectionStatus, DetectionType } from '../types'
 
 interface DetectionContextValue {
   detections: DetectionRecord[]
@@ -50,7 +58,7 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(STORAGE_KEYS.detections, JSON.stringify(INITIAL_DETECTIONS))
   }, [])
 
-  const runDetection = async (file: File, type: DetectionType) => {
+  const runDetection = useCallback(async (file: File, type: DetectionType) => {
     setStatus('uploading')
     setCurrentResult(null)
     setProgress(20)
@@ -72,19 +80,22 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     setCurrentResult(result)
 
     return result
-  }
+  }, [])
 
-  const getDetectionById = (id: string) => {
-    if (id === 'latest') {
-      return detections[0] ?? null
-    }
-    return detections.find((item) => item.id === id) ?? null
-  }
+  const getDetectionById = useCallback(
+    (id: string) => {
+      if (id === 'latest') {
+        return detections[0] ?? null
+      }
+      return detections.find((item) => item.id === id) ?? null
+    },
+    [detections],
+  )
 
-  const resetStatus = () => {
+  const resetStatus = useCallback(() => {
     setStatus('idle')
     setProgress(0)
-  }
+  }, [])
 
   const value = useMemo(
     () => ({
@@ -96,7 +107,7 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
       getDetectionById,
       resetStatus,
     }),
-    [currentResult, detections, progress, status],
+    [currentResult, detections, getDetectionById, progress, resetStatus, runDetection, status],
   )
 
   return <DetectionContext.Provider value={value}>{children}</DetectionContext.Provider>

@@ -1,4 +1,4 @@
-import { TimelineEvent } from '../../types'
+import type { TimelineEvent } from '../../types'
 
 interface DetectionTimelineProps {
   events: TimelineEvent[]

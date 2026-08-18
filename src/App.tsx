@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { ToastViewport } from './components/ui/Toast'
 import { useAuth } from './hooks/useAuth'
