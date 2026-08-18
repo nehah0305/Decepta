@@ -140,7 +140,7 @@ export const Landing = () => (
             {/* Title */}
             <div>
               <h1 className="font-orbitron text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-                <span className="gradient-text">Decepta</span>
+                <span className="gradient-text">Depecta</span>
               </h1>
               <p className="text-xl sm:text-2xl text-brand-subtle mt-4 font-light">
                 Deepfake Detection Reimagined

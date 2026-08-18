@@ -40,10 +40,10 @@ export const Login = () => {
       <div className="space-y-2 text-center">
         <div className="inline-flex items-center gap-2 rounded-full glass-effect-sm px-4 py-2 text-xs uppercase tracking-widest text-brand-bright animate-pulse-glow mb-4">
           <Sparkles className="h-4 w-4" />
-          <span>Decepta</span>
+          <span>Depecta</span>
         </div>
         <h1 className="text-3xl font-orbitron font-bold text-brand-text">Welcome Back</h1>
-        <p className="text-brand-subtle">Login to continue to Decepta</p>
+        <p className="text-brand-subtle">Login to continue to Depecta</p>
       </div>
 
       {/* Login Form Card */}

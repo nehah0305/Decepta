@@ -1,4 +1,4 @@
-# Decepta - Deepfake Detection Platform
+# Depecta - Deepfake Detection Platform
 
 A modern web application built with **React 19**, **TypeScript**, and **Vite** for detecting and analyzing deepfake content. The platform provides an intuitive dashboard for users to upload media files, perform deepfake detection, view analysis results, and track detection history.
 
@@ -25,7 +25,7 @@ A modern web application built with **React 19**, **TypeScript**, and **Vite** f
 
 ```bash
 # Clone or extract the project
-cd decepta
+cd depecta
 
 # Install dependencies
 npm install
