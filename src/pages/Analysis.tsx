@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AnalysisCard } from '../components/analysis/AnalysisCard'
 import { Button } from '../components/ui/Button'
-import { Card } from '../components/ui/Card'
 import { useDetection } from '../hooks/useDetection'
+import { Sparkles, ArrowLeft } from 'lucide-react'
 
 export const Analysis = () => {
   const { id = '' } = useParams()
@@ -12,28 +12,42 @@ export const Analysis = () => {
   const analysis = useMemo(() => getDetectionById(id), [getDetectionById, id])
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <header>
-        <h1 className="text-3xl font-semibold text-brand-text">Analysis</h1>
-        <p className="mt-1 text-sm text-brand-subtle">Detailed confidence metrics and detection timeline.</p>
+    <div className="space-y-8 animate-fade-in">
+      {/* Header */}
+      <header className="space-y-2">
+        <div className="inline-flex items-center gap-2 rounded-full glass-effect-sm px-4 py-2 text-xs uppercase tracking-widest text-brand-bright">
+          <Sparkles className="h-4 w-4" />
+          <span>Detailed Analysis</span>
+        </div>
+        <h1 className="text-4xl font-orbitron font-bold gradient-text">Detection Analysis</h1>
+        <p className="text-brand-subtle text-lg">Comprehensive confidence metrics and detection timeline.</p>
       </header>
 
       {detections.length === 0 ? (
-        <Card className="text-center">
-          <p className="text-brand-subtle">No analysis available yet. Run a detection first.</p>
-          <Link to="/detect" className="mt-3 inline-block">
-            <Button>Go to Detect</Button>
-          </Link>
-        </Card>
+        <div className="glass-effect rounded-2xl p-12 text-center border border-brand-border/50">
+          <div className="space-y-4">
+            <p className="text-brand-subtle text-lg font-medium">No analysis available yet</p>
+            <p className="text-brand-muted">Run a detection first to see detailed analysis results.</p>
+            <Link to="/detect" className="inline-block">
+              <Button className="glow-effect">
+                <ArrowLeft className="h-4 w-4" />
+                Start Detection
+              </Button>
+            </Link>
+          </div>
+        </div>
       ) : null}
 
       {detections.length > 0 && !analysis ? (
-        <Card className="text-center">
-          <p className="text-brand-subtle">Analysis record not found.</p>
-          <Link to={`/analysis/${detections[0].id}`} className="mt-3 inline-block">
-            <Button variant="secondary">Open Latest</Button>
-          </Link>
-        </Card>
+        <div className="glass-effect rounded-2xl p-12 text-center border border-brand-border/50">
+          <div className="space-y-4">
+            <p className="text-brand-subtle text-lg font-medium">Analysis record not found</p>
+            <p className="text-brand-muted">The analysis you're looking for doesn't exist.</p>
+            <Link to={`/analysis/${detections[0].id}`} className="inline-block">
+              <Button variant="secondary">View Latest Analysis</Button>
+            </Link>
+          </div>
+        </div>
       ) : null}
 
       {analysis ? <AnalysisCard analysis={analysis} /> : null}
