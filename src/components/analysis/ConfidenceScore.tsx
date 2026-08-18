@@ -1,4 +1,4 @@
-import { DetectionRecord } from '../../types'
+import type { DetectionRecord } from '../../types'
 
 export const ConfidenceScore = ({ confidence }: Pick<DetectionRecord, 'confidence'>) => (
   <div className="relative h-32 w-32">
