@@ -1,0 +1,48 @@
+{
+  "status": "success",
+  "input_video_path": "C:\\Users\\nehah\\OneDrive\\Desktop\\MAJOR PROJECT\\Deepfake Detection System\\Decepta\\model\\sample_test_video.mp4",
+  "output_directory": "C:\\Users\\nehah\\OneDrive\\Desktop\\MAJOR PROJECT\\Deepfake Detection System\\Decepta\\model\\output",
+  "frames_directory": "C:\\Users\\nehah\\OneDrive\\Desktop\\MAJOR PROJECT\\Deepfake Detection System\\Decepta\\model\\output\\frames",
+  "audio_file_path": "C:\\Users\\nehah\\OneDrive\\Desktop\\MAJOR PROJECT\\Deepfake Detection System\\Decepta\\model\\output\\audio\\audio.wav",
+  "metadata_file_path": "C:\\Users\\nehah\\OneDrive\\Desktop\\MAJOR PROJECT\\Deepfake Detection System\\Decepta\\model\\output\\metadata.json",
+  "original_fps": 25.0,
+  "extracted_fps": 5.0,
+  "resolution": {
+    "width": 640,
+    "height": 480
+  },
+  "video_duration_seconds": 2.0,
+  "total_original_frames": 50,
+  "total_extracted_frames": 10,
+  "frame_filenames": [
+    "frame_000001.png",
+    "frame_000002.png",
+    "frame_000003.png",
+    "frame_000004.png",
+    "frame_000005.png",
+    "frame_000006.png",
+    "frame_000007.png",
+    "frame_000008.png",
+    "frame_000009.png",
+    "frame_000010.png"
+  ],
+  "frame_timestamps": {
+    "frame_000001.png": 0.0,
+    "frame_000002.png": 0.2,
+    "frame_000003.png": 0.4,
+    "frame_000004.png": 0.6,
+    "frame_000005.png": 0.8,
+    "frame_000006.png": 1.0,
+    "frame_000007.png": 1.2,
+    "frame_000008.png": 1.4,
+    "frame_000009.png": 1.6,
+    "frame_000010.png": 1.8
+  },
+  "has_audio": true,
+  "audio_sample_rate": 44100,
+  "audio_channels": 1,
+  "audio_duration_seconds": 2.02,
+  "audio_format": "wav",
+  "processing_time_seconds": 1.2604,
+  "timestamp_utc": "2026-08-22T06:52:07Z"
+}
