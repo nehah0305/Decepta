@@ -40,6 +40,10 @@ reports/
 *.joblib
 *.safetensors
 
+# Training artifacts
+checkpoints/
+runs/
+
 # Editor and operating-system files
 .vscode/
 .idea/
