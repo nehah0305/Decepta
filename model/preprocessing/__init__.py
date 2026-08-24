@@ -37,9 +37,21 @@ from .pipeline import (
     PreprocessingOutput,
     preprocess_video,
 )
-from .video_processor import FrameInfo, VideoProcessingResult, VideoProcessor
+from .video_reader import VideoMetadata, VideoReader
+from .frame_sampler import HighCoverageFrameSampler, SamplingPlan
+from .frame_quality import FrameQualityFilter, FrameQualityResult
+from .face_alignment import AlignedFaceData, FaceAlignmentPipeline
 
 __all__ = [
+    # Visual High-Coverage Pipeline
+    "VideoReader",
+    "VideoMetadata",
+    "HighCoverageFrameSampler",
+    "SamplingPlan",
+    "FrameQualityFilter",
+    "FrameQualityResult",
+    "FaceAlignmentPipeline",
+    "AlignedFaceData",
     # Video & Audio Modality Extraction
     "MultimodalPreprocessor",
     "preprocess_video",
@@ -75,3 +87,4 @@ __all__ = [
     "FFmpegNotFoundError",
     "FFmpegExecutionError",
 ]
+
