@@ -53,7 +53,7 @@ class VideoProcessor:
 
     def __init__(
         self,
-        target_fps: float = 5.0,
+        target_fps: float = 25.0,
         ffmpeg_path: Optional[str] = None,
         filename_pattern: str = "frame_%06d.png"
     ):

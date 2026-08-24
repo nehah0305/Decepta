@@ -32,8 +32,8 @@ def parse_args():
     parser.add_argument(
         "--fps", "-f",
         type=float,
-        default=5.0,
-        help="Target frame extraction rate in frames per second (FPS), e.g. 5.0 or 10.0 (default: 5.0)."
+        default=25.0,
+        help="Target frame extraction rate in frames per second (FPS), e.g. 5.0, 10.0, 25.0 (default: 25.0)."
     )
     parser.add_argument(
         "--sample-rate", "-sr",

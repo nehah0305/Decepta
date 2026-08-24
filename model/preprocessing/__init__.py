@@ -1,11 +1,19 @@
 """
 Preprocessing module for Multimodal Deepfake Detection System.
 
-Provides tools to independently extract video frames and audio streams from video files,
-maintaining strict temporal synchronization and preserving forensic artifact integrity.
+Provides tools to independently extract video frames and audio streams,
+perform MTCNN face and 5-point landmark detection, canonical face alignment,
+and temporal mouth ROI sequence extraction.
 """
 
 from .audio_processor import AudioProcessingResult, AudioProcessor
+from .dataset_preprocessor import (
+    VideoFacePreprocessor,
+    VideoPreprocessingOutput,
+    preprocess_frame_sequence,
+)
+from .face_aligner import AlignedFaceResult, FaceAligner
+from .face_detector import FaceDetection, FaceDetector, FrameFaceResult
 from .ffmpeg_utils import (
     AudioStreamInfo,
     FFmpegExecutionError,
@@ -16,6 +24,7 @@ from .ffmpeg_utils import (
     probe_media,
     run_ffmpeg_command,
 )
+from .mouth_extractor import MouthExtractor, MouthROIResult
 from .pipeline import (
     MultimodalPreprocessor,
     PreprocessingOutput,
@@ -24,6 +33,7 @@ from .pipeline import (
 from .video_processor import FrameInfo, VideoProcessingResult, VideoProcessor
 
 __all__ = [
+    # Video & Audio Modality Extraction
     "MultimodalPreprocessor",
     "preprocess_video",
     "PreprocessingOutput",
@@ -32,6 +42,18 @@ __all__ = [
     "FrameInfo",
     "AudioProcessor",
     "AudioProcessingResult",
+    # Face & Mouth ROI Pipeline
+    "FaceDetector",
+    "FaceDetection",
+    "FrameFaceResult",
+    "FaceAligner",
+    "AlignedFaceResult",
+    "MouthExtractor",
+    "MouthROIResult",
+    "VideoFacePreprocessor",
+    "VideoPreprocessingOutput",
+    "preprocess_frame_sequence",
+    # Utilities
     "MediaInfo",
     "VideoStreamInfo",
     "AudioStreamInfo",

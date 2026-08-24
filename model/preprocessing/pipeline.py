@@ -70,14 +70,14 @@ class MultimodalPreprocessor:
 
     def __init__(
         self,
-        extracted_fps: float = 5.0,
+        extracted_fps: float = 25.0,
         audio_sample_rate: Optional[int] = None,
         audio_channels: Optional[int] = None,
         ffmpeg_path: Optional[str] = None
     ):
         """
         Args:
-            extracted_fps: Frame extraction rate in FPS (e.g. 5.0, 10.0).
+            extracted_fps: Frame extraction rate in FPS (default: 25.0).
             audio_sample_rate: Audio sampling rate in Hz (e.g. 16000, 44100, or None for native).
             audio_channels: Audio channel count (e.g. 1, 2, or None for native).
             ffmpeg_path: Custom path to FFmpeg binary if needed.
@@ -182,7 +182,7 @@ class MultimodalPreprocessor:
 def preprocess_video(
     video_path: Union[str, Path],
     output_dir: Union[str, Path] = "output",
-    fps: float = 5.0,
+    fps: float = 25.0,
     audio_sample_rate: Optional[int] = None,
     save_metadata: bool = True
 ) -> PreprocessingOutput:
@@ -192,7 +192,7 @@ def preprocess_video(
     Args:
         video_path: Path to the input video.
         output_dir: Directory where 'frames/', 'audio/', and 'metadata.json' are saved.
-        fps: Configurable extraction frame rate (e.g. 5.0 or 10.0 FPS).
+        fps: Configurable extraction frame rate (default: 25.0 FPS).
         audio_sample_rate: Target sample rate for WAV extraction (optional).
         save_metadata: Whether to save output/metadata.json.
 
