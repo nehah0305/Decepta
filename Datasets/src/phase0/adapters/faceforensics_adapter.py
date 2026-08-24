@@ -194,7 +194,6 @@ def main():
 
     dataset_root = (
         project_root
-        / "datasets"
         / "raw"
         / "faceforensicspp"
         / "c23"
@@ -215,10 +214,11 @@ def main():
 
     output_path = (
         project_root
-        / "datasets"
         / "metadata"
         / "faceforensicspp.csv"
     )
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     manifest.to_csv(
         output_path,
