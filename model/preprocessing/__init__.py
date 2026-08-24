@@ -3,9 +3,16 @@ Preprocessing module for Multimodal Deepfake Detection System.
 
 Provides tools to independently extract video frames and audio streams,
 perform MTCNN face and 5-point landmark detection, canonical face alignment,
-and temporal mouth ROI sequence extraction.
+temporal mouth ROI sequence extraction, and 16 kHz 4s audio standardization
+with Mel-spectrogram (.npy) generation.
 """
 
+from .audio_preprocessor import (
+    AudioPreprocessor,
+    AudioPreprocessorConfig,
+    AudioPreprocessorResult,
+    preprocess_audio_file,
+)
 from .audio_processor import AudioProcessingResult, AudioProcessor
 from .dataset_preprocessor import (
     VideoFacePreprocessor,
@@ -53,6 +60,11 @@ __all__ = [
     "VideoFacePreprocessor",
     "VideoPreprocessingOutput",
     "preprocess_frame_sequence",
+    # Audio Preprocessing Stage (16 kHz, 4s, Mel-Spectrogram)
+    "AudioPreprocessor",
+    "AudioPreprocessorConfig",
+    "AudioPreprocessorResult",
+    "preprocess_audio_file",
     # Utilities
     "MediaInfo",
     "VideoStreamInfo",
