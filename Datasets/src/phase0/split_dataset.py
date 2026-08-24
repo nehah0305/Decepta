@@ -14,6 +14,16 @@ def split_dataset(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
 
+    if "split_group_id" not in df.columns:
+        raise ValueError(
+            "Manifest must contain split_group_id before splitting."
+        )
+
+    if df["split_group_id"].isnull().any():
+        raise ValueError(
+            "split_group_id cannot contain missing values."
+        )
+
     if abs(
         TRAIN_RATIO
         + VALIDATION_RATIO
@@ -49,7 +59,7 @@ def split_dataset(
     train_indices, temporary_indices = next(
         splitter.split(
             df,
-            groups=df["subject_id"]
+            groups=df["split_group_id"]
         )
     )
 
@@ -87,7 +97,7 @@ def split_dataset(
     validation_indices, test_indices = next(
         splitter.split(
             temporary_df,
-            groups=temporary_df["subject_id"]
+            groups=temporary_df["split_group_id"]
         )
     )
 

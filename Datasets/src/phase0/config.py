@@ -7,7 +7,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-DATASETS_DIR = PROJECT_ROOT / "datasets"
+DATASETS_DIR = PROJECT_ROOT
 RAW_DATA_DIR = DATASETS_DIR / "raw"
 METADATA_DIR = DATASETS_DIR / "metadata"
 
@@ -87,6 +87,7 @@ REQUIRED_COLUMNS = [
     "video_path",
     "subject_id",
     "source_id",
+    "split_group_id",
     "manipulation",
     "generator",
     "label",

@@ -20,6 +20,7 @@ from .split_dataset import (
 from .leakage_checker import (
     check_subject_leakage,
     check_source_leakage,
+    check_split_group_leakage,
     print_leakage_report,
 )
 
@@ -183,10 +184,21 @@ def main():
 
     source_results = check_source_leakage(df)
 
+    split_group_results = check_split_group_leakage(df)
+
     leakage_passed = print_leakage_report(
         subject_results,
         source_results,
     )
+
+    print("\nSplit-group leakage:")
+
+    for pair, overlap in split_group_results.items():
+        if overlap:
+            leakage_passed = False
+            print(f"❌ {pair}: {len(overlap)} overlapping groups")
+        else:
+            print(f"✓ {pair}: no leakage")
 
     # --------------------------------------------------------
     # GENERATE STATISTICS

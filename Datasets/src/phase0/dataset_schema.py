@@ -65,8 +65,8 @@ def validate_missing_values(df: pd.DataFrame) -> None:
         "sample_id",
         "dataset",
         "video_path",
-        "subject_id",
         "source_id",
+        "split_group_id",
         "manipulation",
         "label",
     ]

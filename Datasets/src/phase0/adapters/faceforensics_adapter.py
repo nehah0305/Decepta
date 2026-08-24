@@ -153,6 +153,44 @@ class FaceForensicsAdapter:
 
         manifest["original_video_id"] = None
 
+        provenance = manifest.apply(
+            lambda row: self.infer_provenance(
+                row["video_path"],
+                row["manipulation"],
+            ),
+            axis=1,
+        )
+
+        manifest["source_id"] = provenance.apply(
+            lambda value: value[0]
+        )
+
+        manifest["original_video_id"] = provenance.apply(
+            lambda value: value[1]
+        )
+
+        pair_groups = {}
+
+        for source_id, original_video_id in provenance:
+            if (
+                source_id
+                and original_video_id
+                and source_id != original_video_id
+                and source_id.startswith("ORIG_")
+                and original_video_id.startswith("ORIG_")
+            ):
+                pair = tuple(sorted((source_id, original_video_id)))
+                group_id = f"PAIR_{pair[0]}_{pair[1]}"
+                pair_groups[source_id] = group_id
+                pair_groups[original_video_id] = group_id
+
+        manifest["split_group_id"] = provenance.apply(
+            lambda value: pair_groups.get(
+                value[1] or value[0],
+                value[0],
+            )
+        )
+
         manifest["audio_path"] = None
 
         manifest["split"] = None
@@ -186,6 +224,40 @@ class FaceForensicsAdapter:
             return "NeuralTextures"
 
         return "Unknown"
+
+    @staticmethod
+    def infer_provenance(video_path, manipulation):
+
+        path = Path(video_path)
+        stem = path.stem
+
+        if manipulation == "Original" and stem.isdigit():
+            original_id = f"ORIG_{int(stem):03d}"
+            return original_id, original_id
+
+        if manipulation in {
+            "Deepfakes",
+            "Face2Face",
+            "FaceShifter",
+            "FaceSwap",
+            "NeuralTextures",
+        }:
+            parts = stem.split("_")
+
+            if len(parts) == 2 and all(part.isdigit() for part in parts):
+                original_id, source_id = parts
+                return (
+                    f"ORIG_{int(source_id):03d}",
+                    f"ORIG_{int(original_id):03d}",
+                )
+
+        if manipulation == "DeepFakeDetection":
+            parts = stem.split("__")
+
+            if len(parts) == 3 and parts[2].isalnum():
+                return f"DFD_{parts[2]}", None
+
+        return None, None
 
 
 def main():
@@ -253,5 +325,7 @@ def main():
     )
 
 
+if __name__ == "__main__":
+    main()
 if __name__ == "__main__":
     main()

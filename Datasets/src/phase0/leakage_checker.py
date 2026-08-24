@@ -81,6 +81,33 @@ def check_source_leakage(
     return results
 
 
+def check_split_group_leakage(
+    df: pd.DataFrame,
+) -> dict:
+
+    split_groups = {
+        split: set(
+            df[df["split"] == split]["split_group_id"]
+        )
+        for split in ("train", "validation", "test")
+    }
+
+    return {
+        "train_validation": find_set_overlap(
+            split_groups["train"],
+            split_groups["validation"],
+        ),
+        "train_test": find_set_overlap(
+            split_groups["train"],
+            split_groups["test"],
+        ),
+        "validation_test": find_set_overlap(
+            split_groups["validation"],
+            split_groups["test"],
+        ),
+    }
+
+
 def print_leakage_report(
     subject_results: dict,
     source_results: dict,
