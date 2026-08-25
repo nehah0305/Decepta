@@ -63,7 +63,7 @@ class MultimodalVideoDataset(Dataset):
         self.quality_filter = FrameQualityFilter()
         self.face_aligner = FaceAlignmentPipeline(
             target_size=face_size,
-            device=device
+            device="cpu"
         )
         self.mouth_extractor = MouthExtractor(
             mouth_roi_size=(mouth_size, mouth_size)

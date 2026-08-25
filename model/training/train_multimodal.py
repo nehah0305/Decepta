@@ -11,11 +11,15 @@ Supports:
 
 import argparse
 import logging
+import os
 import sys
+import time
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 import numpy as np
 import torch
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 from torch.utils.data import DataLoader
 
 # Ensure model root directory is in sys.path
@@ -127,19 +131,27 @@ def train_multimodal_model(
         device=config.DEVICE
     )
 
+    if device.type == "cuda":
+        torch.backends.cudnn.benchmark = True
+
+    num_workers = 0
+    pin_memory = (device.type == "cuda")
+
     train_loader = DataLoader(
         train_dataset,
         batch_size=config.BATCH_SIZE,
         shuffle=True,
         collate_fn=collate_multimodal_batch,
-        num_workers=0
+        num_workers=num_workers,
+        pin_memory=pin_memory
     )
     val_loader = DataLoader(
         val_dataset,
         batch_size=config.BATCH_SIZE,
         shuffle=False,
         collate_fn=collate_multimodal_batch,
-        num_workers=0
+        num_workers=num_workers,
+        pin_memory=pin_memory
     )
 
     model = MultimodalDeepfakeDetector(
@@ -213,6 +225,9 @@ def train_multimodal_model(
 
     best_val_auc = 0.0
 
+    total_steps = len(train_loader) * config.NUM_EPOCHS
+    start_time = time.time()
+
     for epoch in range(1, config.NUM_EPOCHS + 1):
         model.train()
         train_loss = 0.0
@@ -227,6 +242,8 @@ def train_multimodal_model(
             pad_a = batch["padding_mask_a"].to(device)
             labels = batch["labels"].to(device)
 
+            if device.type == "cuda":
+                torch.cuda.empty_cache()
             optimizer.zero_grad()
 
             with torch.cuda.amp.autocast(enabled=use_amp):
@@ -253,6 +270,18 @@ def train_multimodal_model(
 
             train_loss += loss.item() * faces.size(0)
             n_train_samples += faces.size(0)
+
+            current_global_step = (epoch - 1) * len(train_loader) + (step + 1)
+            pct_complete = (current_global_step / total_steps) * 100.0 if total_steps > 0 else 0.0
+            elapsed = time.time() - start_time
+            eta_seconds = (elapsed / current_global_step) * (total_steps - current_global_step) if current_global_step > 0 else 0.0
+
+            logger.info(
+                f"[PROGRESS: {pct_complete:5.1f}%] Epoch [{epoch:02d}/{config.NUM_EPOCHS:02d}] "
+                f"Step [{step+1:04d}/{len(train_loader):04d}] | Loss: {loss.item():.4f} "
+                f"(Cls: {l_cls.item():.4f}, Sync: {l_sync.item():.4f}) | ETA: {eta_seconds/60:.1f}m"
+            )
+            sys.stdout.flush()
 
         scheduler.step()
         avg_train_loss = train_loss / n_train_samples if n_train_samples > 0 else 0.0
@@ -289,11 +318,44 @@ def train_multimodal_model(
     return history
 
 
+def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: str, max_samples: Optional[int] = None) -> List[VideoSampleItem]:
+    import pandas as pd
+    if not csv_path.exists():
+        return []
+    df = pd.read_csv(csv_path)
+    if "split" in df.columns:
+        df = df[df["split"] == split_name]
+    if max_samples and max_samples > 0:
+        df = df.head(max_samples)
+    items = []
+    for _, row in df.iterrows():
+        rel_path = str(row["video_path"])
+        full_path = data_root / rel_path if not Path(rel_path).is_absolute() else Path(rel_path)
+        items.append(
+            VideoSampleItem(
+                video_id=str(row.get("sample_id", Path(rel_path).stem)),
+                video_path=str(full_path),
+                label=int(row["label"]),
+                split=split_name
+            )
+        )
+    return items
+
+
 def main():
+    try:
+        torch.multiprocessing.set_start_method('spawn', force=True)
+    except RuntimeError:
+        pass
+
     parser = argparse.ArgumentParser(description="Multimodal Deepfake Detection Training (Stage 4 & Stage 5)")
     parser.add_argument("--epochs", type=int, default=DEFAULT_CONFIG.NUM_EPOCHS, help="Training epochs")
     parser.add_argument("--batch-size", type=int, default=DEFAULT_CONFIG.BATCH_SIZE, help="Batch size")
     parser.add_argument("--lr", type=float, default=DEFAULT_CONFIG.LEARNING_RATE, help="Learning rate")
+    parser.add_argument("--max-samples", type=int, default=None, help="Maximum training/validation samples limit (optional)")
+    parser.add_argument("--train-manifest", type=str, default="Datasets/metadata/train.csv", help="Train CSV manifest path")
+    parser.add_argument("--val-manifest", type=str, default="Datasets/metadata/validation.csv", help="Validation CSV manifest path")
+    parser.add_argument("--data-root", type=str, default="Datasets/raw/faceforensicspp/c23", help="Root folder for video files")
     parser.add_argument("--visual-checkpoint", type=str, default=None, help="Stage 1 Visual pretrained checkpoint (.pt)")
     parser.add_argument("--audio-checkpoint", type=str, default=None, help="Stage 2 Audio pretrained checkpoint (.pt)")
     parser.add_argument("--sync-checkpoint", type=str, default=None, help="Stage 3 Sync pretrained checkpoint (.pt)")
@@ -301,11 +363,23 @@ def main():
     parser.add_argument("--output", type=str, default="checkpoints/multimodal_best.pt", help="Checkpoint save path")
     args = parser.parse_args()
 
-    dummy_samples = [
-        VideoSampleItem(video_id=f"demo_multi_{i}", video_path="sample_test_video.mp4", label=(i % 2))
-        for i in range(8)
-    ]
-    train_s, val_s, _ = split_videos_by_id(dummy_samples, train_ratio=0.75, val_ratio=0.25, test_ratio=0.0)
+    project_root = Path(__file__).resolve().parents[2]
+    train_manifest_path = project_root / args.train_manifest if not Path(args.train_manifest).is_absolute() else Path(args.train_manifest)
+    val_manifest_path = project_root / args.val_manifest if not Path(args.val_manifest).is_absolute() else Path(args.val_manifest)
+    data_root_path = project_root / args.data_root if not Path(args.data_root).is_absolute() else Path(args.data_root)
+
+    train_s = load_samples_from_csv(train_manifest_path, data_root_path, "train", max_samples=args.max_samples)
+    val_s = load_samples_from_csv(val_manifest_path, data_root_path, "validation", max_samples=args.max_samples // 4 if args.max_samples else None)
+
+    if not train_s:
+        logger.warning("Train manifest not found or empty. Fallback to demo video samples.")
+        dummy_samples = [
+            VideoSampleItem(video_id=f"demo_multi_{i}", video_path="sample_test_video.mp4", label=(i % 2))
+            for i in range(8)
+        ]
+        train_s, val_s, _ = split_videos_by_id(dummy_samples, train_ratio=0.75, val_ratio=0.25, test_ratio=0.0)
+
+    logger.info(f"Loaded {len(train_s)} training samples and {len(val_s)} validation samples.")
 
     cfg = VisualPipelineConfig(
         NUM_EPOCHS=args.epochs,

@@ -24,8 +24,8 @@ class VisualPipelineConfig:
     # -------------------------------------------------------------------------
     FRAME_COVERAGE_RATIO: float = 0.70  # Analyze ~70% of usable video timeline
     MIN_FRAMES: int = 32                # Minimum candidate frames to sample
-    MAX_FRAMES: Optional[int] = None    # Optional hard cap on sampled frames (None = no cap)
-    FRAME_BATCH_SIZE: int = 32          # GPU/RAM chunk size for CNN processing (does NOT drop frames)
+    MAX_FRAMES: Optional[int] = 64      # Cap on sampled keyframes per video for memory safety
+    FRAME_BATCH_SIZE: int = 16          # GPU/RAM chunk size for CNN processing (does NOT drop frames)
     ALLOW_RANDOM_SAMPLING: bool = False # Deterministic equidistant sampling by default
 
     # Frame Quality Filtering

@@ -136,7 +136,8 @@ class AdaptiveModalityAttention(nn.Module):
         # Step 3: Apply Missing-Modality Masking before Softmax
         if modality_mask is not None:
             # modality_mask: (B, 3) with True for available, False for missing
-            scores = scores.masked_fill(~modality_mask, -1e9)
+            fill_val = -1e4 if scores.dtype == torch.float16 else -1e9
+            scores = scores.masked_fill(~modality_mask, fill_val)
 
         # Step 4: Softmax normalization over the 3 modalities -> (B, 3)
         weights = torch.softmax(scores, dim=-1)

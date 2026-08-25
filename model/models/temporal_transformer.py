@@ -86,7 +86,8 @@ class AttentionPooling(nn.Module):
         scores = scores.squeeze(-1)  # (B, N)
 
         if mask is not None:
-            scores = scores.masked_fill(mask, -1e9)
+            fill_val = -1e4 if scores.dtype == torch.float16 else -1e9
+            scores = scores.masked_fill(mask, fill_val)
 
         weights = torch.softmax(scores, dim=-1)  # (B, N)
         # Handle edge case where all tokens are masked
