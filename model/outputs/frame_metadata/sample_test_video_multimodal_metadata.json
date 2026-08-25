@@ -1,0 +1,41 @@
+{
+  "report": {
+    "video_path": "C:\\Users\\nehah\\OneDrive\\Desktop\\MAJOR PROJECT\\Deepfake Detection System\\Decepta\\model\\sample_test_video.mp4",
+    "video_id": "sample_test_video",
+    "duration_seconds": 2.0,
+    "fps": 25.0,
+    "total_video_frames": 50,
+    "candidate_frames": 35,
+    "faces_detected": 0,
+    "mouths_extracted": 0,
+    "visual_coverage_pct": 0.0,
+    "has_audio": true,
+    "num_audio_windows": 1,
+    "visual_feature_dim": 768,
+    "audio_feature_dim": 768,
+    "sync_feature_dim": 256,
+    "alpha_v": 0.0,
+    "alpha_a": 1.0,
+    "alpha_s": 0.0,
+    "sync_score": 0.5,
+    "real_probability": 0.4809,
+    "fake_probability": 0.5191,
+    "prediction": "Fake",
+    "confidence": 0.5191
+  },
+  "visual_frames": [],
+  "audio_windows": [
+    {
+      "video_id": "sample_test_video",
+      "window_id": 0,
+      "start_time": 0.0,
+      "end_time": 4.0,
+      "waveform_samples": 64000,
+      "mel_shape": [
+        128,
+        251
+      ],
+      "corresponding_frame_indices": []
+    }
+  ]
+}

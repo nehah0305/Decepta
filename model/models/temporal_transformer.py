@@ -16,10 +16,10 @@ import torch.nn as nn
 
 class PositionalEncoding(nn.Module):
     """
-    Standard sinusoidal positional encoding to inject temporal order.
+    Standard sinusoidal positional encoding injected before Transformer attention layers.
     """
 
-    def __init__(self, d_model: int = 768, max_len: int = 4096, dropout: float = 0.1):
+    def __init__(self, d_model: int = 768, max_len: int = 2048, dropout: float = 0.1):
         super().__init__()
         self.dropout = nn.Dropout(p=dropout)
 
@@ -30,21 +30,24 @@ class PositionalEncoding(nn.Module):
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0)  # (1, max_len, d_model)
-
         self.register_buffer("pe", pe)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Args:
-            x: Tensor of shape (B, N, d_model) or (N, d_model)
+            x: (B, N, d_model) or (N, d_model)
         """
-        if x.dim() == 2:
-            seq_len = x.size(0)
-            x = x + self.pe[0, :seq_len]
-        else:
-            seq_len = x.size(1)
-            x = x + self.pe[:, :seq_len]
-        return self.dropout(x)
+        is_unbatched = (x.dim() == 2)
+        if is_unbatched:
+            x = x.unsqueeze(0)
+
+        seq_len = x.size(1)
+        x = x + self.pe[:, :seq_len, :]
+        x = self.dropout(x)
+
+        if is_unbatched:
+            x = x.squeeze(0)
+        return x
 
 
 class AttentionPooling(nn.Module):
@@ -65,13 +68,19 @@ class AttentionPooling(nn.Module):
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
-            x: (B, N, d_model)
-            mask: (B, N) boolean mask where True indicates padded/invalid positions.
+            x: (B, N, d_model) or (N, d_model)
+            mask: (B, N) or (N,) boolean mask where True indicates padded/invalid positions.
 
         Returns:
-            pooled: (B, d_model)
-            weights: (B, N) attention weights
+            pooled: (B, d_model) or (d_model,)
+            weights: (B, N) or (N,) attention weights
         """
+        is_unbatched = (x.dim() == 2)
+        if is_unbatched:
+            x = x.unsqueeze(0)
+            if mask is not None and mask.dim() == 1:
+                mask = mask.unsqueeze(0)
+
         # Compute raw scores: (B, N, d_model) x (d_model, 1) -> (B, N, 1)
         scores = torch.matmul(x, self.query) * self.scale
         scores = scores.squeeze(-1)  # (B, N)
@@ -85,6 +94,11 @@ class AttentionPooling(nn.Module):
 
         # Weighted sum: (B, 1, N) x (B, N, d_model) -> (B, 1, d_model)
         pooled = torch.bmm(weights.unsqueeze(1), x).squeeze(1)  # (B, d_model)
+
+        if is_unbatched:
+            pooled = pooled.squeeze(0)
+            weights = weights.squeeze(0)
+
         return pooled, weights
 
 
@@ -156,7 +170,17 @@ class TemporalTransformer(nn.Module):
         x = self.pos_encoder(x)
 
         # Step 3: Transformer Encoder layers
-        x = self.transformer_encoder(x, src_key_padding_mask=padding_mask)  # (B, N, 768)
+        if padding_mask is not None:
+            all_masked = padding_mask.all(dim=-1, keepdim=True)
+            if all_masked.any():
+                safe_mask = padding_mask.clone()
+                # If a row is 100% padded, unmask all positions in that row so Transformer handles it gracefully
+                safe_mask[all_masked.squeeze(-1)] = False
+                x = self.transformer_encoder(x, src_key_padding_mask=safe_mask)
+            else:
+                x = self.transformer_encoder(x, src_key_padding_mask=padding_mask)
+        else:
+            x = self.transformer_encoder(x)
 
         # Step 4: Attention Pooling -> (B, 768)
         video_feature, attn_weights = self.pooling(x, mask=padding_mask)

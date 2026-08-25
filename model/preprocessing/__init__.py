@@ -13,7 +13,9 @@ from .audio_preprocessor import (
     AudioPreprocessorResult,
     preprocess_audio_file,
 )
+from .audio_windowing import AudioWindowData, AudioWindowExtractor, VideoAudioResult
 from .audio_processor import AudioProcessingResult, AudioProcessor
+from .video_processor import FrameInfo, VideoProcessingResult, VideoProcessor
 from .dataset_preprocessor import (
     VideoFacePreprocessor,
     VideoPreprocessingOutput,
@@ -52,6 +54,10 @@ __all__ = [
     "FrameQualityResult",
     "FaceAlignmentPipeline",
     "AlignedFaceData",
+    # Audio Windowing Pipeline
+    "AudioWindowExtractor",
+    "AudioWindowData",
+    "VideoAudioResult",
     # Video & Audio Modality Extraction
     "MultimodalPreprocessor",
     "preprocess_video",

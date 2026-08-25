@@ -21,7 +21,7 @@ class MouthROIResult:
     mouth_image: Optional[np.ndarray] = None  # RGB image array
     raw_coordinates: Optional[List[int]] = None  # [x1, y1, x2, y2]
     smoothed_coordinates: Optional[List[int]] = None  # [x1, y1, x2, y2]
-    target_size: Tuple[int, int] = (96, 96)
+    target_size: Tuple[int, int] = (112, 112)
 
 
 class MouthExtractor:
@@ -31,7 +31,7 @@ class MouthExtractor:
 
     def __init__(
         self,
-        mouth_roi_size: Tuple[int, int] = (96, 96),
+        mouth_roi_size: Tuple[int, int] = (112, 112),
         scale_factor: float = 1.6,
         vertical_offset_ratio: float = 0.05,
         smoothing_window: int = 3,

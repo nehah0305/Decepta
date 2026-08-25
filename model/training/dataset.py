@@ -30,7 +30,7 @@ class VideoSampleItem:
     video_id: str
     video_path: str
     label: int  # 0 = Real, 1 = Fake
-    split: str  # "train", "val", "test"
+    split: str = "train"  # "train", "val", "test"
 
 
 def split_videos_by_id(
@@ -66,9 +66,14 @@ def split_videos_by_id(
     test_list: List[VideoSampleItem] = []
 
     for i, rec in enumerate(shuffled):
-        vpath = str(rec["video_path"])
-        vid = str(rec.get("video_id", Path(vpath).stem))
-        label = int(rec["label"])
+        if isinstance(rec, VideoSampleItem):
+            vpath = rec.video_path
+            vid = rec.video_id
+            label = rec.label
+        else:
+            vpath = str(rec["video_path"])
+            vid = str(rec.get("video_id", Path(vpath).stem))
+            label = int(rec["label"])
 
         if i < n_train:
             train_list.append(VideoSampleItem(video_id=vid, video_path=vpath, label=label, split="train"))
