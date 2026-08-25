@@ -1,0 +1,52 @@
+# Local Python environments and tooling
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Dataset files and generated pipeline output
+raw/
+processed/
+reports/
+
+# Local logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Large media and model artifacts
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.wav
+*.mp3
+*.flac
+*.aac
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.keras
+*.pkl
+*.pickle
+*.joblib
+*.safetensors
+
+# Training artifacts
+checkpoints/
+runs/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
