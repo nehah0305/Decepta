@@ -1,3 +1,56 @@
+# =============================================================================
+# DECEPTA PROJECT GITIGNORE
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Python & Virtual Environments
+# -----------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+pythonenv/
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.nox/
+.hypothesis/
+
+# -----------------------------------------------------------------------------
+# Node.js & React Frontend
+# -----------------------------------------------------------------------------
+node_modules/
+dist-ssr/
+*.local
+
 # Logs
 logs
 *.log
@@ -7,18 +60,59 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# -----------------------------------------------------------------------------
+# Machine Learning Checkpoints, Outputs & Features
+# -----------------------------------------------------------------------------
+checkpoints/
+Datasets/checkpoints/
+model/outputs/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.onnx
+*.safetensors
+*.npz
+*.npy
 
-# Editor directories and files
+# -----------------------------------------------------------------------------
+# Datasets & Heavy Media Files (Local raw data)
+# -----------------------------------------------------------------------------
+Datasets/raw/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.flv
+*.wav
+*.mp3
+*.aac
+*.flac
+
+# -----------------------------------------------------------------------------
+# Environment & IDE / System
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
