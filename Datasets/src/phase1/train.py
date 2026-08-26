@@ -32,7 +32,7 @@ def run_epoch(model, loader, loss_fn, optimizer, device, training):
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Train the Phase 1 video classifier.")
-    parser.add_argument("--manifest", type=Path, default=METADATA_ROOT / "master.csv")
+    parser.add_argument("--manifest", type=Path, default=METADATA_ROOT / "celebdf.csv")
     parser.add_argument("--epochs", type=int, default=DEFAULT_EPOCHS)
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument("--learning-rate", type=float, default=DEFAULT_LEARNING_RATE)

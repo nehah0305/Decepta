@@ -65,6 +65,17 @@ metadata/test.csv
 reports/phase0/dataset_statistics.csv
 ```
 
+Prepare Celeb-DF v2 using its official testing list and grouped training split:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.phase0.adapters.celebdf_adapter
+```
+
+This creates `metadata/celebdf.csv` and updates the training manifests for
+`raw/celeb df (v2)/`. The official test list is kept exactly; its source pairs
+can also occur in the remaining videos, so this is an official dataset split
+rather than a strict identity-disjoint evaluation split.
+
 The split process groups related videos together and checks subject, source,
 and split-group leakage before reporting Phase 0 as successful.
 
