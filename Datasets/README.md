@@ -65,16 +65,15 @@ metadata/test.csv
 reports/phase0/dataset_statistics.csv
 ```
 
-Prepare Celeb-DF v2 using its official testing list and grouped training split:
+Prepare Celeb-DF v2 using identity-connected grouped splits:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.phase0.adapters.celebdf_adapter
 ```
 
 This creates `metadata/celebdf.csv` and updates the training manifests for
-`raw/celeb df (v2)/`. The official test list is kept exactly; its source pairs
-can also occur in the remaining videos, so this is an official dataset split
-rather than a strict identity-disjoint evaluation split.
+`raw/celeb df (v2)/`. All videos sharing a connected identity component are
+assigned to one split, preventing identity and source leakage.
 
 The split process groups related videos together and checks subject, source,
 and split-group leakage before reporting Phase 0 as successful.

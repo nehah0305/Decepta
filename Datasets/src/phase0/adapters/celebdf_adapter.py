@@ -3,13 +3,11 @@ import re
 
 import cv2
 import pandas as pd
-from sklearn.model_selection import GroupShuffleSplit
 
 from ..config import (
     DATASETS_DIR,
     MASTER_MANIFEST,
     METADATA_DIR,
-    RANDOM_SEED,
     REPORTS_DIR,
     TEST_MANIFEST,
     TRAIN_MANIFEST,
@@ -58,7 +56,44 @@ def _metadata(video_path: Path) -> tuple[int, int, int, str]:
     return frame_count, width, height, codec or "unknown"
 
 
-def _group_id(relative_path: str) -> tuple[str, str, str]:
+def _identity_group_ids(relative_paths: list[str]) -> dict[str, str]:
+    parent = {}
+
+    def find(identity: str) -> str:
+        parent.setdefault(identity, identity)
+        if parent[identity] != identity:
+            parent[identity] = find(parent[identity])
+        return parent[identity]
+
+    def union(first: str, second: str) -> None:
+        first_root = find(first)
+        second_root = find(second)
+        if first_root != second_root:
+            parent[second_root] = first_root
+
+    for relative_path in relative_paths:
+        directory = Path(relative_path).parts[0]
+        if directory == "Celeb-synthesis":
+            identities = re.findall(r"id\d+", Path(relative_path).stem)
+            union(identities[0], identities[1])
+        elif directory == "Celeb-real":
+            find(re.match(r"(id\d+)_", Path(relative_path).stem).group(1))
+
+    component_names = {}
+    groups = {}
+    for relative_path in relative_paths:
+        directory = Path(relative_path).parts[0]
+        if directory == "YouTube-real":
+            groups[relative_path] = f"CELEB_YOUTUBE_{Path(relative_path).stem}"
+            continue
+        identity = re.findall(r"id\d+", Path(relative_path).stem)[0]
+        root_identity = find(identity)
+        component_names.setdefault(root_identity, f"CELEB_COMPONENT_{len(component_names):03d}")
+        groups[relative_path] = component_names[root_identity]
+    return groups
+
+
+def _group_id(relative_path: str, identity_groups: dict[str, str]) -> tuple[str, str, str]:
     path = Path(relative_path)
     stem = path.stem
     directory = path.parts[0]
@@ -67,14 +102,13 @@ def _group_id(relative_path: str) -> tuple[str, str, str]:
         if not match:
             raise ValueError(f"Unexpected Celeb-synthesis filename: {relative_path}")
         first_id, second_id = match.groups()
-        pair = "_".join(sorted((first_id, second_id)))
-        return f"CELEB_PAIR_{pair}", first_id, second_id
+        return identity_groups[relative_path], first_id, second_id
     if directory == "Celeb-real":
         match = re.match(r"(id\d+)_", stem)
         subject = match.group(1) if match else stem
-        return f"CELEB_SUBJECT_{subject}", subject, subject
+        return identity_groups[relative_path], subject, subject
     if directory == "YouTube-real":
-        return f"CELEB_YOUTUBE_{stem}", stem, stem
+        return identity_groups[relative_path], stem, stem
     raise ValueError(f"Unexpected Celeb-DF directory: {directory}")
 
 
@@ -88,16 +122,21 @@ def create_manifest() -> pd.DataFrame:
         raise FileNotFoundError(f"No videos found under {DATASET_ROOT}")
 
     rows = []
+    relative_paths = [
+        _normalise_path(str(video_path.relative_to(DATASET_ROOT)))
+        for video_path in video_paths
+    ]
+    identity_groups = _identity_group_ids(relative_paths)
     seen_paths = set()
     for index, video_path in enumerate(video_paths):
-        relative_path = _normalise_path(str(video_path.relative_to(DATASET_ROOT)))
+        relative_path = relative_paths[index]
         seen_paths.add(relative_path)
         directory = Path(relative_path).parts[0]
         label = 0 if directory.endswith("real") else 1
         testing_label = testing.get(relative_path)
         if testing_label is not None and testing_label != label:
             raise ValueError(f"Testing-list label disagrees with folder for {relative_path}")
-        split_group_id, subject_id, source_id = _group_id(relative_path)
+        split_group_id, subject_id, source_id = _group_id(relative_path, identity_groups)
         frame_count, width, height, codec = _metadata(video_path)
         manipulation = "Original" if label == 0 else "DeepFake"
         rows.append({
@@ -128,14 +167,25 @@ def create_manifest() -> pd.DataFrame:
 
 def assign_splits(manifest: pd.DataFrame) -> pd.DataFrame:
     manifest = manifest.copy()
-    remaining = manifest[manifest["split"].isna()]
-    validation_fraction = 0.15 / (0.70 + 0.15)
-    splitter = GroupShuffleSplit(n_splits=1, test_size=validation_fraction, random_state=RANDOM_SEED)
-    train_indices, validation_indices = next(
-        splitter.split(remaining, groups=remaining["split_group_id"])
+    manifest["split"] = None
+    group_counts = manifest.groupby("split_group_id")["label"].agg(["size", "sum"])
+    identity_groups = group_counts[group_counts["sum"] > 0].sort_values("size", ascending=False).index.tolist()
+    if len(identity_groups) != 3:
+        raise ValueError(f"Expected three mixed Celeb-DF identity components, found {len(identity_groups)}")
+
+    split_by_group = {
+        identity_groups[0]: "train",
+        identity_groups[1]: "validation",
+        identity_groups[2]: "test",
+    }
+    youtube_groups = sorted(
+        group for group in group_counts.index
+        if group.startswith("CELEB_YOUTUBE_")
     )
-    manifest.loc[remaining.index[train_indices], "split"] = "train"
-    manifest.loc[remaining.index[validation_indices], "split"] = "validation"
+    youtube_midpoint = len(youtube_groups) // 2
+    split_by_group.update({group: "validation" for group in youtube_groups[:youtube_midpoint]})
+    split_by_group.update({group: "test" for group in youtube_groups[youtube_midpoint:]})
+    manifest["split"] = manifest["split_group_id"].map(split_by_group).fillna("train")
     return manifest
 
 
