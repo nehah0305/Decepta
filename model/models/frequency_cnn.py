@@ -63,8 +63,7 @@ class FrequencyCNN(nn.Module):
         self.gap = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Sequential(
             nn.Linear(128, feature_dim),
-            nn.BatchNorm1d(feature_dim),
-            nn.ReLU(inplace=True)
+            nn.LayerNorm(feature_dim)
         )
 
         self._initialize_weights()
