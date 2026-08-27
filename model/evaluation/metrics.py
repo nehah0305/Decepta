@@ -30,17 +30,14 @@ def calculate_deepfake_metrics(
     specificity = tn / (tn + fp) if (tn + fp) > 0 else 0.0
     f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
-    try:
-        if len(np.unique(y_true)) > 1:
-            from sklearn.metrics import roc_auc_score, average_precision_score
-            auc = float(roc_auc_score(y_true, y_probs))
-            ap = float(average_precision_score(y_true, y_probs))
-        else:
-            auc = 0.5
-            ap = 0.5
-    except Exception:
-        auc = 0.5
-        ap = 0.5
+    if len(np.unique(y_true)) < 2:
+        raise ValueError(
+            f"ROC-AUC and PR-AUC require both REAL and FAKE samples. Received unique classes: {np.unique(y_true)}"
+        )
+
+    from sklearn.metrics import roc_auc_score, average_precision_score
+    auc = float(roc_auc_score(y_true, y_probs))
+    ap = float(average_precision_score(y_true, y_probs))
 
     balanced_accuracy = (recall + specificity) / 2.0
 
