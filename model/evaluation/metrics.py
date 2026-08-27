@@ -42,8 +42,11 @@ def calculate_deepfake_metrics(
         auc = 0.5
         ap = 0.5
 
+    balanced_accuracy = (recall + specificity) / 2.0
+
     return {
         "accuracy": round(float(accuracy), 4),
+        "balanced_accuracy": round(float(balanced_accuracy), 4),
         "precision": round(float(precision), 4),
         "recall": round(float(recall), 4),
         "specificity": round(float(specificity), 4),

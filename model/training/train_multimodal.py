@@ -20,7 +20,7 @@ import numpy as np
 import torch
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
 # Ensure model root directory is in sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -137,10 +137,23 @@ def train_multimodal_model(
     num_workers = 0
     pin_memory = (device.type == "cuda")
 
+    labels = [sample.label for sample in train_samples]
+    class_counts = np.bincount(labels)
+    class_weights = 1.0 / np.maximum(class_counts, 1)
+    sample_weights = [class_weights[label] for label in labels]
+
+    sampler = WeightedRandomSampler(
+        weights=sample_weights,
+        num_samples=len(sample_weights),
+        replacement=True
+    )
+
+    logger.info(f"Using WeightedRandomSampler for training | Class Counts: REAL={class_counts[0] if len(class_counts)>0 else 0}, FAKE={class_counts[1] if len(class_counts)>1 else 0}")
+
     train_loader = DataLoader(
         train_dataset,
         batch_size=config.BATCH_SIZE,
-        shuffle=True,
+        sampler=sampler,
         collate_fn=collate_multimodal_batch,
         num_workers=num_workers,
         pin_memory=pin_memory
@@ -212,7 +225,7 @@ def train_multimodal_model(
     )
 
     use_amp = config.USE_AMP and (device.type == "cuda")
-    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
+    scaler = torch.amp.GradScaler('cuda', enabled=use_amp)
 
     history = {
         "train_loss": [],
@@ -246,7 +259,7 @@ def train_multimodal_model(
                 torch.cuda.empty_cache()
             optimizer.zero_grad()
 
-            with torch.cuda.amp.autocast(enabled=use_amp):
+            with torch.amp.autocast('cuda', enabled=use_amp):
                 outputs = model(
                     face_frames=faces,
                     mouth_crops=mouths,
