@@ -2,7 +2,14 @@ export type DetectionType = 'video' | 'audio'
 
 export type DetectionStatus = 'idle' | 'uploading' | 'processing' | 'completed' | 'error'
 
-export type DetectionResultLabel = 'Detected' | 'Not Detected'
+export type DetectionResultLabel = 'DEEPFAKE (FAKE)' | 'GENUINE (REAL)'
+
+export interface ForensicReason {
+  category: string
+  description: string
+  location: string
+  severity: 'High' | 'Medium' | 'Low' | 'Normal'
+}
 
 export interface DetectionRecord {
   id: string
@@ -14,7 +21,9 @@ export interface DetectionRecord {
   processingTime: number
   modelVersion: string
   result: DetectionResultLabel
+  verdict: 'DEEPFAKE' | 'GENUINE'
   segments: number
+  reasons?: ForensicReason[]
 }
 
 export interface AuthUser {

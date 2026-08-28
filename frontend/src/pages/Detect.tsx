@@ -81,32 +81,53 @@ export const Detect = () => {
       {/* Results Card */}
       {currentResult ? (
         <div className="glass-effect rounded-2xl p-8 space-y-6 border border-brand-bright/20 animate-fade-in">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-brand-subtle text-sm uppercase tracking-widest">Detection Result</p>
-              <h2 className="text-2xl font-semibold text-brand-text mt-1">Analysis Complete</h2>
+              <p className="text-brand-subtle text-sm uppercase tracking-widest font-semibold">
+                Forensic Classification Result
+              </p>
+              <h2 className="text-2xl font-bold text-brand-text mt-1 font-orbitron">
+                {currentResult.verdict === 'DEEPFAKE' || currentResult.result.includes('FAKE')
+                  ? '🔴 DEEPFAKE DETECTED (FAKE)'
+                  : '🟢 MEDIA VERIFIED (GENUINE REAL)'}
+              </h2>
             </div>
-            <Badge label={currentResult.status} tone="success" />
+            <Badge
+              label={
+                currentResult.verdict === 'DEEPFAKE' || currentResult.result.includes('FAKE')
+                  ? '🔴 FAKE'
+                  : '🟢 REAL'
+              }
+              tone={
+                currentResult.verdict === 'DEEPFAKE' || currentResult.result.includes('FAKE')
+                  ? 'error'
+                  : 'success'
+              }
+            />
           </div>
-          
+
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="glass-effect-sm rounded-xl p-5 border border-brand-border hover:border-brand-bright/50 transition-colors">
-              <p className="text-xs uppercase tracking-widest text-brand-muted">Status</p>
-              <p className="mt-3 text-2xl font-semibold gradient-text">{currentResult.result}</p>
+              <p className="text-xs uppercase tracking-widest text-brand-muted font-semibold">Classification</p>
+              <p className="mt-2 text-xl font-bold font-orbitron gradient-text">{currentResult.result}</p>
             </div>
             <div className="glass-effect-sm rounded-xl p-5 border border-brand-border hover:border-brand-bright/50 transition-colors">
-              <p className="text-xs uppercase tracking-widest text-brand-muted">Confidence Score</p>
-              <p className="mt-3 text-2xl font-semibold text-brand-bright">{currentResult.confidence}%</p>
+              <p className="text-xs uppercase tracking-widest text-brand-muted font-semibold">Confidence Score</p>
+              <p className="mt-2 text-xl font-bold text-brand-bright">{currentResult.confidence}%</p>
             </div>
             <div className="glass-effect-sm rounded-xl p-5 border border-brand-border hover:border-brand-bright/50 transition-colors">
-              <p className="text-xs uppercase tracking-widest text-brand-muted">Processing Time</p>
-              <p className="mt-3 text-2xl font-semibold text-brand-bright">{currentResult.processingTime}s</p>
+              <p className="text-xs uppercase tracking-widest text-brand-muted font-semibold">Primary Anomaly Domain</p>
+              <p className="mt-2 text-sm font-semibold text-brand-subtle truncate">
+                {currentResult.reasons && currentResult.reasons[0]
+                  ? currentResult.reasons[0].location
+                  : 'Spatial & Spectral Domain'}
+              </p>
             </div>
           </div>
-          
+
           <Link to={`/analysis/${currentResult.id}`} className="block">
             <Button variant="secondary" leftIcon={<Cpu className="h-4 w-4" />} className="w-full py-3 font-semibold glow-effect">
-              View Detailed Analysis
+              View Detailed Forensic Reasons & Anomaly Locations
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>

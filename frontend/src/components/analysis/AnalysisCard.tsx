@@ -6,6 +6,7 @@ import { ConfidenceScore } from './ConfidenceScore'
 import { DetectionTimeline } from './DetectionTimeline'
 import { MetricsCard } from './MetricsCard'
 import { AblationTable } from './AblationTable'
+import { ForensicReasonsCard } from './ForensicReasonsCard'
 
 interface AnalysisCardProps {
   analysis: DetectionRecord
@@ -19,18 +20,32 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
     { label: 'Stabilization', start: 84, end: 100, active: false },
   ]
 
+  const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE') || analysis.confidence > 50
+
   return (
     <div className="space-y-8">
+      {/* Classification Verdict & Detailed Forensic Reasons */}
+      <ForensicReasonsCard
+        verdict={analysis.verdict}
+        resultLabel={analysis.result}
+        confidence={analysis.confidence}
+        reasons={analysis.reasons}
+      />
+
+      {/* Main Analysis Card */}
       <Card className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-brand-muted">Analysis name</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-brand-muted">Analysis Record</p>
             <h2 className="mt-1 text-2xl font-semibold text-brand-text">{analysis.fileName}</h2>
             <p className="mt-1 text-sm text-brand-subtle">
               {analysis.fileType.toUpperCase()} • {formatDate(analysis.createdAt)}
             </p>
           </div>
-          <Badge label={analysis.result} tone={analysis.result === 'Detected' ? 'success' : 'warning'} />
+          <Badge
+            label={isFake ? '🔴 DEEPFAKE (FAKE)' : '🟢 GENUINE (REAL)'}
+            tone={isFake ? 'error' : 'success'}
+          />
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
@@ -40,14 +55,14 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
 
           <div className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <MetricsCard label="Classification" value={isFake ? 'DEEPFAKE (FAKE)' : 'GENUINE (REAL)'} />
               <MetricsCard label="Confidence" value={`${analysis.confidence}%`} />
               <MetricsCard label="Processing Time" value={`${analysis.processingTime}s`} />
-              <MetricsCard label="Frames/Segments" value={String(analysis.segments)} />
               <MetricsCard label="Model Version" value={analysis.modelVersion} />
             </div>
 
             <div className="rounded-xl border border-brand-border bg-brand-card2/35 p-4">
-              <p className="mb-3 text-xs uppercase tracking-wide text-brand-muted">Timeline</p>
+              <p className="mb-3 text-xs uppercase tracking-wide text-brand-muted font-semibold">Detection Timeline</p>
               <DetectionTimeline events={timeline} />
             </div>
           </div>
