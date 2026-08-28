@@ -24,8 +24,8 @@ A modern web application built with **React 19**, **TypeScript**, and **Vite** f
 ### Installation
 
 ```bash
-# Clone or extract the project
-cd depecta
+# Navigate to the frontend directory
+cd frontend
 
 # Install dependencies
 npm install
@@ -34,7 +34,8 @@ npm install
 ### Development
 
 ```bash
-# Start the development server with hot module replacement
+# Navigate to frontend and start dev server
+cd frontend
 npm run dev
 ```
 
@@ -60,32 +61,27 @@ npm run lint
 ## 📁 Project Structure
 
 ```
-src/
-├── components/          # Reusable UI components
-│   ├── analysis/       # Detection analysis components
-│   ├── layout/         # Layout components (Sidebar, Navigation)
-│   └── ui/             # Base UI components (Button, Card, Input, etc.)
-├── pages/              # Page components
-│   ├── Landing.tsx     # Home/landing page
-│   ├── Login.tsx       # Login page
-│   ├── Register.tsx    # User registration
-│   ├── Detect.tsx      # File upload & detection
-│   ├── History.tsx     # Detection history
-│   ├── Analysis.tsx    # Detailed analysis view
-│   ├── Settings.tsx    # Application settings
-│   └── User.tsx        # User profile management
-├── layouts/            # Layout wrappers
-│   ├── AuthLayout.tsx  # Layout for auth pages
-│   └── DashboardLayout.tsx # Main dashboard layout
-├── hooks/              # Custom React hooks
-│   ├── useAuth.tsx     # Authentication context & logic
-│   ├── useDetection.tsx # Detection logic & state
-│   └── useToast.tsx    # Toast notifications
-├── types/              # TypeScript type definitions
-├── data/               # Mock data and constants
-├── App.tsx             # Main app component with routing
-├── main.tsx            # Application entry point
-└── index.css           # Global styles (Tailwind CSS)
+.
+├── frontend/                 # React + TypeScript + Vite Frontend App
+│   ├── src/
+│   │   ├── components/      # Reusable UI components
+│   │   ├── pages/           # Page components
+│   │   ├── layouts/         # Layout wrappers
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── types/           # TypeScript type definitions
+│   │   ├── data/            # Mock data and constants
+│   │   ├── App.tsx          # Main app component with routing
+│   │   └── main.tsx         # Application entry point
+│   ├── public/              # Static public assets
+│   ├── package.json         # Node.js dependencies and scripts
+│   └── vite.config.ts       # Vite build configuration
+│
+└── backend/                  # Deepfake Detection Python Models & Pipelines
+    ├── model/               # Model architectures, training, & evaluation
+    ├── Datasets/            # Dataset manifests and raw data
+    ├── outputs/             # Model checkpoints and predictions
+    ├── artifacts/           # Evaluation metrics and visuals
+    └── Assests/             # Media assets
 ```
 
 ## 🏗️ Architecture
