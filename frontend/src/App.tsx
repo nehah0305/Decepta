@@ -13,6 +13,8 @@ import { Register } from './pages/Register'
 import { Settings } from './pages/Settings'
 import { User } from './pages/User'
 
+import { Models } from './pages/Models'
+
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated } = useAuth()
   const location = useLocation()
@@ -56,6 +58,7 @@ function App() {
           <Route path="/detect" element={<Detect />} />
           <Route path="/history" element={<History />} />
           <Route path="/analysis/:id" element={<Analysis />} />
+          <Route path="/models" element={<Models />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/user" element={<User />} />
         </Route>
