@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Sparkles, ArrowRight } from 'lucide-react'
+import { Sparkles, ArrowRight, ShieldCheck } from 'lucide-react'
 import { Input } from '../components/ui/Input'
 import { Button } from '../components/ui/Button'
 import { useAuth } from '../hooks/useAuth'
@@ -35,23 +35,29 @@ export const Login = () => {
   }
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 max-w-md mx-auto">
       {/* Header */}
       <div className="space-y-2 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full glass-effect-sm px-4 py-2 text-xs uppercase tracking-widest text-brand-bright animate-pulse-glow mb-4">
-          <Sparkles className="h-4 w-4" />
-          <span>Depecta</span>
+        <div className="flex justify-center mb-2">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-bright via-brand-primary to-[#142633] text-brand-bg shadow-lg glow-effect">
+            <ShieldCheck className="h-7 w-7 text-brand-bg" />
+          </div>
         </div>
-        <h1 className="text-3xl font-orbitron font-bold text-brand-text">Welcome Back</h1>
-        <p className="text-brand-subtle">Login to continue to Depecta</p>
+        <div className="inline-flex items-center gap-2 rounded-full glass-effect-sm px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand-bright">
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>DECEPTA Suite Access</span>
+        </div>
+        <h1 className="text-3xl font-orbitron font-bold gradient-text pt-1">Welcome Back</h1>
+        <p className="text-brand-subtle text-sm">Log in to access the deepfake forensic suite</p>
       </div>
 
       {/* Login Form Card */}
-      <div className="glass-effect rounded-2xl px-8 py-8 space-y-6 animate-fade-in">
+      <div className="glass-effect rounded-3xl px-8 py-8 space-y-6 animate-fade-in border border-brand-border/70 shadow-2xl">
         <form className="space-y-4" onSubmit={submit} noValidate>
           <Input
             label="Email"
             type="email"
+            placeholder="researcher@decepta.ai"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             error={errors.email}
@@ -60,6 +66,7 @@ export const Login = () => {
           <Input
             label="Password"
             type="password"
+            placeholder="••••••••"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             error={errors.password}
@@ -67,32 +74,32 @@ export const Login = () => {
           />
 
           <div className="flex justify-end">
-            <a className="text-xs text-brand-bright hover:text-brand-bright/80 transition-colors" href="#" aria-label="Forgot password link">
+            <a className="text-xs text-brand-bright hover:underline transition-colors" href="#" aria-label="Forgot password link">
               Forgot password?
             </a>
           </div>
 
-          <Button type="submit" fullWidth disabled={loading} className="glow-effect py-3 font-semibold">
-            {loading ? 'Logging in...' : 'Login'}
-            {!loading && <ArrowRight className="h-4 w-4" />}
+          <Button type="submit" fullWidth disabled={loading} className="glow-effect py-3.5 font-bold rounded-2xl">
+            {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
+            {!loading && <ArrowRight className="h-4 w-4 ml-1" />}
           </Button>
         </form>
 
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-brand-border/30"></div>
+            <div className="w-full border-t border-brand-border/40"></div>
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-gradient-to-b from-transparent via-brand-bg to-transparent px-2 text-brand-muted">or</span>
+            <span className="bg-brand-surface px-3 text-brand-muted font-semibold uppercase">Or</span>
           </div>
         </div>
 
         {/* Sign Up Link */}
         <p className="text-center text-sm text-brand-muted">
           Don&apos;t have an account?{' '}
-          <Link to="/register" className="text-brand-bright hover:text-brand-bright/80 font-semibold transition-colors">
-            Create one
+          <Link to="/register" className="text-brand-bright hover:underline font-bold transition-colors">
+            Create an Account
           </Link>
         </p>
       </div>
