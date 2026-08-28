@@ -223,7 +223,8 @@ def train_audio_stage2(
     save_path: Optional[Path] = None,
     epochs: int = 15,
     lr: float = 1e-4,
-    batch_size: int = 4
+    batch_size: int = 16,
+    num_workers: int = 4
 ) -> Dict[str, list]:
     """
     Executes standalone Stage 2 Audio Branch deepfake pretraining.
@@ -234,7 +235,7 @@ def train_audio_stage2(
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
     logger.info(f"--- STARTING STAGE 2: AUDIO BRANCH PRETRAINING on {device} ---")
-    logger.info(f"Train samples: {len(train_samples)} | Val samples: {len(val_samples)} | Epochs: {epochs}")
+    logger.info(f"Train samples: {len(train_samples)} | Val samples: {len(val_samples)} | Epochs: {epochs} | Batch size: {batch_size} | Workers: {num_workers}")
 
     train_dataset = AudioVideoDataset(train_samples, config=config)
     val_dataset = AudioVideoDataset(val_samples, config=config)
@@ -244,14 +245,16 @@ def train_audio_stage2(
         batch_size=batch_size,
         shuffle=True,
         collate_fn=collate_audio_batch,
-        num_workers=0
+        num_workers=num_workers,
+        pin_memory=(device.type == "cuda")
     )
     val_loader = DataLoader(
         val_dataset,
         batch_size=batch_size,
         shuffle=False,
         collate_fn=collate_audio_batch,
-        num_workers=0
+        num_workers=num_workers,
+        pin_memory=(device.type == "cuda")
     )
 
     model = StandaloneAudioClassifier(
@@ -267,7 +270,7 @@ def train_audio_stage2(
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-6)
 
     use_amp = config.USE_AMP and (device.type == "cuda")
-    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
+    scaler = torch.amp.GradScaler('cuda', enabled=use_amp)
 
     best_val_auc = 0.0
     history = {"train_loss": [], "val_loss": [], "val_auc": [], "val_acc": []}
@@ -284,7 +287,7 @@ def train_audio_stage2(
 
             optimizer.zero_grad()
 
-            with torch.cuda.amp.autocast(enabled=use_amp):
+            with torch.amp.autocast('cuda', enabled=use_amp):
                 logits, _, _ = model(mels, padding_mask=pads)
                 loss = criterion(logits.view(-1), labels)
 
@@ -330,21 +333,68 @@ def train_audio_stage2(
     return history
 
 
+def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: Optional[str] = None, max_samples: Optional[int] = None) -> List[VideoSampleItem]:
+    import pandas as pd
+    if not csv_path.exists():
+        return []
+    df = pd.read_csv(csv_path)
+    if split_name and "split" in df.columns:
+        df = df[df["split"] == split_name]
+    if max_samples and max_samples > 0:
+        df = df.head(max_samples)
+    items = []
+    for _, row in df.iterrows():
+        rel_path = str(row["video_path"])
+        full_path = data_root / rel_path if not Path(rel_path).is_absolute() else Path(rel_path)
+        items.append(
+            VideoSampleItem(
+                video_id=str(row.get("sample_id", Path(rel_path).stem)),
+                video_path=str(full_path),
+                label=int(row["label"]),
+                split=split_name or "train"
+            )
+        )
+    return items
+
+
 def main():
     parser = argparse.ArgumentParser(description="Stage 2: Standalone Audio Branch Deepfake Pretraining")
     parser.add_argument("--epochs", type=int, default=15, help="Training epochs (default: 15)")
-    parser.add_argument("--batch-size", type=int, default=4, help="Batch size (default: 4)")
+    parser.add_argument("--batch-size", type=int, default=16, help="Batch size (default: 16)")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate (default: 1e-4)")
-    parser.add_argument("--output", type=str, default="checkpoints/audio_stage2_best.pt", help="Checkpoint save path")
+    parser.add_argument("--num-workers", type=int, default=4, help="DataLoader workers (default: 4)")
+    parser.add_argument("--max-samples", type=int, default=None, help="Maximum samples limit (optional)")
+    parser.add_argument("--train-manifest", type=str, default="Datasets/metadata/train_ffpp.csv", help="Train manifest path")
+    parser.add_argument("--val-manifest", type=str, default="Datasets/metadata/val_ffpp.csv", help="Val manifest path")
+    parser.add_argument("--data-root", type=str, default="Datasets/raw/faceforensicspp", help="Data root folder")
+    parser.add_argument("--output", type=str, default="model/checkpoints/audio_stage2_best.pt", help="Checkpoint save path")
     args = parser.parse_args()
 
-    # Create dummy dataset demonstration if run standalone
-    dummy_samples = [
-        VideoSampleItem(video_id=f"demo_audio_{i}", video_path="sample_test_video.mp4", label=(i % 2))
-        for i in range(8)
-    ]
-    train_s, val_s, _ = split_videos_by_id(dummy_samples, train_ratio=0.75, val_ratio=0.25, test_ratio=0.0)
-    train_audio_stage2(train_s, val_s, epochs=args.epochs, lr=args.lr, batch_size=args.batch_size, save_path=Path(args.output))
+    project_root = Path(__file__).resolve().parents[2]
+    train_manifest_path = project_root / args.train_manifest if not Path(args.train_manifest).is_absolute() else Path(args.train_manifest)
+    val_manifest_path = project_root / args.val_manifest if not Path(args.val_manifest).is_absolute() else Path(args.val_manifest)
+    data_root_path = project_root / args.data_root if not Path(args.data_root).is_absolute() else Path(args.data_root)
+
+    train_s = load_samples_from_csv(train_manifest_path, data_root_path, max_samples=args.max_samples)
+    val_s = load_samples_from_csv(val_manifest_path, data_root_path, max_samples=args.max_samples // 4 if args.max_samples else None)
+
+    if not train_s:
+        logger.warning("No samples found in manifest. Using fallback dummy dataset.")
+        dummy_samples = [
+            VideoSampleItem(video_id=f"demo_audio_{i}", video_path="sample_test_video.mp4", label=(i % 2))
+            for i in range(8)
+        ]
+        train_s, val_s, _ = split_videos_by_id(dummy_samples, train_ratio=0.75, val_ratio=0.25, test_ratio=0.0)
+
+    train_audio_stage2(
+        train_s,
+        val_s,
+        epochs=args.epochs,
+        lr=args.lr,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        save_path=Path(args.output)
+    )
 
 
 if __name__ == "__main__":

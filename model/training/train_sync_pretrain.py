@@ -238,7 +238,8 @@ def train_sync_stage3(
     save_path: Optional[Path] = None,
     epochs: int = 15,
     lr: float = 1e-4,
-    batch_size: int = 4,
+    batch_size: int = 8,
+    num_workers: int = 4,
     temperature: float = 0.07
 ) -> Dict[str, list]:
     """
@@ -250,13 +251,27 @@ def train_sync_stage3(
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
     logger.info(f"--- STARTING STAGE 3: SYNC INFONCE PRETRAINING on {device} (tau={temperature}) ---")
-    logger.info(f"Train samples: {len(train_samples)} | Val samples: {len(val_samples)} | Epochs: {epochs}")
+    logger.info(f"Train samples: {len(train_samples)} | Val samples: {len(val_samples)} | Epochs: {epochs} | Batch size: {batch_size} | Workers: {num_workers}")
 
     train_dataset = SyncPretrainDataset(train_samples, config=config)
     val_dataset = SyncPretrainDataset(val_samples, config=config)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_sync_batch, num_workers=0)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_sync_batch, num_workers=0)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=collate_sync_batch,
+        num_workers=num_workers,
+        pin_memory=(device.type == "cuda")
+    )
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        collate_fn=collate_sync_batch,
+        num_workers=num_workers,
+        pin_memory=(device.type == "cuda")
+    )
 
     model = StandaloneSyncModel(
         audio_dim=config.AUDIO_FEATURE_DIM,
@@ -270,7 +285,7 @@ def train_sync_stage3(
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-6)
 
     use_amp = config.USE_AMP and (device.type == "cuda")
-    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
+    scaler = torch.amp.GradScaler('cuda', enabled=use_amp)
 
     best_val_loss = float("inf")
     history = {"train_loss": [], "val_loss": [], "val_pos_sim": []}
@@ -286,14 +301,11 @@ def train_sync_stage3(
 
             optimizer.zero_grad()
 
-            with torch.cuda.amp.autocast(enabled=use_amp):
+            with torch.amp.autocast('cuda', enabled=use_amp):
                 sync_feat, sync_sc, pos_sims, aligned_m = model(mouths, mels)
-                # Create negative temporally shifted audio by shifting batch roll or frame shift
                 if mouths.size(0) > 1:
-                    # In-batch InfoNCE
                     loss = criterion(pos_similarities=pos_sims)
                 else:
-                    # Single sample with synthetic shifted negative
                     neg_sim = pos_sims - 0.4
                     loss = criterion(pos_similarities=pos_sims, neg_similarities=neg_sim)
 
@@ -356,21 +368,70 @@ def train_sync_stage3(
     return history
 
 
+def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: Optional[str] = None, max_samples: Optional[int] = None) -> List[VideoSampleItem]:
+    import pandas as pd
+    if not csv_path.exists():
+        return []
+    df = pd.read_csv(csv_path)
+    if split_name and "split" in df.columns:
+        df = df[df["split"] == split_name]
+    if max_samples and max_samples > 0:
+        df = df.head(max_samples)
+    items = []
+    for _, row in df.iterrows():
+        rel_path = str(row["video_path"])
+        full_path = data_root / rel_path if not Path(rel_path).is_absolute() else Path(rel_path)
+        items.append(
+            VideoSampleItem(
+                video_id=str(row.get("sample_id", Path(rel_path).stem)),
+                video_path=str(full_path),
+                label=int(row["label"]),
+                split=split_name or "train"
+            )
+        )
+    return items
+
+
 def main():
     parser = argparse.ArgumentParser(description="Stage 3: Standalone Audio-Visual Synchronization InfoNCE Pretraining")
     parser.add_argument("--epochs", type=int, default=15, help="Training epochs (default: 15)")
-    parser.add_argument("--batch-size", type=int, default=4, help="Batch size (default: 4)")
+    parser.add_argument("--batch-size", type=int, default=8, help="Batch size (default: 8)")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate (default: 1e-4)")
+    parser.add_argument("--num-workers", type=int, default=4, help="DataLoader workers (default: 4)")
+    parser.add_argument("--max-samples", type=int, default=None, help="Maximum samples limit (optional)")
+    parser.add_argument("--train-manifest", type=str, default="Datasets/metadata/train_ffpp.csv", help="Train manifest path")
+    parser.add_argument("--val-manifest", type=str, default="Datasets/metadata/val_ffpp.csv", help="Val manifest path")
+    parser.add_argument("--data-root", type=str, default="Datasets/raw/faceforensicspp", help="Data root folder")
     parser.add_argument("--temperature", type=float, default=0.07, help="InfoNCE temperature tau (default: 0.07)")
-    parser.add_argument("--output", type=str, default="checkpoints/sync_stage3_best.pt", help="Checkpoint save path")
+    parser.add_argument("--output", type=str, default="model/checkpoints/sync_stage3_best.pt", help="Checkpoint save path")
     args = parser.parse_args()
 
-    dummy_samples = [
-        VideoSampleItem(video_id=f"demo_sync_{i}", video_path="sample_test_video.mp4", label=0)
-        for i in range(8)
-    ]
-    train_s, val_s, _ = split_videos_by_id(dummy_samples, train_ratio=0.75, val_ratio=0.25, test_ratio=0.0)
-    train_sync_stage3(train_s, val_s, epochs=args.epochs, lr=args.lr, batch_size=args.batch_size, temperature=args.temperature, save_path=Path(args.output))
+    project_root = Path(__file__).resolve().parents[2]
+    train_manifest_path = project_root / args.train_manifest if not Path(args.train_manifest).is_absolute() else Path(args.train_manifest)
+    val_manifest_path = project_root / args.val_manifest if not Path(args.val_manifest).is_absolute() else Path(args.val_manifest)
+    data_root_path = project_root / args.data_root if not Path(args.data_root).is_absolute() else Path(args.data_root)
+
+    train_s = load_samples_from_csv(train_manifest_path, data_root_path, max_samples=args.max_samples)
+    val_s = load_samples_from_csv(val_manifest_path, data_root_path, max_samples=args.max_samples // 4 if args.max_samples else None)
+
+    if not train_s:
+        logger.warning("No samples found in manifest. Fallback to dummy dataset.")
+        dummy_samples = [
+            VideoSampleItem(video_id=f"demo_sync_{i}", video_path="sample_test_video.mp4", label=0)
+            for i in range(8)
+        ]
+        train_s, val_s, _ = split_videos_by_id(dummy_samples, train_ratio=0.75, val_ratio=0.25, test_ratio=0.0)
+
+    train_sync_stage3(
+        train_s,
+        val_s,
+        epochs=args.epochs,
+        lr=args.lr,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        temperature=args.temperature,
+        save_path=Path(args.output)
+    )
 
 
 if __name__ == "__main__":

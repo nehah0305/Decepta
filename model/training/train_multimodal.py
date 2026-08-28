@@ -99,7 +99,8 @@ def train_multimodal_model(
     visual_checkpoint: Optional[Union[str, Path]] = None,
     audio_checkpoint: Optional[Union[str, Path]] = None,
     sync_checkpoint: Optional[Union[str, Path]] = None,
-    resume_checkpoint: Optional[Union[str, Path]] = None
+    resume_checkpoint: Optional[Union[str, Path]] = None,
+    num_workers: int = 4
 ) -> Dict[str, list]:
     """
     Executes end-to-end multimodal training optimizing classification and synchronization.
@@ -134,7 +135,6 @@ def train_multimodal_model(
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
 
-    num_workers = 0
     pin_memory = (device.type == "cuda")
 
     labels = [sample.label for sample in train_samples]
@@ -365,6 +365,7 @@ def main():
     parser.add_argument("--epochs", type=int, default=DEFAULT_CONFIG.NUM_EPOCHS, help="Training epochs")
     parser.add_argument("--batch-size", type=int, default=DEFAULT_CONFIG.BATCH_SIZE, help="Batch size")
     parser.add_argument("--lr", type=float, default=DEFAULT_CONFIG.LEARNING_RATE, help="Learning rate")
+    parser.add_argument("--num-workers", type=int, default=4, help="DataLoader workers (default: 4)")
     parser.add_argument("--max-samples", type=int, default=None, help="Maximum training/validation samples limit (optional)")
     parser.add_argument("--train-manifest", type=str, default="Datasets/metadata/train.csv", help="Train CSV manifest path")
     parser.add_argument("--val-manifest", type=str, default="Datasets/metadata/validation.csv", help="Validation CSV manifest path")
@@ -373,7 +374,7 @@ def main():
     parser.add_argument("--audio-checkpoint", type=str, default=None, help="Stage 2 Audio pretrained checkpoint (.pt)")
     parser.add_argument("--sync-checkpoint", type=str, default=None, help="Stage 3 Sync pretrained checkpoint (.pt)")
     parser.add_argument("--resume", type=str, default=None, help="Resume full multimodal checkpoint for fine-tuning")
-    parser.add_argument("--output", type=str, default="checkpoints/multimodal_best.pt", help="Checkpoint save path")
+    parser.add_argument("--output", type=str, default="model/checkpoints/multimodal_best.pt", help="Checkpoint save path")
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parents[2]
@@ -407,7 +408,8 @@ def main():
         visual_checkpoint=args.visual_checkpoint,
         audio_checkpoint=args.audio_checkpoint,
         sync_checkpoint=args.sync_checkpoint,
-        resume_checkpoint=args.resume
+        resume_checkpoint=args.resume,
+        num_workers=args.num_workers
     )
 
 
