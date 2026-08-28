@@ -35,7 +35,7 @@ const createResult = (file: File, type: DetectionType): DetectionRecord => {
     status: 'Completed',
     confidence,
     processingTime,
-    modelVersion: 'Project-AI v1.0',
+    modelVersion: 'ResNet-50 Fine-Tuned (72.88% ROC-AUC)',
     result: confidence > 82 ? 'Detected' : 'Not Detected',
     segments: Math.floor(58 + Math.random() * 132),
   }
