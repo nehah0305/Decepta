@@ -2,11 +2,14 @@ import { formatDate } from '../../data/mockData'
 import type { DetectionRecord } from '../../types'
 import { Badge } from '../ui/Badge'
 import { Card } from '../ui/Card'
+import { Button } from '../ui/Button'
+import { Download } from 'lucide-react'
 import { ConfidenceScore } from './ConfidenceScore'
 import { DetectionTimeline } from './DetectionTimeline'
 import { MetricsCard } from './MetricsCard'
 import { AblationTable } from './AblationTable'
 import { ForensicReasonsCard } from './ForensicReasonsCard'
+import { downloadForensicReport } from '../../utils/reportGenerator'
 
 interface AnalysisCardProps {
   analysis: DetectionRecord
@@ -42,10 +45,20 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
               {analysis.fileType.toUpperCase()} • {formatDate(analysis.createdAt)}
             </p>
           </div>
-          <Badge
-            label={isFake ? '🔴 DEEPFAKE (FAKE)' : '🟢 GENUINE (REAL)'}
-            tone={isFake ? 'error' : 'success'}
-          />
+          <div className="flex items-center gap-3">
+            <Badge
+              label={isFake ? '🔴 DEEPFAKE (FAKE)' : '🟢 GENUINE (REAL)'}
+              tone={isFake ? 'error' : 'success'}
+            />
+            <Button
+              variant="secondary"
+              onClick={() => downloadForensicReport(analysis)}
+              leftIcon={<Download className="h-4 w-4" />}
+              className="text-xs py-1.5 px-3"
+            >
+              Export Report
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[220px_1fr]">

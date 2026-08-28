@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { AnalysisCard } from '../components/analysis/AnalysisCard'
 import { Button } from '../components/ui/Button'
 import { useDetection } from '../hooks/useDetection'
-import { Sparkles, ArrowLeft } from 'lucide-react'
+import { Sparkles, ArrowLeft, Download } from 'lucide-react'
+import { downloadForensicReport } from '../utils/reportGenerator'
 
 export const Analysis = () => {
   const { id = '' } = useParams()
@@ -14,13 +15,25 @@ export const Analysis = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
-      <header className="space-y-2">
-        <div className="inline-flex items-center gap-2 rounded-full glass-effect-sm px-4 py-2 text-xs uppercase tracking-widest text-brand-bright">
-          <Sparkles className="h-4 w-4" />
-          <span>Detailed Analysis</span>
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-full glass-effect-sm px-4 py-2 text-xs uppercase tracking-widest text-brand-bright">
+            <Sparkles className="h-4 w-4" />
+            <span>Detailed Forensic Analysis</span>
+          </div>
+          <h1 className="text-4xl font-orbitron font-bold gradient-text">Detection Report</h1>
+          <p className="text-brand-subtle text-lg">Comprehensive spatial-frequency confidence metrics and anomaly localization.</p>
         </div>
-        <h1 className="text-4xl font-orbitron font-bold gradient-text">Detection Analysis</h1>
-        <p className="text-brand-subtle text-lg">Comprehensive confidence metrics and detection timeline.</p>
+
+        {analysis ? (
+          <Button
+            onClick={() => downloadForensicReport(analysis)}
+            leftIcon={<Download className="h-4 w-4" />}
+            className="glow-effect py-3 px-5 self-start sm:self-auto font-semibold shrink-0"
+          >
+            Download Forensic Report
+          </Button>
+        ) : null}
       </header>
 
       {detections.length === 0 ? (
