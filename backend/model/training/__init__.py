@@ -4,6 +4,7 @@ Training Module for Visual Deepfake Detection System.
 
 from .dataset import VideoDeepfakeDataset, VideoSampleItem, collate_variable_video_batch, split_videos_by_id
 from .multimodal_dataset import MultimodalVideoDataset, collate_multimodal_batch
+from .dataset_adapter import DatasetAdapter
 from .losses import DeepfakeDetectionLoss, InfoNCESyncLoss, AudioVisualSyncLoss, MultimodalCompoundLoss
 from .train import train_visual_model
 from .train_audio import train_audio_stage2
@@ -18,6 +19,7 @@ __all__ = [
     "split_videos_by_id",
     "MultimodalVideoDataset",
     "collate_multimodal_batch",
+    "DatasetAdapter",
     "DeepfakeDetectionLoss",
     "InfoNCESyncLoss",
     "AudioVisualSyncLoss",
@@ -30,4 +32,5 @@ __all__ = [
     "validate_multimodal_epoch",
     "compute_binary_metrics",
 ]
+
 

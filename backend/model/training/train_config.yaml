@@ -1,0 +1,163 @@
+# =============================================================================
+# DECEPTA — Unified Training Configuration
+# =============================================================================
+# Edit this file to configure training for new datasets.
+# Run with:  python training/train_unified.py --config training/train_config.yaml
+# =============================================================================
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. DATASET CONFIGURATION
+# ─────────────────────────────────────────────────────────────────────────────
+dataset:
+  # Path to CSV manifest files. Can be absolute or relative to project root.
+  # Required CSV columns: video_path, label
+  # Optional CSV columns: sample_id, dataset, split
+  # Label convention: 0 = Real, 1 = Fake
+  train_manifest: "Datasets/metadata/train_ffpp.csv"
+  val_manifest: "Datasets/metadata/val_ffpp.csv"
+  test_manifest: "Datasets/metadata/test_ffpp.csv"   # Optional, for final eval
+
+  # Root directory where video files are stored.
+  # video_path in CSV is resolved relative to this directory.
+  data_root: "Datasets/raw/faceforensicspp"
+
+  # Column name mappings (customize if your CSV uses different column names)
+  columns:
+    video_path: "video_path"    # Column containing relative path to video file
+    label: "label"              # Column containing 0/1 label
+    sample_id: "sample_id"     # Column containing unique video ID (optional, falls back to filename stem)
+
+  # If True, auto-split a single manifest into train/val/test
+  # Only used when val_manifest and test_manifest are not provided
+  auto_split:
+    enabled: false
+    train_ratio: 0.70
+    val_ratio: 0.15
+    test_ratio: 0.15
+    seed: 42
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. MODEL ARCHITECTURE
+# ─────────────────────────────────────────────────────────────────────────────
+model:
+  # Architecture to train:
+  #   "resnet50_stage_b"  — ResNet-50 fine-tuned (current champion)
+  #   "visual_full"       — Custom Spatial + FFT + Gated Fusion + Temporal Transformer
+  #   "multimodal_full"   — Full multimodal (Visual + Audio + Sync)
+  architecture: "resnet50_stage_b"
+
+  # Feature dimension for projection head
+  feature_dim: 256
+  dropout: 0.1
+
+  # ResNet-50 Stage B specific settings
+  resnet50:
+    # Which layers to unfreeze for fine-tuning
+    # Options: "layer4_only", "layer3_layer4", "all"
+    unfreeze_strategy: "layer3_layer4"
+
+  # Visual model specific settings (for "visual_full" architecture)
+  visual:
+    spatial_dim: 256
+    frequency_dim: 256
+    fusion_hidden_dim: 128
+    fused_dim: 256
+    transformer_dim: 768
+    transformer_heads: 8
+    transformer_layers: 2
+
+  # Multimodal settings (for "multimodal_full" architecture)
+  multimodal:
+    visual_dim: 768
+    audio_dim: 768
+    sync_dim: 256
+    fusion_dim: 768
+
+  # Resume from a pretrained checkpoint (path or null)
+  resume_checkpoint: null
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. TRAINING HYPERPARAMETERS
+# ─────────────────────────────────────────────────────────────────────────────
+training:
+  epochs: 30
+  batch_size: 4
+  gradient_clip: 1.0
+  seed: 42
+  use_amp: true                 # Mixed precision training (CUDA only)
+  num_workers: 2                # DataLoader workers (set 0 on Windows if issues)
+  pin_memory: true              # Pin memory for faster GPU transfer
+
+  # Learning rates
+  learning_rate: 1.0e-4         # Primary LR (classifier / projection head)
+  backbone_lr: 1.0e-5           # Backbone LR (lower for pretrained layers)
+  weight_decay: 1.0e-4
+
+  # Learning rate scheduler
+  scheduler:
+    type: "cosine"              # Options: "cosine", "step", "plateau", "none"
+    # Cosine annealing settings
+    eta_min: 1.0e-7
+    # Step scheduler settings (if type == "step")
+    step_size: 10
+    gamma: 0.1
+    # Plateau scheduler settings (if type == "plateau")
+    patience: 5
+    factor: 0.5
+
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 10                # Stop after N epochs without AUC improvement
+    min_delta: 0.001            # Minimum AUC improvement to count
+
+  # Class balancing
+  use_weighted_sampler: true    # WeightedRandomSampler for class imbalance
+
+  # Loss function
+  loss:
+    label_smoothing: 0.05
+    focal_gamma: 0.0            # Set > 0 to enable focal loss (e.g., 2.0)
+    pos_weight: null             # Manual positive class weight (null = auto)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. DATA AUGMENTATION
+# ─────────────────────────────────────────────────────────────────────────────
+augmentation:
+  enabled: true
+  # Geometric
+  horizontal_flip: 0.5         # Probability of random horizontal flip
+  random_rotation: 5           # Max rotation degrees (0 to disable)
+  # Photometric
+  color_jitter:
+    enabled: true
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.1
+    hue: 0.05
+  # Regularization
+  random_erasing: 0.1          # Probability of random erasing (0 to disable)
+  gaussian_blur: 0.1           # Probability of Gaussian blur (0 to disable)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. FRAME SAMPLING
+# ─────────────────────────────────────────────────────────────────────────────
+sampling:
+  coverage_ratio: 0.70         # Fraction of video timeline to sample
+  min_frames: 16               # Minimum frames per video
+  max_frames: 32               # Maximum frames per video (increase for better quality)
+  frame_chunk_size: 16         # CNN batch chunk size for memory safety
+  face_size: 224               # Aligned face resolution
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. OUTPUT & CHECKPOINTS
+# ─────────────────────────────────────────────────────────────────────────────
+output:
+  # Directory for checkpoints and training logs
+  checkpoint_dir: "model/checkpoints"
+  # Experiment name (used in checkpoint filenames)
+  experiment_name: "train_run"
+  # Save checkpoint every N epochs (in addition to best model)
+  save_every_n_epochs: 5
+  # Save training metrics CSV log
+  save_metrics_log: true
