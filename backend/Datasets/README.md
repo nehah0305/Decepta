@@ -1,31 +1,24 @@
 # Deepfake Detection Dataset
 
-This project prepares FaceForensics++ C23 videos for binary deepfake detection
-and provides a baseline video-classification model.
+This project prepares the DeepFakeDetection (DFD) dataset for binary deepfake
+detection and provides a baseline video-classification model.
 
 ## Dataset
 
-The downloaded videos are stored under:
+The DFD videos are stored under:
 
 ```text
-raw/faceforensicspp/c23/
+raw/DFD/DFD_original sequences/
+raw/DFD/DFD_manipulated_sequences/DFD_manipulated_sequences/
 ```
 
-The dataset contains 7,000 videos:
-
-- 1,000 original videos
-- 6,000 manipulated videos
-- DeepFakeDetection, Deepfakes, Face2Face, FaceShifter, FaceSwap, and NeuralTextures
+The adapter discovers all supported video files in these folders. Original
+videos are labelled `0`; manipulated videos are labelled `1`.
 
 Raw videos, processed media, virtual environments, reports, caches, and model
 checkpoints are excluded from Git by `.gitignore`.
 
 ## Requirements
-
-- Python 3.10 or newer
-- Windows PowerShell
-- OpenCV-compatible video files
-- NVIDIA GPU is optional
 
 Create and activate the local environment:
 
@@ -41,23 +34,14 @@ installed separately when GPU training is required.
 
 ## Prepare Manifests
 
-Generate the standard FaceForensics++ manifest:
-
 ```powershell
-.\.venv\Scripts\python.exe -m src.phase0.adapters.faceforensics_adapter
+python -m src.phase0.adapters.dfd_adapter
 ```
 
-Create leakage-safe train, validation, and test manifests:
-
-```powershell
-Copy-Item metadata\faceforensicspp.csv metadata\master.csv -Force
-.\.venv\Scripts\python.exe -m src.phase0.run_phase0
-```
-
-This produces:
+This writes the active DFD manifests:
 
 ```text
-metadata/faceforensicspp.csv
+metadata/dfd.csv
 metadata/master.csv
 metadata/train.csv
 metadata/validation.csv
@@ -65,22 +49,12 @@ metadata/test.csv
 reports/phase0/dataset_statistics.csv
 ```
 
-Prepare Celeb-DF v2 using identity-connected grouped splits:
-
-```powershell
-.\.venv\Scripts\python.exe -m src.phase0.adapters.celebdf_adapter
-```
-
-This creates `metadata/celebdf.csv` and updates the training manifests for
-`raw/celeb df (v2)/`. All videos sharing a connected identity component are
-assigned to one split, preventing identity and source leakage.
-
-The split process groups related videos together and checks subject, source,
-and split-group leakage before reporting Phase 0 as successful.
+All videos sharing a DFD source identifier are assigned to one split, preventing
+source leakage between training, validation, and test data.
 
 ## Train the Baseline Model
 
-Run the Phase 1 training pipeline:
+Run the Phase 1 training pipeline on DFD (the default manifest):
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.phase1.train
@@ -108,7 +82,7 @@ otherwise it uses the CPU.
 
 ```text
 metadata/       Generated manifests
-raw/            FaceForensics++ videos, not committed
+raw/            DFD videos, not committed
 reports/        Generated statistics, not committed
 src/phase0/     Manifest creation, validation, splitting, leakage checks
 src/phase1/     Dataset loader, CNN model, and training loop

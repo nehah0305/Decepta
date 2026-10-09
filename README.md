@@ -175,7 +175,7 @@ python preprocess_audio_cli.py --input-audio output/audio/audio.wav --output-dir
 ## 📜 Dataset Integrity & Forensic Audit Note
 
 > **Academic & Experimental Rigor Note**:
-> During our dataset inspection of standard FaceForensics++ (FF++) releases, an exhaustive audit established that all 7,000 FF++ video samples contain silent audio tracks (0% audio coverage). Consequently, our active production model relies on the validated **ResNet-50 Fine-Tuned Spatial Pipeline (72.88% ROC-AUC)**. The **FakeAVCeleb** dataset (21,566 videos with aligned audio-visual tracks) has been designated for future multimodal expansion once individual audio branches reach validation stability (>0.60 ROC-AUC).
+> Historical FF++ benchmarks remain documented above. For the next training and evaluation phase, the active dataset is **DeepFakeDetection (DFD)** only; its generated manifests are under `backend/Datasets/metadata/` and are grouped by source identity to prevent leakage. Other datasets are not included in the active manifests.
 
 ---
 
