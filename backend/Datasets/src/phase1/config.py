@@ -2,12 +2,13 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA_ROOT = PROJECT_ROOT / "raw" / "celeb df (v2)"
+DATA_ROOT = PROJECT_ROOT
 METADATA_ROOT = PROJECT_ROOT / "metadata"
 CHECKPOINT_ROOT = PROJECT_ROOT / "checkpoints"
+CACHE_ROOT = PROJECT_ROOT / "phase1_cache"
 
 FRAME_SIZE = 224
 FRAMES_PER_VIDEO = 8
-DEFAULT_BATCH_SIZE = 4
+DEFAULT_BATCH_SIZE = 64
 DEFAULT_EPOCHS = 5
 DEFAULT_LEARNING_RATE = 1e-4

@@ -12,6 +12,7 @@ __pycache__/
 # Dataset files and generated pipeline output
 raw/
 processed/
+phase1_cache/
 reports/
 
 # Local logs and temporary files
