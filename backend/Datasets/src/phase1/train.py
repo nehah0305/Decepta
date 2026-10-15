@@ -3,7 +3,7 @@ from pathlib import Path
 
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
 from .config import CACHE_ROOT, CHECKPOINT_ROOT, DATA_ROOT, DEFAULT_BATCH_SIZE, DEFAULT_EPOCHS, DEFAULT_LEARNING_RATE, FRAME_SIZE, FRAMES_PER_VIDEO, METADATA_ROOT
 from .model import FrameCNN
@@ -15,6 +15,8 @@ def run_epoch(model, loader, loss_fn, optimizer, scaler, device, training):
     total_loss = 0.0
     correct = 0
     total = 0
+    predicted_batches = []
+    target_batches = []
     for videos, labels in loader:
         videos = videos.to(device, non_blocking=True)
         labels = labels.to(device, non_blocking=True)
@@ -30,7 +32,18 @@ def run_epoch(model, loader, loss_fn, optimizer, scaler, device, training):
         total_loss += loss.item() * labels.size(0)
         correct += (logits.argmax(dim=1) == labels).sum().item()
         total += labels.size(0)
-    return total_loss / total, correct / total
+        predicted_batches.append(logits.argmax(dim=1).detach().cpu())
+        target_batches.append(labels.detach().cpu())
+    balanced_accuracy = 0.0
+    if total:
+        predictions = torch.cat(predicted_batches)
+        targets = torch.cat(target_batches)
+        recalls = []
+        for class_id in (0, 1):
+            class_mask = targets == class_id
+            recalls.append((predictions[class_mask] == class_id).float().mean().item() if class_mask.any() else 0.0)
+        balanced_accuracy = sum(recalls) / len(recalls)
+    return total_loss / total, correct / total, balanced_accuracy
 
 
 def main() -> None:
@@ -48,6 +61,10 @@ def main() -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     train_set = VideoDataset(args.manifest, DATA_ROOT, "train", args.frames, FRAME_SIZE, args.cache_dir)
     validation_set = VideoDataset(args.manifest, DATA_ROOT, "validation", args.frames, FRAME_SIZE, args.cache_dir)
+    train_labels = torch.tensor(train_set.samples["label"].to_numpy(), dtype=torch.long)
+    class_counts = torch.bincount(train_labels, minlength=2)
+    sample_weights = (1.0 / class_counts.float())[train_labels]
+    train_sampler = WeightedRandomSampler(sample_weights, num_samples=len(train_set), replacement=True)
     loader_options = {
         "num_workers": args.workers,
         "pin_memory": device.type == "cuda",
@@ -55,7 +72,7 @@ def main() -> None:
     }
     if args.workers > 0:
         loader_options["prefetch_factor"] = args.prefetch_factor
-    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, **loader_options)
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, sampler=train_sampler, **loader_options)
     validation_loader = DataLoader(validation_set, batch_size=args.batch_size, shuffle=False, **loader_options)
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
@@ -64,16 +81,16 @@ def main() -> None:
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
     scaler = torch.amp.GradScaler("cuda", enabled=device.type == "cuda")
     CHECKPOINT_ROOT.mkdir(parents=True, exist_ok=True)
-    best_accuracy = 0.0
+    best_balanced_accuracy = 0.0
 
     print(f"Using device: {device}")
     for epoch in range(1, args.epochs + 1):
-        train_loss, train_accuracy = run_epoch(model, train_loader, loss_fn, optimizer, scaler, device, True)
-        validation_loss, validation_accuracy = run_epoch(model, validation_loader, loss_fn, optimizer, scaler, device, False)
-        print(f"Epoch {epoch}/{args.epochs} | train loss={train_loss:.4f} acc={train_accuracy:.4f} | validation loss={validation_loss:.4f} acc={validation_accuracy:.4f}")
-        if validation_accuracy >= best_accuracy:
-            best_accuracy = validation_accuracy
-            torch.save({"model_state": model.state_dict(), "epoch": epoch, "validation_accuracy": best_accuracy}, CHECKPOINT_ROOT / "best_frame_cnn.pt")
+        train_loss, train_accuracy, train_balanced_accuracy = run_epoch(model, train_loader, loss_fn, optimizer, scaler, device, True)
+        validation_loss, validation_accuracy, validation_balanced_accuracy = run_epoch(model, validation_loader, loss_fn, optimizer, scaler, device, False)
+        print(f"Epoch {epoch}/{args.epochs} | train loss={train_loss:.4f} acc={train_accuracy:.4f} bal_acc={train_balanced_accuracy:.4f} | validation loss={validation_loss:.4f} acc={validation_accuracy:.4f} bal_acc={validation_balanced_accuracy:.4f}")
+        if validation_balanced_accuracy >= best_balanced_accuracy:
+            best_balanced_accuracy = validation_balanced_accuracy
+            torch.save({"model_state": model.state_dict(), "epoch": epoch, "validation_accuracy": validation_accuracy, "validation_balanced_accuracy": best_balanced_accuracy}, CHECKPOINT_ROOT / "best_frame_cnn.pt")
 
 
 if __name__ == "__main__":

@@ -89,19 +89,47 @@ def create_manifest() -> pd.DataFrame:
 
 
 def assign_splits(manifest: pd.DataFrame) -> pd.DataFrame:
-    from sklearn.model_selection import GroupShuffleSplit
+    import numpy as np
 
     manifest = manifest.copy()
-    first_splitter = GroupShuffleSplit(n_splits=1, test_size=0.30, random_state=42)
-    train_indices, temporary_indices = next(first_splitter.split(manifest, groups=manifest["split_group_id"]))
-    manifest["split"] = "temporary"
-    manifest.loc[train_indices, "split"] = "train"
+    group_counts = manifest.groupby("split_group_id")["label"].agg(["size", "sum"])
+    groups = group_counts.index.to_numpy()
+    target_sizes = {
+        "train": len(manifest) * 0.70,
+        "validation": len(manifest) * 0.15,
+        "test": len(manifest) * 0.15,
+    }
+    global_real_ratio = float(manifest["label"].mean())
+    best_assignment = None
+    best_score = float("inf")
+    rng = np.random.default_rng(42)
 
-    temporary = manifest.loc[temporary_indices]
-    second_splitter = GroupShuffleSplit(n_splits=1, test_size=0.5, random_state=42)
-    validation_indices, test_indices = next(second_splitter.split(temporary, groups=temporary["split_group_id"]))
-    manifest.loc[temporary.index[validation_indices], "split"] = "validation"
-    manifest.loc[temporary.index[test_indices], "split"] = "test"
+    # Search group assignments, scoring both split size and class-ratio error.
+    # Source groups never cross splits, so this preserves provenance isolation.
+    for _ in range(50000):
+        permutation = rng.permutation(groups)
+        assignment = {
+            "train": permutation[:19],
+            "validation": permutation[19:23],
+            "test": permutation[23:],
+        }
+        score = 0.0
+        for split, split_groups in assignment.items():
+            counts = group_counts.loc[split_groups]
+            sample_count = float(counts["size"].sum())
+            real_ratio = float(counts["sum"].sum() / sample_count)
+            score += abs(sample_count - target_sizes[split]) / target_sizes[split]
+            score += 4.0 * abs(real_ratio - global_real_ratio)
+        if score < best_score:
+            best_score = score
+            best_assignment = assignment
+
+    split_by_group = {
+        group: split
+        for split, split_groups in best_assignment.items()
+        for group in split_groups
+    }
+    manifest["split"] = manifest["split_group_id"].map(split_by_group)
     return manifest
 
 
