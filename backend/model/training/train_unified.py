@@ -210,6 +210,26 @@ def build_augmentation(aug_config: Dict[str, Any]) -> Optional[T.Compose]:
     return T.Compose(transforms)
 
 
+def calculate_training_loss(
+    criterion: nn.Module,
+    logits: torch.Tensor,
+    labels: torch.Tensor,
+    arch: str,
+    outputs: Optional[Any] = None
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Calculate classification loss and, for multimodal training, sync loss."""
+    if arch == "multimodal_full":
+        total_loss, classification_loss, sync_loss = criterion(
+            logits=logits.view(-1),
+            targets=labels,
+            pos_sync_sims=outputs.temporal_similarities
+        )
+        return total_loss, classification_loss, sync_loss
+
+    classification_loss = criterion(logits.view(-1), labels)
+    return classification_loss, classification_loss, torch.zeros((), device=logits.device)
+
+
 # =============================================================================
 # SCHEDULER BUILDER
 # =============================================================================
@@ -347,15 +367,16 @@ def load_datasets(cfg: Dict) -> Tuple[List[VideoSampleItem], List[VideoSampleIte
         train_manifest = project_root / ds_cfg["train_manifest"]
         val_manifest = project_root / ds_cfg["val_manifest"]
 
-        train_items = adapter.load_manifest(train_manifest, split="train")
-        val_items = adapter.load_manifest(val_manifest, split="val")
+        validate_paths = ds_cfg.get("validate_paths", True)
+        train_items = adapter.load_manifest(train_manifest, split="train", validate_paths=validate_paths)
+        val_items = adapter.load_manifest(val_manifest, split="val", validate_paths=validate_paths)
 
         test_items = None
         test_manifest_path = ds_cfg.get("test_manifest")
         if test_manifest_path:
             test_path = project_root / test_manifest_path
             if test_path.exists():
-                test_items = adapter.load_manifest(test_path, split="test")
+                test_items = adapter.load_manifest(test_path, split="test", validate_paths=validate_paths)
 
     return train_items, val_items, test_items
 
@@ -553,6 +574,8 @@ def train_one_epoch(
     """Train for one full epoch."""
     model.train()
     running_loss = 0.0
+    running_classification_loss = 0.0
+    running_sync_loss = 0.0
     n_samples = 0
     all_targets = []
     all_probs = []
@@ -592,7 +615,9 @@ def train_one_epoch(
                     # visual_full
                     out = model(faces, padding_mask=pad_v)
                     logits = out.logits
-                loss = criterion(logits.view(-1), labels)
+                loss, classification_loss, sync_loss = calculate_training_loss(
+                    criterion, logits, labels, arch, out if arch == "multimodal_full" else None
+                )
 
             scaler.scale(loss).backward()
             scaler.unscale_(optimizer)
@@ -615,7 +640,9 @@ def train_one_epoch(
             else:
                 out = model(faces, padding_mask=pad_v)
                 logits = out.logits
-            loss = criterion(logits.view(-1), labels)
+            loss, classification_loss, sync_loss = calculate_training_loss(
+                criterion, logits, labels, arch, out if arch == "multimodal_full" else None
+            )
 
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=grad_clip)
@@ -623,6 +650,8 @@ def train_one_epoch(
 
         bs = faces.size(0)
         running_loss += loss.item() * bs
+        running_classification_loss += classification_loss.item() * bs
+        running_sync_loss += sync_loss.item() * bs
         n_samples += bs
 
         probs = torch.sigmoid(logits).view(-1).detach().cpu().numpy()
@@ -633,13 +662,18 @@ def train_one_epoch(
             avg_loss = running_loss / n_samples
             logger.info(
                 f"  Epoch [{epoch}/{total_epochs}] Step [{step + 1}/{total_batches}] "
-                f"Loss: {avg_loss:.4f}"
+                f"Loss: {avg_loss:.4f} | Cls: {classification_loss.item():.4f} | Sync: {sync_loss.item():.4f}"
             )
 
     avg_loss = running_loss / n_samples if n_samples > 0 else 0.0
 
     # Compute training metrics
-    train_metrics = {"train_loss": round(avg_loss, 4), "train_samples": n_samples}
+    train_metrics = {
+        "train_loss": round(avg_loss, 4),
+        "train_classification_loss": round(running_classification_loss / n_samples, 4) if n_samples else 0.0,
+        "train_sync_loss": round(running_sync_loss / n_samples, 4) if n_samples else 0.0,
+        "train_samples": n_samples
+    }
     try:
         if len(np.unique(all_targets)) >= 2:
             from sklearn.metrics import roc_auc_score
@@ -685,7 +719,9 @@ def validate(
             out = model(faces, padding_mask=pad_v)
             logits = out.logits
 
-        loss = criterion(logits.view(-1), labels)
+        loss, _, _ = calculate_training_loss(
+            criterion, logits, labels, arch, out if arch == "multimodal_full" else None
+        )
         bs = faces.size(0)
         running_loss += loss.item() * bs
 
@@ -763,11 +799,20 @@ def run_training(cfg: Dict):
 
     # Build loss
     loss_cfg = train_cfg.get("loss", {})
-    criterion = DeepfakeDetectionLoss(
-        label_smoothing=loss_cfg.get("label_smoothing", 0.05),
-        pos_weight=loss_cfg.get("pos_weight"),
-        focal_gamma=loss_cfg.get("focal_gamma", 0.0)
-    ).to(device)
+    if arch == "multimodal_full":
+        criterion = MultimodalCompoundLoss(
+            lambda_sync=cfg.get("sync", {}).get("loss_weight", DEFAULT_CONFIG.SYNC_LOSS_WEIGHT),
+            label_smoothing=loss_cfg.get("label_smoothing", 0.05),
+            sync_loss_type=cfg.get("sync", {}).get("loss_type", DEFAULT_CONFIG.SYNC_LOSS_TYPE),
+            sync_temperature=cfg.get("sync", {}).get("temperature", DEFAULT_CONFIG.SYNC_TEMPERATURE)
+        ).to(device)
+        logger.info("Loss: multimodal classification + synchronization objective")
+    else:
+        criterion = DeepfakeDetectionLoss(
+            label_smoothing=loss_cfg.get("label_smoothing", 0.05),
+            pos_weight=loss_cfg.get("pos_weight"),
+            focal_gamma=loss_cfg.get("focal_gamma", 0.0)
+        ).to(device)
 
     # Build dataloaders
     logger.info("=" * 80)

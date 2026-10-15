@@ -16,6 +16,7 @@ dataset:
   train_manifest: "Datasets/metadata/train_ffpp.csv"
   val_manifest: "Datasets/metadata/val_ffpp.csv"
   test_manifest: "Datasets/metadata/test_ffpp.csv"   # Optional, for final eval
+  validate_paths: true          # Never train on missing media or labeled dummy tensors
 
   # Root directory where video files are stored.
   # video_path in CSV is resolved relative to this directory.

@@ -82,7 +82,7 @@ class MultimodalVideoDataset(Dataset):
         vpath = Path(item.video_path)
 
         if not vpath.exists():
-            return self._create_dummy_sample(item.video_id, item.label)
+            raise FileNotFoundError(f"Video file does not exist: {vpath}")
 
         try:
             # 1. Visual Extraction
@@ -159,8 +159,7 @@ class MultimodalVideoDataset(Dataset):
             }
 
         except Exception as e:
-            logger.error(f"Error loading multimodal sample {vpath.name}: {e}")
-            return self._create_dummy_sample(item.video_id, item.label)
+            raise RuntimeError(f"Error loading multimodal sample {vpath.name}: {e}") from e
 
     def _create_dummy_sample(self, video_id: str, label: int) -> Dict[str, Any]:
         return {

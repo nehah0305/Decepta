@@ -43,10 +43,17 @@ def load_test_samples(csv_path: Path, data_root: Path, max_samples: Optional[int
 
     df = pd.read_csv(csv_path)
     if "split" in df.columns:
-        df = df[df["split"] == "test"]
+        split_values = df["split"].dropna().astype(str).str.strip()
+        if split_values.any():
+            df = df[df["split"].astype(str).str.strip() == "test"]
     
     if max_samples and max_samples > 0:
-        df = df.head(max_samples)
+        if max_samples >= 2 and df["label"].nunique() >= 2:
+            per_class = max_samples // 2
+            selected = [group.head(per_class) for _, group in df.groupby("label", sort=True)]
+            df = pd.concat(selected, ignore_index=True).head(max_samples)
+        else:
+            df = df.head(max_samples)
 
     items = []
     for _, row in df.iterrows():
@@ -186,7 +193,10 @@ def evaluate_test_dataset(
     # 6. Calculate Metrics
     y_true = np.array(all_targets)
     y_probs = np.array(all_probs)
+    nan_probability_count = int(np.isnan(y_probs).sum())
+    y_probs = np.nan_to_num(y_probs, nan=0.5, posinf=1.0, neginf=0.0)
     metrics = calculate_deepfake_metrics(y_true, y_probs)
+    metrics["nan_probability_count"] = nan_probability_count
 
     avg_sync = float(np.mean(sync_scores)) if sync_scores else 0.5
     avg_a_v = float(np.mean(alpha_v_list)) if alpha_v_list else 0.33
@@ -211,6 +221,7 @@ def evaluate_test_dataset(
     print(f"    - Recall (Sensitivity):   {metrics['recall'] * 100:>6.2f}%")
     print(f"    - Specificity:            {metrics['specificity'] * 100:>6.2f}%")
     print(f"    - F1-Score:               {metrics['f1_score'] * 100:>6.2f}%")
+    print(f"    - NaN probabilities replaced: {metrics['nan_probability_count']:>4d}")
     print("-" * 70)
     print(" 2. CONFUSION MATRIX SUMMARY:")
     print(f"    - True Positives (TP):    {metrics['true_positives']:>6d}  [Correctly Identified Fake]")
