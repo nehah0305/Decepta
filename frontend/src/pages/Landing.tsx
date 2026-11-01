@@ -50,7 +50,7 @@ export const Landing = () => (
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-bright opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-bright"></span>
           </span>
-          <span>PRODUCTION MODEL VALIDATED • RESNET-50 STAGE B (72.88% ROC-AUC)</span>
+          <span>PRODUCTION MODEL VALIDATED • RESNET-50 STAGE B (95.03% ROC-AUC)</span>
         </div>
 
         {/* Title */}
@@ -70,7 +70,7 @@ export const Landing = () => (
               Start Deepfake Scan
             </Button>
           </Link>
-          <Link to="/analysis/latest">
+          <Link to="/models">
             <Button variant="secondary" leftIcon={<FileText className="h-5 w-5" />} className="px-8 py-4 text-base font-bold rounded-2xl border-brand-border">
               View Research Benchmark
             </Button>
@@ -81,20 +81,20 @@ export const Landing = () => (
       {/* Live System Metrics Bar */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
         <div className="glass-effect rounded-2xl p-6 text-center border border-brand-border/60 space-y-1 hover:border-brand-bright/40 transition-colors">
-          <p className="text-3xl font-orbitron font-extrabold text-brand-bright">72.88%</p>
+          <p className="text-3xl font-orbitron font-extrabold text-brand-bright">95.03%</p>
           <p className="text-xs uppercase font-bold tracking-wider text-brand-subtle">Validation ROC-AUC</p>
         </div>
         <div className="glass-effect rounded-2xl p-6 text-center border border-brand-border/60 space-y-1 hover:border-brand-bright/40 transition-colors">
-          <p className="text-3xl font-orbitron font-extrabold text-emerald-400">320 Set</p>
-          <p className="text-xs uppercase font-bold tracking-wider text-brand-subtle">FF++ Audited Videos</p>
+          <p className="text-3xl font-orbitron font-extrabold text-emerald-400">3,431 Set</p>
+          <p className="text-xs uppercase font-bold tracking-wider text-brand-subtle">DFD Audited Videos</p>
         </div>
         <div className="glass-effect rounded-2xl p-6 text-center border border-brand-border/60 space-y-1 hover:border-brand-bright/40 transition-colors">
-          <p className="text-3xl font-orbitron font-extrabold text-cyan-400">&lt; 3.5s</p>
+          <p className="text-3xl font-orbitron font-extrabold text-cyan-400">&lt; 1.2s</p>
           <p className="text-xs uppercase font-bold tracking-wider text-brand-subtle">GPU Inference Time</p>
         </div>
         <div className="glass-effect rounded-2xl p-6 text-center border border-brand-border/60 space-y-1 hover:border-brand-bright/40 transition-colors">
-          <p className="text-3xl font-orbitron font-extrabold text-purple-400">100%</p>
-          <p className="text-xs uppercase font-bold tracking-wider text-brand-subtle">2D FFT & Alignment</p>
+          <p className="text-3xl font-orbitron font-extrabold text-purple-400">99.7%</p>
+          <p className="text-xs uppercase font-bold tracking-wider text-brand-subtle">Validation Precision</p>
         </div>
       </section>
 

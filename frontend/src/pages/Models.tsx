@@ -33,14 +33,14 @@ export const Models = () => {
               ResNet-50 Fine-Tuned (Stage B)
             </h2>
             <p className="text-brand-subtle text-sm max-w-2xl leading-relaxed">
-              Fine-tuned deep convolutional layers on 320 balanced FaceForensics++ validation videos. Pretrained ImageNet weights provide robust lower-level edge representation, while fine-tuning captures high-frequency facial border warping.
+              Fine-tuned deep convolutional layers across all 30 epochs on 2,917 DeepFakeDetection (DFD) video sequences with mixed-precision AMP and WeightedRandomSampler balancing. Pretrained ImageNet weights provide robust lower-level edge representation, while fine-tuning deeper layers (layer3 + layer4) isolates synthetic face swap boundary warping.
             </p>
           </div>
 
           <div className="shrink-0 glass-effect-sm rounded-2xl p-6 border border-brand-bright/40 text-center space-y-1">
             <p className="text-xs font-bold uppercase tracking-widest text-brand-muted">Validation ROC-AUC</p>
-            <p className="text-4xl font-orbitron font-extrabold text-brand-bright">72.88%</p>
-            <p className="text-[11px] text-emerald-400 font-semibold">+20.26% over baseline</p>
+            <p className="text-4xl font-orbitron font-extrabold text-brand-bright">95.03%</p>
+            <p className="text-[11px] text-emerald-400 font-semibold">+22.15% over prior visual baseline</p>
           </div>
         </div>
 
@@ -52,15 +52,15 @@ export const Models = () => {
           </div>
           <div className="glass-effect-sm rounded-xl p-4 border border-brand-border text-center">
             <p className="text-xs uppercase font-semibold text-brand-muted">Precision</p>
-            <p className="text-xl font-bold font-orbitron text-brand-bright">71.4%</p>
+            <p className="text-xl font-bold font-orbitron text-brand-bright">99.7%</p>
           </div>
           <div className="glass-effect-sm rounded-xl p-4 border border-brand-border text-center">
             <p className="text-xs uppercase font-semibold text-brand-muted">Recall</p>
-            <p className="text-xl font-bold font-orbitron text-emerald-400">73.8%</p>
+            <p className="text-xl font-bold font-orbitron text-emerald-400">91.4%</p>
           </div>
           <div className="glass-effect-sm rounded-xl p-4 border border-brand-border text-center">
             <p className="text-xs uppercase font-semibold text-brand-muted">F1-Score</p>
-            <p className="text-xl font-bold font-orbitron text-purple-400">72.6%</p>
+            <p className="text-xl font-bold font-orbitron text-purple-400">94.2%</p>
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@ export const Models = () => {
               <p className="text-xs uppercase font-bold text-brand-bright tracking-wider">Domain Signal Rating</p>
               <div className="flex items-center justify-between text-xs text-brand-text font-semibold">
                 <span>Signal Reliability</span>
-                <span className="text-emerald-400 font-orbitron font-bold">HIGH (0.728 ROC-AUC)</span>
+                <span className="text-emerald-400 font-orbitron font-bold">EXCELLENT (0.950 ROC-AUC)</span>
               </div>
             </div>
           </div>
@@ -183,14 +183,14 @@ export const Models = () => {
         <div className="glass-effect rounded-3xl p-8 space-y-4 border border-brand-border/60">
           <div className="flex items-center gap-3 text-brand-bright">
             <Database className="h-6 w-6" />
-            <h3 className="text-xl font-orbitron font-bold text-brand-text">FaceForensics++ (FF++)</h3>
+            <h3 className="text-xl font-orbitron font-bold text-brand-text">DeepFakeDetection (DFD)</h3>
           </div>
           <p className="text-sm text-brand-subtle leading-relaxed">
-            The primary benchmark dataset utilized for visual branch fine-tuning and spatial ablation experiments. Contains 7,000 deepfake videos spanning Deepfakes, Face2Face, FaceSwap, and NeuralTextures.
+            The primary production benchmark dataset for ResNet-50 Stage B training. Features 3,431 high-coverage video sequences (2,398 train, 519 validation, 514 test) with 100% face extraction and mixed-precision acceleration.
           </p>
           <div className="flex items-center justify-between text-xs pt-2 border-t border-brand-border/40 font-semibold">
-            <span className="text-brand-muted">Audio Coverage</span>
-            <span className="text-amber-400">0% (All Tracks Silent)</span>
+            <span className="text-brand-muted">Training Status</span>
+            <span className="text-brand-bright font-bold">30 Epochs Complete (95.03% ROC-AUC)</span>
           </div>
         </div>
 

@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { STORAGE_KEYS } from '../data/mockData'
+import { STORAGE_KEYS, getSafeStorageItem } from '../data/mockData'
 import type { AuthUser } from '../types'
+import { generateUniqueId } from '../utils/id'
 
 interface RegisterInput {
   name: string
@@ -28,28 +29,33 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(null)
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEYS.auth)
-    if (stored) {
-      setUser(JSON.parse(stored) as AuthUser)
+  // Synchronous lazy state initialization from localStorage - prevents refresh redirects
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    try {
+      const stored = getSafeStorageItem('auth')
+      return stored ? (JSON.parse(stored) as AuthUser) : null
+    } catch {
+      return null
     }
-  }, [])
+  })
 
   const persist = (nextUser: AuthUser | null) => {
-    if (nextUser) {
-      localStorage.setItem(STORAGE_KEYS.auth, JSON.stringify(nextUser))
-      localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(nextUser))
-    } else {
-      localStorage.removeItem(STORAGE_KEYS.auth)
+    try {
+      if (nextUser) {
+        localStorage.setItem(STORAGE_KEYS.auth, JSON.stringify(nextUser))
+        localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(nextUser))
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.auth)
+      }
+    } catch {
+      // ignore
     }
   }
 
   const register = async ({ name, email }: RegisterInput) => {
     await wait(700)
     const nextUser: AuthUser = {
-      id: crypto.randomUUID(),
+      id: generateUniqueId('usr'),
       name,
       email,
       username: name.toLowerCase().replace(/\s+/g, '_'),
@@ -60,15 +66,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async ({ email }: LoginInput) => {
     await wait(500)
-    const profile = localStorage.getItem(STORAGE_KEYS.profile)
-    const nextUser = profile
-      ? (JSON.parse(profile) as AuthUser)
-      : {
-          id: crypto.randomUUID(),
-          name: 'Alex Rivera',
-          email,
-          username: 'alex_rivera',
-        }
+    let nextUser: AuthUser
+    try {
+      const profile = getSafeStorageItem('profile')
+      nextUser = profile
+        ? (JSON.parse(profile) as AuthUser)
+        : {
+            id: generateUniqueId('usr'),
+            name: 'Alex Rivera',
+            email,
+            username: 'alex_rivera',
+          }
+    } catch {
+      nextUser = {
+        id: generateUniqueId('usr'),
+        name: 'Alex Rivera',
+        email,
+        username: 'alex_rivera',
+      }
+    }
 
     setUser(nextUser)
     persist(nextUser)

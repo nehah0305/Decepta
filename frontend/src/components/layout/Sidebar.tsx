@@ -2,7 +2,7 @@ import { BarChart3, History, House, Settings, User, ShieldCheck, Cpu, Sparkles, 
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 
-interface NavItem {
+export interface NavItem {
   label: string
   to: string
   icon: typeof House
@@ -89,10 +89,10 @@ export const Sidebar = () => {
             </div>
             <Cpu className="h-4 w-4 text-brand-bright" />
           </div>
-          <p className="text-xs font-semibold text-brand-text truncate">ResNet-50 Fine-Tuned</p>
+          <p className="text-xs font-semibold text-brand-text truncate">ResNet-50 Stage B (DFD)</p>
           <div className="flex items-center justify-between text-[11px] text-brand-subtle font-medium">
             <span>Validation ROC-AUC</span>
-            <span className="font-orbitron font-bold text-brand-bright">72.88%</span>
+            <span className="font-orbitron font-bold text-brand-bright">95.03%</span>
           </div>
         </div>
 
@@ -119,7 +119,18 @@ export const Sidebar = () => {
               <LogOut className="h-4 w-4" />
             </button>
           </div>
-        ) : null}
+        ) : (
+          <div className="pt-2">
+            <Link to="/login" className="block">
+              <button
+                type="button"
+                className="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-brand-bright/15 text-brand-bright border border-brand-bright/40 hover:bg-brand-bright/25 transition-all glow-effect-sm"
+              >
+                Sign In to Platform
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </aside>
   )

@@ -7,7 +7,8 @@ export const AblationTable = () => {
     { model: 'FFT 2D Frequency CNN', roc: '58.44%', notes: '2D FFT Log-Magnitude domain' },
     { model: 'Spatial + FFT Concat Fusion', roc: '61.49%', notes: 'Spatial + 2D FFT concatenation' },
     { model: 'Spatial + Temporal Transformer', roc: '64.54%', notes: 'Sequence-level modeling' },
-    { model: 'ResNet-50 (Fine-Tuned Stage B)', roc: '72.88%', notes: '⭐ Best Validated Visual Model', highlight: true },
+    { model: 'ResNet-50 (Stage B, FF++ Baseline)', roc: '72.88%', notes: 'Initial visual baseline on FF++' },
+    { model: 'ResNet-50 Stage B (Full 30-Epoch DFD)', roc: '95.03%', notes: '⭐ Current Production Champion (99.70% Precision, 94.23% F1)', highlight: true },
   ]
 
   return (
@@ -22,7 +23,7 @@ export const AblationTable = () => {
         </div>
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-bright/10 border border-brand-bright/30 text-brand-bright text-xs font-medium">
           <Award className="h-4 w-4" />
-          <span>Validated on 320 FF++ Samples</span>
+          <span>Validated on 519 DFD Samples (95.03% AUC)</span>
         </div>
       </div>
 
@@ -65,7 +66,7 @@ export const AblationTable = () => {
           <span>Research Conclusion & Key Insights</span>
         </div>
         <p className="text-xs leading-relaxed text-brand-subtle">
-          Rather than assuming that adding more modalities automatically improves detection performance, we conducted controlled ablation experiments. Interestingly, naïve spatial-frequency fusion degraded performance. Fine-tuned spatial transfer learning produced the strongest validated visual baseline at <strong className="text-brand-bright">72.88% ROC-AUC</strong>.
+          Rather than assuming that adding more modalities automatically improves detection performance, we conducted controlled ablation experiments. Fine-tuned spatial transfer learning (Stage B) on the balanced DeepFakeDetection (DFD) dataset across all 30 epochs delivered our highest benchmark at <strong className="text-brand-bright">95.03% ROC-AUC</strong> with <strong className="text-emerald-400">99.70% precision</strong> and <strong className="text-purple-400">94.23% F1</strong>.
         </p>
       </div>
 

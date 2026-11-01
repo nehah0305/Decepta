@@ -62,13 +62,13 @@ export const Detect = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs text-brand-muted font-semibold uppercase tracking-wider">Quick Demo:</span>
             <button
-              onClick={() => handleQuickSampleSelect('FFPP_Manipulated_Sample_001.mp4')}
+              onClick={() => handleQuickSampleSelect('DFD_Manipulated_Sequence_042.mp4')}
               className="px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold hover:bg-red-500/25 transition-colors"
             >
               Test FAKE Sample
             </button>
             <button
-              onClick={() => handleQuickSampleSelect('Genuine_Interview_Sample_018.mp4')}
+              onClick={() => handleQuickSampleSelect('DFD_Original_Sequence_018.mp4')}
               className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition-colors"
             >
               Test REAL Sample

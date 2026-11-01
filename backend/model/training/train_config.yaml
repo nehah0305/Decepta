@@ -75,7 +75,7 @@ model:
     fusion_dim: 768
 
   # Resume from a pretrained checkpoint (path or null)
-  resume_checkpoint: null
+  resume_checkpoint: "model/checkpoints/dfd_resnet50_resnet50_stage_b_20261030_212435_best.pt"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. TRAINING HYPERPARAMETERS

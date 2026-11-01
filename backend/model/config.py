@@ -100,7 +100,7 @@ class VisualPipelineConfig:
     BATCH_SIZE: int = 4                    # Video-level batch size for training
     LEARNING_RATE: float = 1e-4            # Initial learning rate
     WEIGHT_DECAY: float = 1e-4             # L2 regularization factor
-    NUM_EPOCHS: int = 20                   # Total training epochs
+    NUM_EPOCHS: int = 30                   # Total training epochs
     GRADIENT_CLIP_VAL: float = 1.0         # Max gradient norm clipping
     USE_AMP: bool = True                   # Mixed precision training where available
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"

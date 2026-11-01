@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
-import { STORAGE_KEYS } from '../data/mockData'
+import { STORAGE_KEYS, getSafeStorageItem } from '../data/mockData'
 import { useAuth } from '../hooks/useAuth'
 import { useToast } from '../hooks/useToast'
 import type { AuthUser } from '../types'
@@ -13,14 +13,18 @@ export const User = () => {
   const { user, logout, updateProfile } = useAuth()
   const { showToast } = useToast()
   const [saving, setSaving] = useState(false)
-  const [profile, setProfile] = useState<AuthUser | null>(user)
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEYS.profile)
-    if (stored) {
-      setProfile(JSON.parse(stored) as AuthUser)
+  const [profile, setProfile] = useState<AuthUser | null>(() => {
+    try {
+      const stored = getSafeStorageItem('profile')
+      if (stored) {
+        return JSON.parse(stored) as AuthUser
+      }
+    } catch {
+      // ignore
     }
-  }, [])
+    return user
+  })
 
   if (!profile) {
     return null
@@ -29,7 +33,11 @@ export const User = () => {
   const save = async () => {
     setSaving(true)
     await new Promise((resolve) => window.setTimeout(resolve, 600))
-    localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile))
+    try {
+      localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile))
+    } catch {
+      // ignore
+    }
     updateProfile(profile)
     setSaving(false)
     showToast({ title: 'Profile updated', variant: 'success' })

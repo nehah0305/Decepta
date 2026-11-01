@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, Outlet } from 'react-router-dom'
 import { ToastViewport } from './components/ui/Toast'
 import { useAuth } from './hooks/useAuth'
 import { AuthLayout } from './layouts/AuthLayout'
@@ -12,10 +12,9 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Settings } from './pages/Settings'
 import { User } from './pages/User'
-
 import { Models } from './pages/Models'
 
-const ProtectedRoute = ({ children }: { children: ReactNode }) => {
+const ProtectedRoute = ({ children }: { children?: ReactNode }) => {
   const { isAuthenticated } = useAuth()
   const location = useLocation()
 
@@ -23,7 +22,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
-  return children
+  return children ? <>{children}</> : <Outlet />
 }
 
 const PublicOnlyRoute = ({ children }: { children: ReactNode }) => {
@@ -48,19 +47,24 @@ function App() {
           <Route path="/register" element={<Register />} />
         </Route>
 
-        <Route
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route path="/detect" element={<Detect />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/analysis/:id" element={<Analysis />} />
+        <Route element={<DashboardLayout />}>
+          {/* Publicly accessible Model Architecture Explorer & Benchmark */}
           <Route path="/models" element={<Models />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/user" element={<User />} />
+
+          {/* Protected forensic workspace routes */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <Outlet />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/detect" element={<Detect />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/analysis/:id" element={<Analysis />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/user" element={<User />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

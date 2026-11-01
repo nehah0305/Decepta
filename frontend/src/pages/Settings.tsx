@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Toggle } from '../components/ui/Toggle'
-import { DEFAULT_SETTINGS, STORAGE_KEYS } from '../data/mockData'
+import { DEFAULT_SETTINGS, STORAGE_KEYS, getSafeStorageItem } from '../data/mockData'
 import { useToast } from '../hooks/useToast'
 import type { SettingsState } from '../types'
 import { Sparkles, Save, Sliders, Bell, Shield, Monitor } from 'lucide-react'
@@ -10,19 +10,27 @@ import { Sparkles, Save, Sliders, Bell, Shield, Monitor } from 'lucide-react'
 export const Settings = () => {
   const { showToast } = useToast()
   const [saving, setSaving] = useState(false)
-  const [settings, setSettings] = useState<SettingsState>(DEFAULT_SETTINGS)
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEYS.settings)
-    if (stored) {
-      setSettings(JSON.parse(stored) as SettingsState)
+  const [settings, setSettings] = useState<SettingsState>(() => {
+    try {
+      const stored = getSafeStorageItem('settings')
+      if (stored) {
+        return JSON.parse(stored) as SettingsState
+      }
+    } catch {
+      // ignore
     }
-  }, [])
+    return DEFAULT_SETTINGS
+  })
 
   const save = async () => {
     setSaving(true)
     await new Promise((resolve) => window.setTimeout(resolve, 600))
-    localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings))
+    try {
+      localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings))
+    } catch {
+      // ignore
+    }
     setSaving(false)
     showToast({ title: 'System settings updated', variant: 'success' })
   }

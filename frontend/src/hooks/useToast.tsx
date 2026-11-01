@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { generateUniqueId } from '../utils/id'
 
 interface ToastItem {
   id: string
@@ -25,7 +26,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
   const showToast = useCallback(
     (toast: Omit<ToastItem, 'id'>) => {
-      const id = crypto.randomUUID()
+      const id = generateUniqueId('toast')
       setToasts((prev) => [...prev, { ...toast, id }])
       window.setTimeout(() => dismissToast(id), 3200)
     },

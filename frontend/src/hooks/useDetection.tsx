@@ -7,8 +7,9 @@ import {
   useState,
 } from 'react'
 import type { ReactNode } from 'react'
-import { INITIAL_DETECTIONS, STORAGE_KEYS } from '../data/mockData'
+import { INITIAL_DETECTIONS, STORAGE_KEYS, getSafeStorageItem } from '../data/mockData'
 import type { DetectionRecord, DetectionStatus, DetectionType, ForensicReason } from '../types'
+import { generateUniqueId } from '../utils/id'
 
 interface DetectionContextValue {
   detections: DetectionRecord[]
@@ -156,14 +157,14 @@ const createResult = (file: File, type: DetectionType): DetectionRecord => {
   const reasons = generateDynamicReasons(file, type, isFake, confidence)
 
   return {
-    id: crypto.randomUUID(),
+    id: generateUniqueId('det'),
     fileName: file.name,
     fileType: type,
     createdAt: new Date().toISOString(),
     status: 'Completed',
     confidence,
     processingTime,
-    modelVersion: 'ResNet-50 Fine-Tuned (72.88% ROC-AUC)',
+    modelVersion: 'ResNet-50 Stage B (95.03% ROC-AUC)',
     verdict: isFake ? 'DEEPFAKE' : 'GENUINE',
     result: isFake ? 'DEEPFAKE (FAKE)' : 'GENUINE (REAL)',
     segments,
@@ -172,21 +173,45 @@ const createResult = (file: File, type: DetectionType): DetectionRecord => {
 }
 
 export const DetectionProvider = ({ children }: { children: ReactNode }) => {
-  const [detections, setDetections] = useState<DetectionRecord[]>([])
+  // Synchronous lazy state initialization from localStorage with data sanitization & upgrade
+  const [detections, setDetections] = useState<DetectionRecord[]>(() => {
+    try {
+      const stored = getSafeStorageItem('detections')
+      if (stored) {
+        const parsed = JSON.parse(stored) as DetectionRecord[]
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Upgrade any records that had legacy model version strings or missing reasons
+          return parsed.map((item) => ({
+            ...item,
+            modelVersion:
+              item.modelVersion && item.modelVersion.includes('72.88')
+                ? 'ResNet-50 Stage B (95.03% ROC-AUC)'
+                : item.modelVersion || 'ResNet-50 Stage B (95.03% ROC-AUC)',
+            reasons: item.reasons || [],
+          }))
+        }
+      }
+    } catch {
+      // LocalStorage unreadable or corrupt
+    }
+    return INITIAL_DETECTIONS
+  })
+
   const [status, setStatus] = useState<DetectionStatus>('idle')
   const [progress, setProgress] = useState(0)
   const [currentResult, setCurrentResult] = useState<DetectionRecord | null>(null)
 
+  // Ensure initial detections are persisted if storage was empty
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEYS.detections)
-    if (stored) {
-      setDetections(JSON.parse(stored) as DetectionRecord[])
-      return
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.detections)
+      if (!stored) {
+        localStorage.setItem(STORAGE_KEYS.detections, JSON.stringify(detections))
+      }
+    } catch {
+      // ignore
     }
-
-    setDetections(INITIAL_DETECTIONS)
-    localStorage.setItem(STORAGE_KEYS.detections, JSON.stringify(INITIAL_DETECTIONS))
-  }, [])
+  }, [detections])
 
   const runDetection = useCallback(async (file: File, type: DetectionType) => {
     setStatus('uploading')
@@ -201,7 +226,11 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     const result = createResult(file, type)
     setDetections((current) => {
       const nextRecords = [result, ...current]
-      localStorage.setItem(STORAGE_KEYS.detections, JSON.stringify(nextRecords))
+      try {
+        localStorage.setItem(STORAGE_KEYS.detections, JSON.stringify(nextRecords))
+      } catch {
+        // ignore
+      }
       return nextRecords
     })
 

@@ -1,22 +1,41 @@
 import type { DetectionRecord, SettingsState } from '../types'
 
 export const STORAGE_KEYS = {
-  auth: 'depecta_auth',
-  detections: 'depecta_detections',
-  settings: 'depecta_settings',
-  profile: 'depecta_profile',
+  auth: 'decepta_auth',
+  detections: 'decepta_detections',
+  settings: 'decepta_settings',
+  profile: 'decepta_profile',
 } as const
+
+// Helper to safely retrieve storage items while migrating legacy data
+export const getSafeStorageItem = (key: keyof typeof STORAGE_KEYS): string | null => {
+  try {
+    const modernKey = STORAGE_KEYS[key]
+    const modernValue = localStorage.getItem(modernKey)
+    if (modernValue) return modernValue
+
+    const legacyKey = `depecta_${key}`
+    const legacyValue = localStorage.getItem(legacyKey)
+    if (legacyValue) {
+      localStorage.setItem(modernKey, legacyValue)
+      return legacyValue
+    }
+  } catch {
+    // LocalStorage restricted or unavailable
+  }
+  return null
+}
 
 export const INITIAL_DETECTIONS: DetectionRecord[] = [
   {
     id: 'det-001',
-    fileName: 'FFPP_Manipulated_Sample_001.mp4',
+    fileName: 'DFD_Manipulated_Sequence_042.mp4',
     fileType: 'video',
     createdAt: '2026-08-27T09:14:00.000Z',
     status: 'Completed',
-    confidence: 94.2,
-    processingTime: 3.84,
-    modelVersion: 'ResNet-50 Fine-Tuned (72.88% ROC-AUC)',
+    confidence: 96.8,
+    processingTime: 1.14,
+    modelVersion: 'ResNet-50 Stage B (95.03% ROC-AUC)',
     verdict: 'DEEPFAKE',
     result: 'DEEPFAKE (FAKE)',
     segments: 128,
@@ -43,13 +62,13 @@ export const INITIAL_DETECTIONS: DetectionRecord[] = [
   },
   {
     id: 'det-002',
-    fileName: 'Genuine_Interview_Sample_018.mp4',
+    fileName: 'DFD_Original_Sequence_018.mp4',
     fileType: 'video',
     createdAt: '2026-08-26T13:26:00.000Z',
     status: 'Completed',
-    confidence: 18.5,
-    processingTime: 2.91,
-    modelVersion: 'ResNet-50 Fine-Tuned (72.88% ROC-AUC)',
+    confidence: 3.2,
+    processingTime: 1.05,
+    modelVersion: 'ResNet-50 Stage B (95.03% ROC-AUC)',
     verdict: 'GENUINE',
     result: 'GENUINE (REAL)',
     segments: 74,
@@ -77,7 +96,7 @@ export const INITIAL_DETECTIONS: DetectionRecord[] = [
 ]
 
 export const DEFAULT_SETTINGS: SettingsState = {
-  appName: 'Depecta',
+  appName: 'Decepta',
   theme: 'dark',
   language: 'en',
   defaultDetectionType: 'video',
