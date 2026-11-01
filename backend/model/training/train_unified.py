@@ -430,6 +430,9 @@ def build_model(cfg: Dict, device: torch.device) -> nn.Module:
     ckpt_path = model_cfg.get("resume_checkpoint")
     if ckpt_path:
         ckpt_path = Path(ckpt_path)
+        project_root = Path(__file__).resolve().parents[2]
+        if not ckpt_path.exists() and (project_root / ckpt_path).exists():
+            ckpt_path = project_root / ckpt_path
         if ckpt_path.exists():
             ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
             state_dict = ckpt.get("model_state_dict", ckpt)
@@ -490,14 +493,23 @@ def build_dataloaders(
     """Build train and validation DataLoaders."""
     train_cfg = cfg["training"]
     samp_cfg = cfg.get("sampling", {})
+    dset_cfg = cfg.get("dataset", {})
     arch = cfg["model"]["architecture"]
+
+    project_root = Path(__file__).resolve().parents[2]
+    preprocessed_faces_dir = dset_cfg.get("preprocessed_faces_dir")
+    if preprocessed_faces_dir and not Path(preprocessed_faces_dir).is_absolute():
+        preprocessed_faces_dir = project_root / preprocessed_faces_dir
+    visual_only = (arch in ["resnet50_stage_b", "visual_full"])
 
     dataset_kwargs = dict(
         coverage_ratio=samp_cfg.get("coverage_ratio", 0.70),
         min_frames=samp_cfg.get("min_frames", 16),
         max_frames=samp_cfg.get("max_frames", 32),
         face_size=samp_cfg.get("face_size", 224),
-        device="cpu"
+        device="cuda" if torch.cuda.is_available() else "cpu",
+        preprocessed_faces_dir=preprocessed_faces_dir,
+        visual_only=visual_only
     )
 
     # Use MultimodalVideoDataset for all architectures (it provides face_frames,
@@ -581,7 +593,7 @@ def train_one_epoch(
     all_probs = []
 
     total_batches = len(train_loader)
-    log_interval = max(1, total_batches // 10)
+    log_interval = max(1, min(10, total_batches // 10))  # Log every 10 batches for frequent updates
 
     for step, batch in enumerate(train_loader):
         faces = batch["face_frames"].to(device)
@@ -698,7 +710,10 @@ def validate(
     all_targets = []
     all_probs = []
 
-    for batch in val_loader:
+    total_val_batches = len(val_loader)
+    val_log_interval = max(1, min(15, total_val_batches // 4))
+
+    for step, batch in enumerate(val_loader):
         faces = batch["face_frames"].to(device)
         pad_v = batch["padding_mask_v"].to(device)
         labels = batch["labels"].to(device).float()
@@ -728,6 +743,9 @@ def validate(
         probs = torch.sigmoid(logits).view(-1).cpu().numpy()
         all_probs.extend(probs.tolist())
         all_targets.extend(labels.cpu().numpy().tolist())
+
+        if (step + 1) % val_log_interval == 0 or step == total_val_batches - 1:
+            logger.info(f"  [Validation] Step [{step + 1}/{total_val_batches}] | Evaluated {len(all_targets)} samples")
 
     n_samples = len(all_targets)
     avg_loss = running_loss / n_samples if n_samples > 0 else 0.0
@@ -763,6 +781,17 @@ def run_training(cfg: Dict):
     output_cfg = cfg["output"]
     project_root = Path(__file__).resolve().parents[2]
 
+    # Prevent Windows Modern Standby / Sleep during training
+    try:
+        import ctypes
+        ES_CONTINUOUS = 0x80000000
+        ES_SYSTEM_REQUIRED = 0x00000001
+        ES_AWAYMODE_REQUIRED = 0x00000040
+        ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED | ES_AWAYMODE_REQUIRED)
+        logger.info("Windows keep-awake enabled: system sleep disabled during training")
+    except Exception as e:
+        logger.warning(f"Could not set Windows execution state: {e}")
+
     # Reproducibility
     set_seed(train_cfg.get("seed", 42))
 
@@ -771,7 +800,7 @@ def run_training(cfg: Dict):
     logger.info(f"Device: {device}")
     if device.type == "cuda":
         logger.info(f"GPU: {torch.cuda.get_device_name(0)} "
-                    f"({torch.cuda.get_device_properties(0).total_mem / 1e9:.1f} GB)")
+                    f"({torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB)")
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
     # Load datasets
@@ -790,8 +819,25 @@ def run_training(cfg: Dict):
     model = build_model(cfg, device)
     arch = cfg["model"]["architecture"]
 
-    # Build optimizer
-    optimizer = build_optimizer(model, cfg)
+    # Multi-GPU support via DataParallel
+    multi_gpu_cfg = cfg.get("multi_gpu", {})
+    num_gpus = torch.cuda.device_count()
+    using_data_parallel = False
+    if multi_gpu_cfg.get("enabled", False) and device.type == "cuda" and num_gpus > 1:
+        logger.info(f"Multi-GPU: Wrapping model in DataParallel across {num_gpus} GPUs")
+        for i in range(num_gpus):
+            logger.info(f"  GPU {i}: {torch.cuda.get_device_name(i)} "
+                        f"({torch.cuda.get_device_properties(i).total_memory / 1e9:.1f} GB)")
+        model = nn.DataParallel(model)
+        using_data_parallel = True
+    elif device.type == "cuda":
+        logger.info(f"Single GPU mode: {torch.cuda.get_device_name(0)} "
+                    f"({torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB)")
+        if num_gpus > 1 and not multi_gpu_cfg.get("enabled", False):
+            logger.info(f"  NOTE: {num_gpus} GPUs detected but multi_gpu.enabled=false in config")
+
+    # Build optimizer (use the potentially DataParallel-wrapped model)
+    optimizer = build_optimizer(model.module if using_data_parallel else model, cfg)
 
     # Build scheduler
     epochs = train_cfg.get("epochs", 30)
@@ -851,12 +897,14 @@ def run_training(cfg: Dict):
     logger.info("=" * 80)
     logger.info(f"TRAINING: {arch.upper()}")
     logger.info(f"  Epochs: {epochs}")
-    logger.info(f"  Batch size: {train_cfg.get('batch_size', 4)}")
+    effective_batch = train_cfg.get('batch_size', 4) * (num_gpus if using_data_parallel else 1)
+    logger.info(f"  Batch size: {train_cfg.get('batch_size', 4)} (effective: {effective_batch} across {num_gpus if using_data_parallel else 1} GPU(s))")
     logger.info(f"  Train videos: {len(train_items)}")
     logger.info(f"  Val videos: {len(val_items)}")
     logger.info(f"  Total train batches/epoch: {len(train_loader)}")
     logger.info(f"  Augmentation: {'Enabled' if augmentation else 'Disabled'}")
     logger.info(f"  AMP: {'Enabled' if use_amp else 'Disabled'}")
+    logger.info(f"  Multi-GPU: {'DataParallel (' + str(num_gpus) + ' GPUs)' if using_data_parallel else 'Disabled'}")
     logger.info(f"  Checkpoint dir: {ckpt_dir}")
     logger.info("=" * 80)
 
@@ -870,9 +918,38 @@ def run_training(cfg: Dict):
     logger.info("=" * 110)
 
     best_val_auc = 0.0
+    start_epoch = 1
+    resume_path = cfg["model"].get("resume_checkpoint")
+    if resume_path:
+        rp = Path(resume_path)
+        if not rp.exists() and (project_root / rp).exists():
+            rp = project_root / rp
+        if rp.exists():
+            try:
+                ckpt_data = torch.load(rp, map_location="cpu", weights_only=False)
+                if isinstance(ckpt_data, dict):
+                    saved_epoch = ckpt_data.get("epoch", 0)
+                    saved_auc = ckpt_data.get("val_auc", 0.0)
+                    if saved_epoch > 0:
+                        start_epoch = saved_epoch + 1
+                        best_val_auc = max(saved_auc, 0.9503)
+                        logger.info(f"Resuming training loop from Epoch {start_epoch} (target best AUC benchmark: {best_val_auc * 100:.2f}%)")
+                    if "optimizer_state_dict" in ckpt_data and optimizer is not None:
+                        try:
+                            optimizer.load_state_dict(ckpt_data["optimizer_state_dict"])
+                            logger.info("Restored optimizer state from checkpoint")
+                        except Exception as e:
+                            logger.warning(f"Could not restore optimizer state from checkpoint: {e}")
+                    if scheduler is not None and start_epoch > 1:
+                        for _ in range(start_epoch - 1):
+                            scheduler.step()
+                        logger.info(f"Stepped scheduler to epoch {start_epoch - 1}, current LR: {optimizer.param_groups[0]['lr']:.2e}")
+            except Exception as e:
+                logger.warning(f"Could not read start epoch from checkpoint: {e}")
+
     training_start = time.time()
 
-    for epoch in range(1, epochs + 1):
+    for epoch in range(start_epoch, epochs + 1):
         epoch_start = time.time()
 
         # Train
@@ -905,6 +982,14 @@ def run_training(cfg: Dict):
 
         epoch_time = time.time() - epoch_start
 
+        # GPU memory stats
+        gpu_mem_str = ""
+        if device.type == "cuda":
+            gpu_allocated = torch.cuda.memory_allocated(0) / 1e9
+            gpu_reserved = torch.cuda.memory_reserved(0) / 1e9
+            gpu_total = torch.cuda.get_device_properties(0).total_memory / 1e9
+            gpu_mem_str = f" | GPU: {gpu_allocated:.1f}/{gpu_total:.1f}GB"
+
         # Log compact summary row
         val_auc = val_metrics.get("val_auc", 0.5)
         row = (
@@ -918,8 +1003,19 @@ def run_training(cfg: Dict):
             f"{val_metrics.get('val_f1', 0) * 100:<9.2f}% | "
             f"{current_lr:<12.2e} | "
             f"{epoch_time:<8.1f}s"
+            f"{gpu_mem_str}"
         )
         logger.info(row)
+
+        # Progress estimate
+        elapsed = time.time() - training_start
+        avg_epoch_time = elapsed / epoch
+        remaining = avg_epoch_time * (epochs - epoch)
+        logger.info(
+            f"  >> Progress: {epoch}/{epochs} ({epoch/epochs*100:.0f}%) | "
+            f"Elapsed: {elapsed/60:.1f}min | "
+            f"ETA: {remaining/60:.1f}min"
+        )
 
         # Log metrics to CSV
         if metrics_logger:
@@ -929,9 +1025,11 @@ def run_training(cfg: Dict):
         # Best model checkpoint
         if val_auc >= best_val_auc:
             best_val_auc = val_auc
+            # Save the unwrapped model state_dict for DataParallel compatibility
+            model_state = model.module.state_dict() if using_data_parallel else model.state_dict()
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": model.state_dict(),
+                "model_state_dict": model_state,
                 "optimizer_state_dict": optimizer.state_dict(),
                 "val_auc": best_val_auc,
                 "val_metrics": val_metrics,
@@ -943,9 +1041,10 @@ def run_training(cfg: Dict):
         # Periodic checkpoint
         if save_every > 0 and epoch % save_every == 0:
             periodic_path = ckpt_dir / f"{run_name}_epoch{epoch}.pt"
+            model_state = model.module.state_dict() if using_data_parallel else model.state_dict()
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": model.state_dict(),
+                "model_state_dict": model_state,
                 "optimizer_state_dict": optimizer.state_dict(),
                 "val_auc": val_auc,
                 "architecture": arch

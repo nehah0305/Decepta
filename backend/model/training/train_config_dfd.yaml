@@ -1,0 +1,137 @@
+# =============================================================================
+# DECEPTA — DFD (DeepFakeDetection) Training Configuration
+# =============================================================================
+# Configured for the DFD dataset with GPU-optimized settings.
+# Run with:  python training/train_unified.py --config training/train_config_dfd.yaml
+# =============================================================================
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. DATASET CONFIGURATION
+# ─────────────────────────────────────────────────────────────────────────────
+dataset:
+  # DFD split manifests (generated from dfd.csv metadata)
+  train_manifest: "Datasets/metadata/train_dfd.csv"
+  val_manifest: "Datasets/metadata/val_dfd.csv"
+  test_manifest: "Datasets/metadata/test_dfd.csv"
+  validate_paths: true
+
+  # The DFD CSV video_path values are relative to Datasets/
+  # e.g., "raw/DFD/DFD_original sequences/01__exit_phone_room.mp4"
+  data_root: "Datasets"
+  preprocessed_faces_dir: "Datasets/preprocessed/dfd_faces"
+
+  # Column name mappings
+  columns:
+    video_path: "video_path"
+    label: "label"
+    sample_id: "sample_id"
+
+  auto_split:
+    enabled: false
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. MODEL ARCHITECTURE
+# ─────────────────────────────────────────────────────────────────────────────
+model:
+  architecture: "resnet50_stage_b"
+  feature_dim: 256
+  dropout: 0.1
+
+  resnet50:
+    unfreeze_strategy: "layer3_layer4"
+
+  visual:
+    spatial_dim: 256
+    frequency_dim: 256
+    fusion_hidden_dim: 128
+    fused_dim: 256
+    transformer_dim: 768
+    transformer_heads: 8
+    transformer_layers: 2
+
+  multimodal:
+    visual_dim: 768
+    audio_dim: 768
+    sync_dim: 256
+    fusion_dim: 768
+
+  resume_checkpoint: "model/checkpoints/dfd_resnet50_resnet50_stage_b_20261030_212435_best.pt"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. TRAINING HYPERPARAMETERS
+# ─────────────────────────────────────────────────────────────────────────────
+training:
+  epochs: 30
+  batch_size: 8                   # Optimized for 6GB VRAM (RTX 4050) with AMP
+  gradient_clip: 1.0
+  seed: 42
+  use_amp: true                   # FP16 mixed precision — critical for 6GB GPU
+  num_workers: 0                  # 0 on Windows to avoid multiprocessing deadlocks
+  pin_memory: true
+
+  # Learning rates
+  learning_rate: 1.0e-4
+  backbone_lr: 1.0e-5
+  weight_decay: 1.0e-4
+
+  # Learning rate scheduler
+  scheduler:
+    type: "cosine"
+    eta_min: 1.0e-7
+
+  # Early stopping (disabled to ensure full 30-epoch training completion)
+  early_stopping:
+    enabled: false
+    patience: 10
+    min_delta: 0.001
+
+  # Class balancing — critical for DFD (3068 fake vs 363 real = ~8.5:1 ratio)
+  use_weighted_sampler: true
+
+  # Loss function
+  loss:
+    label_smoothing: 0.05
+    focal_gamma: 2.0              # Focal loss to handle severe class imbalance
+    pos_weight: null               # Let WeightedRandomSampler handle balance
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. DATA AUGMENTATION
+# ─────────────────────────────────────────────────────────────────────────────
+augmentation:
+  enabled: true
+  horizontal_flip: 0.5
+  random_rotation: 5
+  color_jitter:
+    enabled: true
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.1
+    hue: 0.05
+  random_erasing: 0.1
+  gaussian_blur: 0.1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. FRAME SAMPLING
+# ─────────────────────────────────────────────────────────────────────────────
+sampling:
+  coverage_ratio: 0.70
+  min_frames: 16
+  max_frames: 32
+  frame_chunk_size: 16            # Process frames in chunks to save VRAM
+  face_size: 224
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. OUTPUT & CHECKPOINTS
+# ─────────────────────────────────────────────────────────────────────────────
+output:
+  checkpoint_dir: "model/checkpoints"
+  experiment_name: "dfd_train"
+  save_every_n_epochs: 1
+  save_metrics_log: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 7. MULTI-GPU CONFIGURATION
+# ─────────────────────────────────────────────────────────────────────────────
+multi_gpu:
+  enabled: true                   # Auto-detect and use all available GPUs
+  strategy: "auto"                # "auto" = DataParallel if multi-GPU, single if 1 GPU
