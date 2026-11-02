@@ -1,9 +1,0 @@
-__pycache__/
-*.py[cod]
-.venv/
-.ruff_cache/
-.pytest_cache/
-outputs/
-data/raw/
-data/cache*/
-data/splits*/*.csv
