@@ -3,7 +3,7 @@ import type { DetectionRecord } from '../../types'
 import { Badge } from '../ui/Badge'
 import { Card } from '../ui/Card'
 import { Button } from '../ui/Button'
-import { Download, FileText, Cpu, Clock, CheckCircle2, RefreshCw } from 'lucide-react'
+import { Download, FileText, Cpu, Clock, CheckCircle2, RefreshCw, Volume2, Activity } from 'lucide-react'
 import { ConfidenceScore } from './ConfidenceScore'
 import { DetectionTimeline } from './DetectionTimeline'
 import { MetricsCard } from './MetricsCard'
@@ -17,12 +17,21 @@ interface AnalysisCardProps {
 }
 
 export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
-  const timeline = [
-    { label: 'Initial Frame Decode', start: 0, end: 20, active: true },
-    { label: '2D FFT Spectral Scan', start: 20, end: 58, active: true },
-    { label: 'ResNet-50 Deep Pass', start: 58, end: 84, active: true },
-    { label: 'Anomaly Localization', start: 84, end: 100, active: true },
-  ]
+  const isAudio = analysis.fileType === 'audio'
+
+  const timeline = isAudio
+    ? [
+        { label: 'Audio Ingestion & Framing (16 kHz)', start: 0, end: 25, active: true },
+        { label: '68 Acoustic Descriptors (MFCCs & F0)', start: 25, end: 55, active: true },
+        { label: 'Acoustic Transformer Encoder', start: 55, end: 80, active: true },
+        { label: 'KernelSHAP Feature Attribution', start: 80, end: 100, active: true },
+      ]
+    : [
+        { label: 'Initial Frame Decode', start: 0, end: 20, active: true },
+        { label: '2D FFT Spectral Scan', start: 20, end: 58, active: true },
+        { label: 'ResNet-50 Deep Pass', start: 58, end: 84, active: true },
+        { label: 'Anomaly Localization', start: 84, end: 100, active: true },
+      ]
 
   const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE') || analysis.confidence > 50
 
@@ -33,7 +42,9 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
         verdict={analysis.verdict}
         resultLabel={analysis.result}
         confidence={analysis.confidence}
+        fileType={analysis.fileType}
         reasons={analysis.reasons}
+        acousticShap={analysis.acousticShap}
       />
 
       {/* Main Forensic Analysis Record Card */}
@@ -50,7 +61,15 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
 
           <div className="flex flex-wrap items-center gap-3">
             <Badge
-              label={isFake ? '🔴 DEEPFAKE (FAKE)' : '🟢 GENUINE (REAL)'}
+              label={
+                isFake
+                  ? isAudio
+                    ? '🔴 SYNTHETIC VOICE (FAKE)'
+                    : '🔴 DEEPFAKE (FAKE)'
+                  : isAudio
+                  ? '🟢 GENUINE SPEECH (REAL)'
+                  : '🟢 GENUINE (REAL)'
+              }
               tone={isFake ? 'error' : 'success'}
             />
             <Button
@@ -78,7 +97,9 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
               <p className="text-xs font-bold uppercase tracking-wider text-brand-bright">
                 {isFake ? 'High Artificial Variance' : 'High Organic Coherence'}
               </p>
-              <p className="text-[11px] text-brand-muted">ResNet-50 Stage B Audit</p>
+              <p className="text-[11px] text-brand-muted">
+                {isAudio ? 'Acoustic Transformer Audit' : 'ResNet-50 Stage B Audit'}
+              </p>
             </div>
           </div>
 
@@ -103,7 +124,7 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
               <MetricsCard
                 label="Model Engine"
                 value={analysis.modelVersion}
-                icon={<Cpu className="h-4 w-4" />}
+                icon={isAudio ? <Volume2 className="h-4 w-4" /> : <Cpu className="h-4 w-4" />}
               />
             </div>
 
@@ -119,9 +140,41 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
             </div>
           </div>
         </div>
+
+        {/* Waveform Visualization (for Audio Stream Audit) */}
+        {isAudio && analysis.waveform && analysis.waveform.peaks.length > 0 && (
+          <div className="rounded-2xl border border-brand-border bg-brand-card/40 p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-cyan-400">
+                <Activity className="h-4 w-4" />
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  Audio Energy Waveform & Amplitude Envelope
+                </span>
+              </div>
+              <span className="text-xs font-mono text-brand-muted">
+                Duration: {analysis.waveform.durationSeconds.toFixed(2)}s • 16 kHz Mono
+              </span>
+            </div>
+
+            {/* Waveform Bar Spectrum */}
+            <div className="h-16 flex items-center justify-between gap-1 p-2 rounded-xl bg-brand-bg/80 border border-brand-border overflow-hidden">
+              {analysis.waveform.peaks.slice(0, 48).map((peak, idx) => {
+                const heightPct = Math.max(peak * 100, 10)
+                return (
+                  <div
+                    key={idx}
+                    className="flex-1 rounded-sm bg-gradient-to-t from-cyan-500/40 via-cyan-400 to-brand-bright transition-all"
+                    style={{ height: `${heightPct}%` }}
+                    title={`Peak ${idx}: ${peak.toFixed(3)}`}
+                  ></div>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </Card>
 
-      {/* Visual Ablation Benchmark Matrix */}
+      {/* Visual & Multimodal Ablation Benchmark Matrix */}
       <AblationTable />
     </div>
   )

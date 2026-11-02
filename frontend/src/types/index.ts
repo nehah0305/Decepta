@@ -11,6 +11,21 @@ export interface ForensicReason {
   severity: 'High' | 'Medium' | 'Low' | 'Normal'
 }
 
+export interface AcousticShapItem {
+  feature: string
+  value: number
+}
+
+export interface AudioWaveform {
+  peaks: number[]
+  durationSeconds: number
+  loudRegions?: Array<{
+    startSeconds: number
+    endSeconds: number
+    intensity: number
+  }>
+}
+
 export interface DetectionRecord {
   id: string
   fileName: string
@@ -24,6 +39,8 @@ export interface DetectionRecord {
   verdict: 'DEEPFAKE' | 'GENUINE'
   segments: number
   reasons?: ForensicReason[]
+  acousticShap?: AcousticShapItem[]
+  waveform?: AudioWaveform
 }
 
 export interface AuthUser {

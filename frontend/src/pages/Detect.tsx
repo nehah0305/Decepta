@@ -1,4 +1,4 @@
-import { ArrowRight, Cpu, Sparkles, Play, RefreshCw } from 'lucide-react'
+import { ArrowRight, Cpu, Sparkles, Play, RefreshCw, Volume2, Video } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FileUploader } from '../components/ui/FileUploader'
@@ -22,8 +22,26 @@ export const Detect = () => {
     }
   }, [showToast, status])
 
-  const handleQuickSampleSelect = (sampleName: string) => {
-    const dummyFile = new File(['dummy_content'], sampleName, { type: 'video/mp4' })
+  const handleQuickSampleSelect = async (sampleName: string, sampleUrl?: string) => {
+    if (sampleUrl) {
+      try {
+        const resp = await fetch(sampleUrl)
+        if (resp.ok) {
+          const blob = await resp.blob()
+          const file = new File([blob], sampleName, {
+            type: tab === 'audio' ? 'audio/wav' : 'video/mp4',
+          })
+          setSelectedFile(file)
+          resetStatus()
+          return
+        }
+      } catch {
+        // Fallback to in-memory file if fetch is restricted
+      }
+    }
+    const dummyFile = new File(['dummy_content'], sampleName, {
+      type: tab === 'audio' ? 'audio/wav' : 'video/mp4',
+    })
     setSelectedFile(dummyFile)
     resetStatus()
   }
@@ -61,19 +79,70 @@ export const Detect = () => {
           {/* Quick Demo Sample Selector */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs text-brand-muted font-semibold uppercase tracking-wider">Quick Demo:</span>
-            <button
-              onClick={() => handleQuickSampleSelect('DFD_Manipulated_Sequence_042.mp4')}
-              className="px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold hover:bg-red-500/25 transition-colors"
-            >
-              Test FAKE Sample
-            </button>
-            <button
-              onClick={() => handleQuickSampleSelect('DFD_Original_Sequence_018.mp4')}
-              className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition-colors"
-            >
-              Test REAL Sample
-            </button>
+            {tab === 'video' ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => handleQuickSampleSelect('DFD_Manipulated_Sequence_042.mp4')}
+                  className="px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold hover:bg-red-500/25 transition-colors"
+                >
+                  Test FAKE Video
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickSampleSelect('DFD_Original_Sequence_018.mp4')}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition-colors"
+                >
+                  Test REAL Video
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickSampleSelect(
+                      'LAVDF_Synthetic_Voice_042.wav',
+                      '/samples/audio/LAVDF_Synthetic_Voice_042.wav'
+                    )
+                  }
+                  className="px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold hover:bg-red-500/25 transition-colors flex items-center gap-1.5"
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                  Test AI Voice (Synthetic/TTS)
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickSampleSelect(
+                      'LAVDF_Genuine_Speech_018.wav',
+                      '/samples/audio/LAVDF_Genuine_Speech_018.wav'
+                    )
+                  }
+                  className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition-colors flex items-center gap-1.5"
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                  Test Genuine Voice (Real Speech)
+                </button>
+              </>
+            )}
           </div>
+        </div>
+
+        {/* Engine Banner Info */}
+        <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-brand-card/40 border border-brand-border/60 text-xs">
+          <div className="flex items-center gap-2 text-brand-subtle">
+            {tab === 'video' ? <Video className="h-4 w-4 text-brand-bright" /> : <Volume2 className="h-4 w-4 text-cyan-400" />}
+            <span className="font-semibold text-brand-text">Active Domain Model:</span>
+            <span>
+              {tab === 'video'
+                ? 'ResNet-50 Stage B • 95.03% ROC-AUC (DeepFakeDetection 30-Epoch Champion)'
+                : 'Acoustic Transformer • 97.23% ROC-AUC (LAV-DF 68-Descriptor KernelSHAP Audit)'}
+            </span>
+          </div>
+          <span className="font-orbitron font-bold text-brand-bright hidden sm:inline">
+            {tab === 'video' ? '95.03% AUC' : '97.23% AUC'}
+          </span>
         </div>
 
         {/* Upload Zone */}
@@ -86,10 +155,21 @@ export const Detect = () => {
               <div className="flex items-center gap-3">
                 <RefreshCw className={`h-5 w-5 text-brand-bright ${status !== 'completed' ? 'animate-spin' : ''}`} />
                 <span className="text-brand-text font-orbitron">
-                  {status === 'uploading' && 'Stage 1/4: Ingesting & Extracting Frames...'}
-                  {status === 'processing' && progress < 45 && 'Stage 2/4: Face Alignment & 2D FFT Transform...'}
-                  {status === 'processing' && progress >= 45 && 'Stage 3/4: ResNet-50 Feature Extraction...'}
-                  {status === 'completed' && 'Stage 4/4: Classification & Anomaly Localization Complete!'}
+                  {tab === 'video' ? (
+                    <>
+                      {status === 'uploading' && 'Stage 1/4: Ingesting & Extracting Frames...'}
+                      {status === 'processing' && progress < 45 && 'Stage 2/4: Face Alignment & 2D FFT Transform...'}
+                      {status === 'processing' && progress >= 45 && 'Stage 3/4: ResNet-50 Feature Extraction...'}
+                      {status === 'completed' && 'Stage 4/4: Classification & Anomaly Localization Complete!'}
+                    </>
+                  ) : (
+                    <>
+                      {status === 'uploading' && 'Stage 1/4: Ingesting & Framing Audio Waveform...'}
+                      {status === 'processing' && progress < 45 && 'Stage 2/4: Extracting 68-Dim Acoustic Descriptors (MFCCs, F0, Spectral)...'}
+                      {status === 'processing' && progress >= 45 && 'Stage 3/4: Acoustic Transformer Encoder Pass (4 Heads, 2 Layers)...'}
+                      {status === 'completed' && 'Stage 4/4: KernelSHAP Feature Attribution & Verdict Complete!'}
+                    </>
+                  )}
                 </span>
               </div>
               <span className="text-brand-bright font-orbitron text-lg font-bold">{progress}%</span>
@@ -98,17 +178,41 @@ export const Detect = () => {
 
             {/* Scan Pipeline Steps */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
-              <div className={`p-2.5 rounded-xl border text-xs ${progress >= 25 ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright' : 'bg-brand-card/40 border-brand-border text-brand-muted'}`}>
-                ✓ Frame Extraction
+              <div
+                className={`p-2.5 rounded-xl border text-xs ${
+                  progress >= 25
+                    ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright'
+                    : 'bg-brand-card/40 border-brand-border text-brand-muted'
+                }`}
+              >
+                {tab === 'video' ? '✓ Frame Extraction' : '✓ Audio Framing (16 kHz)'}
               </div>
-              <div className={`p-2.5 rounded-xl border text-xs ${progress >= 50 ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright' : 'bg-brand-card/40 border-brand-border text-brand-muted'}`}>
-                ✓ 2D FFT Frequency Audit
+              <div
+                className={`p-2.5 rounded-xl border text-xs ${
+                  progress >= 50
+                    ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright'
+                    : 'bg-brand-card/40 border-brand-border text-brand-muted'
+                }`}
+              >
+                {tab === 'video' ? '✓ 2D FFT Frequency Audit' : '✓ 68 Acoustic Descriptors'}
               </div>
-              <div className={`p-2.5 rounded-xl border text-xs ${progress >= 75 ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright' : 'bg-brand-card/40 border-brand-border text-brand-muted'}`}>
-                ✓ ResNet-50 Deep Pass
+              <div
+                className={`p-2.5 rounded-xl border text-xs ${
+                  progress >= 75
+                    ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright'
+                    : 'bg-brand-card/40 border-brand-border text-brand-muted'
+                }`}
+              >
+                {tab === 'video' ? '✓ ResNet-50 Deep Pass' : '✓ Acoustic Transformer Pass'}
               </div>
-              <div className={`p-2.5 rounded-xl border text-xs ${progress >= 100 ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright' : 'bg-brand-card/40 border-brand-border text-brand-muted'}`}>
-                ✓ Anomaly Report
+              <div
+                className={`p-2.5 rounded-xl border text-xs ${
+                  progress >= 100
+                    ? 'bg-brand-bright/15 border-brand-bright/40 text-brand-bright'
+                    : 'bg-brand-card/40 border-brand-border text-brand-muted'
+                }`}
+              >
+                {tab === 'video' ? '✓ Anomaly Localization' : '✓ KernelSHAP Attribution'}
               </div>
             </div>
           </div>
@@ -124,7 +228,11 @@ export const Detect = () => {
           }}
           className="w-full py-4 font-bold text-lg glow-effect hover:scale-[1.01] transition-transform rounded-2xl"
         >
-          {status === 'uploading' || status === 'processing' ? 'Executing Forensic Scan...' : 'Start Deepfake Detection'}
+          {status === 'uploading' || status === 'processing'
+            ? 'Executing Forensic Scan...'
+            : tab === 'audio'
+            ? 'Start Audio Deepfake Audit'
+            : 'Start Deepfake Detection'}
           {status !== 'uploading' && status !== 'processing' && <Play className="h-5 w-5 ml-2 fill-current" />}
         </Button>
       </div>
@@ -135,7 +243,7 @@ export const Detect = () => {
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
               <p className="text-brand-bright text-xs uppercase tracking-widest font-bold">
-                Classification Verdict
+                Classification Verdict • {currentResult.fileType.toUpperCase()} MODALITY
               </p>
               <h2 className="text-2xl md:text-3xl font-bold text-brand-text mt-1 font-orbitron">
                 {currentResult.verdict === 'DEEPFAKE' || currentResult.result.includes('FAKE')
@@ -167,11 +275,9 @@ export const Detect = () => {
               <p className="text-xl font-bold text-brand-bright font-orbitron">{currentResult.confidence}%</p>
             </div>
             <div className="glass-effect-sm rounded-2xl p-5 border border-brand-border hover:border-brand-bright/50 transition-colors space-y-1">
-              <p className="text-xs uppercase tracking-widest text-brand-muted font-bold">Primary Anomaly Domain</p>
+              <p className="text-xs uppercase tracking-widest text-brand-muted font-bold">Audited Model Engine</p>
               <p className="text-sm font-semibold text-brand-subtle truncate">
-                {currentResult.reasons && currentResult.reasons[0]
-                  ? currentResult.reasons[0].location
-                  : 'Spatial & Spectral Domain'}
+                {currentResult.modelVersion}
               </p>
             </div>
           </div>
