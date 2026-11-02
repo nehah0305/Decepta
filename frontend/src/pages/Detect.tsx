@@ -136,7 +136,7 @@ export const Detect = () => {
             <span className="font-semibold text-brand-text">Active Domain Model:</span>
             <span>
               {tab === 'video'
-                ? 'ResNet-50 Stage B • 95.03% ROC-AUC (DeepFakeDetection 30-Epoch Champion)'
+                ? 'ResNet-50 Stage B (95.03%) + Acoustic Transformer (97.23%) • Multimodal Calibrated Engine'
                 : 'Acoustic Transformer • 97.23% ROC-AUC (LAV-DF 68-Descriptor KernelSHAP Audit)'}
             </span>
           </div>

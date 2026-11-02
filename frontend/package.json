@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "serve:audio": "python ../backend/audio_service.py --serve"
+    "serve:audio": "python ../backend/audio_service.py --serve",
+    "serve:backend": "python ../backend/audio_service.py --serve"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
