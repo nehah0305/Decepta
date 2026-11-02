@@ -83,14 +83,24 @@ export const Detect = () => {
               <>
                 <button
                   type="button"
-                  onClick={() => handleQuickSampleSelect('DFD_Manipulated_Sequence_042.mp4')}
+                  onClick={() =>
+                    handleQuickSampleSelect(
+                      'DFD_Manipulated_Sequence_042.mp4',
+                      '/samples/video/DFD_Manipulated_Sequence_042.mp4'
+                    )
+                  }
                   className="px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold hover:bg-red-500/25 transition-colors"
                 >
                   Test FAKE Video
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleQuickSampleSelect('DFD_Original_Sequence_018.mp4')}
+                  onClick={() =>
+                    handleQuickSampleSelect(
+                      'DFD_Original_Sequence_018.mp4',
+                      '/samples/video/DFD_Original_Sequence_018.mp4'
+                    )
+                  }
                   className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition-colors"
                 >
                   Test REAL Video

@@ -199,19 +199,9 @@ const generateAcousticWaveform = (isFake: boolean): AudioWaveform => {
 }
 
 const createResult = (file: File, type: DetectionType): DetectionRecord => {
-  const isExplicitFake = /fake|deepfake|manipulated|synth|elevenlabs|faceswap|deepfacelab|stargan|tampered|swap|dfd|dfdc|ffpp/i.test(file.name)
-  const isExplicitReal = /real|genuine|original|human|authentic|raw/i.test(file.name)
   const hash = getFileHash(file)
-
-  let isFake = false
-  if (isExplicitFake) {
-    isFake = true
-  } else if (isExplicitReal) {
-    isFake = false
-  } else {
-    // Balanced simulation for unlabelled files when backend server is offline
-    isFake = hash % 2 === 1
-  }
+  // Fallback simulation when backend server is offline: deterministic hash-based
+  const isFake = hash % 2 === 1
 
   const confidence = isFake
     ? type === 'audio'
@@ -301,7 +291,7 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     let finalResult: DetectionRecord | null = null
 
     // Attempt live connection to the backend Multimodal Deepfake Detection service
-    const endpoint = type === 'audio' ? 'http://localhost:8000/api/detect/audio' : 'http://localhost:8000/api/detect/video'
+    const endpoint = type === 'audio' ? '/api/detect/audio' : '/api/detect/video'
     try {
       const formData = new FormData()
       formData.append('file', file)
@@ -324,9 +314,15 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       } else {
-        console.warn(`[Decepta] Backend returned HTTP ${res.status}`)
+        const errText = await res.text().catch(() => `HTTP ${res.status}`)
+        console.error(`[Decepta] Backend error (${res.status}):`, errText)
+        throw new Error(`Inference service error (${res.status}): ${errText || 'Internal Server Error'}`)
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.message?.includes('Inference service error')) {
+        setStatus('idle')
+        throw err
+      }
       console.warn('[Decepta] Backend service unreachable or timed out, using calibrated client fallback:', err)
     }
 
