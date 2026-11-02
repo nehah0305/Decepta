@@ -33,7 +33,7 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
         { label: 'Anomaly Localization', start: 84, end: 100, active: true },
       ]
 
-  const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE') || analysis.confidence > 50
+  const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE')
 
   return (
     <div className="space-y-8">

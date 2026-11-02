@@ -18,7 +18,7 @@ export const ForensicReasonsCard = ({
   reasons = [],
   acousticShap = [],
 }: ForensicReasonsCardProps) => {
-  const isFake = verdict === 'DEEPFAKE' || resultLabel.includes('FAKE') || confidence > 50
+  const isFake = verdict === 'DEEPFAKE' || resultLabel.includes('FAKE')
   const isAudio = fileType === 'audio'
 
   return (

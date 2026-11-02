@@ -1,7 +1,7 @@
 import type { DetectionRecord } from '../types'
 
 export const generateReportHTML = (analysis: DetectionRecord): string => {
-  const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE') || analysis.confidence > 50
+  const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE')
   const isAudio = analysis.fileType === 'audio'
   const formattedDate = new Date(analysis.createdAt).toLocaleDateString('en-US', {
     weekday: 'long',

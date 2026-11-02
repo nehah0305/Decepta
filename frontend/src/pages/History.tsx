@@ -83,7 +83,7 @@ export const History = () => {
       ) : (
         <div className="space-y-3">
           {filtered.map((item) => {
-            const isFake = item.verdict === 'DEEPFAKE' || item.result.includes('FAKE') || item.confidence > 50
+            const isFake = item.verdict === 'DEEPFAKE' || item.result.includes('FAKE')
 
             return (
               <article
