@@ -1,9 +1,26 @@
+// What: This file implements the MobileNav module in frontend/src/components/layout/MobileNav.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { primaryNav, secondaryNav } from './Sidebar'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const MobileNav = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [open, setOpen] = useState(false)
 
   return (

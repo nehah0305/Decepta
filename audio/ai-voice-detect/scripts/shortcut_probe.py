@@ -1,3 +1,8 @@
+# What: This file implements the shortcut probe module in audio/ai-voice-detect/scripts/shortcut_probe.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Does the model detect synthesis, or just recording conditions?
 
 The human half of this corpus is 933 chunks of 14 YouTube videos; the AI half
@@ -37,6 +42,12 @@ policy = load_policy("outputs/run/policy.json")
 
 @torch.no_grad()
 def p_ai(signal):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: signal.
+    Output: The returned value, or side effects performed by the function.
+    """
     f = torch.from_numpy(frontend.embed(signal)).unsqueeze(0).to(device)
     return float(apply_temperature(np.array([model(f).item()]), policy["temperature"])[0])
 

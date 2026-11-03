@@ -1,3 +1,8 @@
+# What: This file implements the video module in audio/deepfake-detect/src/preprocessing/video.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Frame sampling + face detection/alignment for the visual branch.
 
 Face detection uses OpenCV's bundled Haar cascade (no extra dependency).

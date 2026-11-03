@@ -1,3 +1,8 @@
+# What: This file implements the train module in backend/Datasets/src/phase1/train.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import argparse
 from pathlib import Path
 
@@ -11,6 +16,12 @@ from .video_dataset import VideoDataset
 
 
 def run_epoch(model, loader, loss_fn, optimizer, scaler, device, training):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: model, loader, loss_fn, optimizer, scaler, device, training.
+    Output: The returned value, or side effects performed by the function.
+    """
     model.train(training)
     total_loss = 0.0
     correct = 0
@@ -47,6 +58,12 @@ def run_epoch(model, loader, loss_fn, optimizer, scaler, device, training):
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Train the Phase 1 video classifier.")
     parser.add_argument("--manifest", type=Path, default=METADATA_ROOT / "dfd.csv")
     parser.add_argument("--epochs", type=int, default=DEFAULT_EPOCHS)

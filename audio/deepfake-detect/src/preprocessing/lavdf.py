@@ -1,3 +1,8 @@
+# What: This file implements the lavdf module in audio/deepfake-detect/src/preprocessing/lavdf.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """LAV-DF (Localized Audio Visual DeepFake) indexer.
 
 Replaces FakeAVCeleb as the primary dataset (see README "Data"): LAV-DF is

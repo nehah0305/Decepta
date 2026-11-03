@@ -1,3 +1,8 @@
+# What: This file implements the test explain components module in audio/deepfake-detect/tests/test_explain_components.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Unit tests for the Stage 7 explanation components: Grad-CAM, the
 report generator, and the SHAP helpers, exercised against tiny models so
 they stay fast.
@@ -19,6 +24,12 @@ from src.utils.seed import set_seed
 
 
 def _make_fusion_model(embed_dim=32):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: embed_dim.
+    Output: The returned value, or side effects performed by the function.
+    """
     visual_encoder = VisualEncoder(
         backbone="efficientnet_b0", pretrained=False, embed_dim=embed_dim,
         transformer_depth=1, transformer_heads=4, transformer_ff_dim=32, dropout=0.0,
@@ -34,6 +45,12 @@ def _make_fusion_model(embed_dim=32):
 
 
 def test_gradcam_produces_normalized_per_frame_heatmaps():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(0, deterministic=False)
     model = _make_fusion_model()
     frames = torch.rand(1, 3, 3, 64, 64)
@@ -88,6 +105,12 @@ def test_gradcam_works_inside_no_grad_context():
 
 
 def test_gradcam_removes_hooks_after_use():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(0, deterministic=False)
     model = _make_fusion_model()
     cam = GradCAM(model.visual_encoder)
@@ -99,6 +122,12 @@ def test_gradcam_removes_hooks_after_use():
 
 
 def test_most_implicated_frames_ranks_by_mean_saliency():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     heatmaps = np.zeros((4, 8, 8))
     heatmaps[2] = 1.0  # clearly the most salient frame
     heatmaps[0] = 0.5
@@ -110,6 +139,12 @@ def test_most_implicated_frames_ranks_by_mean_saliency():
 
 
 def test_overlay_heatmap_preserves_shape_and_dtype():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     frame = np.full((32, 32, 3), 120, dtype=np.uint8)
     heatmap = np.linspace(0, 1, 32 * 32).reshape(32, 32)
 
@@ -121,6 +156,12 @@ def test_overlay_heatmap_preserves_shape_and_dtype():
 
 
 def test_top_k_features_sorts_by_absolute_value():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     attributions = {"f0": 0.1, "spectral_flatness": -0.9, "mfcc_0": 0.4, "zcr": 0.01}
 
     top = top_k_features(attributions, k=2)
@@ -130,6 +171,12 @@ def test_top_k_features_sorts_by_absolute_value():
 
 
 def test_build_report_html_contains_key_sections(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     modality_split = {
         "visual_share": 0.75, "acoustic_share": 0.25,
         "shap_visual": 0.6, "shap_acoustic": -0.2, "base_value": 0.1,
@@ -163,6 +210,12 @@ def test_build_report_html_contains_key_sections(tmp_path: Path):
 
 
 def test_explain_modality_split_returns_normalized_shares():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(0, deterministic=False)
     model = _make_fusion_model()
     device = torch.device("cpu")

@@ -1,3 +1,8 @@
+# What: This file implements the verify models module in audio/deepfake-detect/scripts/verify_models.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Verifies every artefact in `models/` is genuinely usable for fine-tuning.
 
 Deliberately independent of export_models.py: it reads ONLY the joblib file
@@ -29,6 +34,12 @@ from src.training.train_visual import build_visual_model
 
 
 def _rebuild(name, cfg):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: name, cfg.
+    Output: The returned value, or side effects performed by the function.
+    """
     if name == "visual":
         return build_visual_model(cfg)
     if name == "acoustic":
@@ -62,6 +73,12 @@ def _forward(name, model, data_cfg):
 
 
 def main() -> int:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     repo = Path(__file__).resolve().parents[1]
     models_dir = repo / "models"
 

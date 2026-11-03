@@ -1,3 +1,8 @@
+# What: This file implements the fetch samples module in audio/deepfake-detect/scripts/fetch_samples.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Pulls a handful of real/fake sample clips out of LAV-DF into samples/.
 
 LAV-DF ships as one ~25GB `LAV-DF.tar` with no per-file access on the Hub, so
@@ -51,6 +56,12 @@ def _labels_from_metadata(raw: bytes) -> dict:
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Fetch sample clips from LAV-DF.")
     parser.add_argument("--per-class", type=int, default=6)
     parser.add_argument("--token", default=os.environ.get("HF_TOKEN"))

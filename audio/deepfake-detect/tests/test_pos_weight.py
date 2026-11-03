@@ -1,3 +1,8 @@
+# What: This file implements the test pos weight module in audio/deepfake-detect/tests/test_pos_weight.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Regression tests for class-imbalance handling.
 
 Sampling and loss weighting both correct the SAME imbalance. Applying both
@@ -18,10 +23,22 @@ LABELS = ["real"] * 357 + ["fake"] * 1039  # the real lean-run train split
 
 
 def _cfg(**data_kwargs):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: **data_kwargs.
+    Output: The returned value, or side effects performed by the function.
+    """
     return OmegaConf.create({"data": data_kwargs})
 
 
 def test_sampler_on_disables_loss_weighting():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     pos_weight = make_pos_weight(_cfg(use_class_balanced_sampler=True), LABELS, DEVICE)
     assert pos_weight.item() == 1.0, (
         "sampler already balances the classes; extra pos_weight double-corrects"
@@ -29,6 +46,12 @@ def test_sampler_on_disables_loss_weighting():
 
 
 def test_loss_weighting_applies_when_sampler_off():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     pos_weight = make_pos_weight(_cfg(use_class_balanced_sampler=False), LABELS, DEVICE)
     assert pos_weight.item() != 1.0
     # fake is the majority here, so it should be down-weighted
@@ -43,11 +66,23 @@ def test_explicit_override_can_force_both():
 
 
 def test_explicit_override_can_disable_both():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     cfg = _cfg(use_class_balanced_sampler=False, use_loss_weighting=False)
     assert make_pos_weight(cfg, LABELS, DEVICE).item() == 1.0
 
 
 def test_balanced_labels_give_neutral_weight_when_weighting_enabled():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     balanced = ["real"] * 500 + ["fake"] * 500
     cfg = _cfg(use_class_balanced_sampler=False)
     assert abs(make_pos_weight(cfg, balanced, DEVICE).item() - 1.0) < 1e-6

@@ -1,3 +1,8 @@
+# What: This file implements the sampler module in audio/audio-deepfake-detect/src/preprocessing/sampler.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Class-imbalance handling for the ~40:1 fake:real ratio in FakeAVCeleb.
 
 Two independent, toggleable strategies -- pick one via config, not both:
@@ -14,6 +19,12 @@ from torch.utils.data import WeightedRandomSampler
 
 
 def _class_counts(labels: Sequence[str]) -> dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: labels.
+    Output: The returned value, or side effects performed by the function.
+    """
     counts = {"real": 0, "fake": 0}
     for label in labels:
         counts[label] += 1

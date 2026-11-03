@@ -1,3 +1,8 @@
+# What: This file implements the train audio module in backend/model/training/train_audio.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Standalone Stage 2 Audio Branch Deepfake Pretraining Script.
 
@@ -46,6 +51,12 @@ class StandaloneAudioClassifier(nn.Module):
         num_layers: int = 2,
         dropout: float = 0.1
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, in_mels, audio_dim, nhead, num_layers, dropout.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.audio_branch = AudioAuthenticityBranch(
             in_mels=in_mels,
@@ -105,6 +116,12 @@ class AudioVideoDataset(Dataset):
         samples: List[VideoSampleItem],
         config: VisualPipelineConfig = DEFAULT_CONFIG
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, samples, config.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.samples = samples
         self.config = config
         self.audio_extractor = AudioWindowExtractor(
@@ -117,9 +134,21 @@ class AudioVideoDataset(Dataset):
         )
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.samples)
 
     def __getitem__(self, idx: int) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, idx.
+        Output: The returned value, or side effects performed by the function.
+        """
         item = self.samples[idx]
         vpath = Path(item.video_path)
 
@@ -146,6 +175,12 @@ class AudioVideoDataset(Dataset):
             return self._dummy_sample(item.video_id, item.label)
 
     def _dummy_sample(self, video_id: str, label: int) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, video_id, label.
+        Output: The returned value, or side effects performed by the function.
+        """
         return {
             "video_id": video_id,
             "mel_windows": torch.zeros(1, 128, 251, dtype=torch.float32),
@@ -334,6 +369,12 @@ def train_audio_stage2(
 
 
 def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: Optional[str] = None, max_samples: Optional[int] = None) -> List[VideoSampleItem]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: csv_path, data_root, split_name, max_samples.
+    Output: The returned value, or side effects performed by the function.
+    """
     import pandas as pd
     if not csv_path.exists():
         return []
@@ -358,6 +399,12 @@ def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: Optional[
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Stage 2: Standalone Audio Branch Deepfake Pretraining")
     parser.add_argument("--epochs", type=int, default=15, help="Training epochs (default: 15)")
     parser.add_argument("--batch-size", type=int, default=16, help="Batch size (default: 16)")

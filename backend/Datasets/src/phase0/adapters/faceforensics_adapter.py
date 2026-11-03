@@ -1,3 +1,8 @@
+# What: This file implements the faceforensics adapter module in backend/Datasets/src/phase0/adapters/faceforensics_adapter.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 import pandas as pd
 
@@ -10,11 +15,23 @@ class FaceForensicsAdapter:
 
     def __init__(self, dataset_root, metadata_file):
 
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, dataset_root, metadata_file.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.dataset_root = Path(dataset_root)
         self.metadata_file = Path(metadata_file)
 
     def load_metadata(self):
 
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         if not self.metadata_file.exists():
 
             raise FileNotFoundError(
@@ -35,6 +52,12 @@ class FaceForensicsAdapter:
 
     def create_manifest(self):
 
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         df = self.load_metadata()
 
         required_columns = [
@@ -200,6 +223,12 @@ class FaceForensicsAdapter:
     @staticmethod
     def detect_manipulation(video_path):
 
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: video_path.
+        Output: The returned value, or side effects performed by the function.
+        """
         path = video_path.lower()
 
         if path.startswith("original/"):
@@ -228,6 +257,12 @@ class FaceForensicsAdapter:
     @staticmethod
     def infer_provenance(video_path, manipulation):
 
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: video_path, manipulation.
+        Output: The returned value, or side effects performed by the function.
+        """
         path = Path(video_path)
         stem = path.stem
 
@@ -262,6 +297,12 @@ class FaceForensicsAdapter:
 
 def main():
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     project_root = Path(__file__).resolve().parents[3]
 
     dataset_root = (

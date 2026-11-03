@@ -1,3 +1,8 @@
+// What: This file implements the User module in frontend/src/pages/User.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
@@ -8,14 +13,56 @@ import { useToast } from '../hooks/useToast'
 import type { AuthUser } from '../types'
 import { Sparkles, LogOut, Save, User as UserIcon, Award } from 'lucide-react'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const User = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const navigate = useNavigate()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { user, logout, updateProfile } = useAuth()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { showToast } = useToast()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [saving, setSaving] = useState(false)
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [profile, setProfile] = useState<AuthUser | null>(() => {
     try {
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const stored = getSafeStorageItem('profile')
       if (stored) {
         return JSON.parse(stored) as AuthUser
@@ -30,6 +77,12 @@ export const User = () => {
     return null
   }
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const save = async () => {
     setSaving(true)
     await new Promise((resolve) => window.setTimeout(resolve, 600))

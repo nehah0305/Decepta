@@ -1,3 +1,8 @@
+# What: This file implements the dfd adapter module in backend/Datasets/src/phase0/adapters/dfd_adapter.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 import re
 
@@ -24,6 +29,12 @@ MANIPULATED_PATTERN = re.compile(r"^(?P<source>\d+)_(?P<target>\d+)__(?P<action>
 
 
 def _metadata(video_path: Path) -> tuple[int, int, int, str]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: video_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     capture = cv2.VideoCapture(str(video_path))
     if not capture.isOpened():
         capture.release()
@@ -38,6 +49,12 @@ def _metadata(video_path: Path) -> tuple[int, int, int, str]:
 
 
 def _row(video_path: Path, relative_path: str, sample_id: str, label: int, source_id: str, manipulation: str, generator: str) -> dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: video_path, relative_path, sample_id, label, source_id, manipulation, generator.
+    Output: The returned value, or side effects performed by the function.
+    """
     frame_count, width, height, codec = _metadata(video_path)
     return {
         "sample_id": sample_id,
@@ -61,6 +78,12 @@ def _row(video_path: Path, relative_path: str, sample_id: str, label: int, sourc
 
 
 def create_manifest() -> pd.DataFrame:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     if not ORIGINAL_ROOT.exists() or not MANIPULATED_ROOT.exists():
         raise FileNotFoundError(f"Expected DFD folders not found under {DATASET_ROOT}")
 
@@ -89,6 +112,12 @@ def create_manifest() -> pd.DataFrame:
 
 
 def assign_splits(manifest: pd.DataFrame) -> pd.DataFrame:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: manifest.
+    Output: The returned value, or side effects performed by the function.
+    """
     import numpy as np
 
     manifest = manifest.copy()
@@ -134,6 +163,12 @@ def assign_splits(manifest: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = assign_splits(create_manifest())
     METADATA_DIR.mkdir(parents=True, exist_ok=True)
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)

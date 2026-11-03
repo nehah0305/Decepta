@@ -1,3 +1,8 @@
+# What: This file implements the frame sampler module in backend/model/preprocessing/frame_sampler.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 High-Coverage Adaptive Frame Sampling Module.
 
@@ -29,6 +34,12 @@ class SamplingPlan:
     actual_coverage_ratio: float
 
     def summary(self) -> str:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return (
             f"Sampling Plan: Total={self.total_usable_frames}, "
             f"Sampled={self.num_candidate_frames} ({self.actual_coverage_ratio:.2%}), "

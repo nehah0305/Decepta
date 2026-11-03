@@ -1,3 +1,8 @@
+// What: This file implements the App module in frontend/src/App.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import type { ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation, Outlet } from 'react-router-dom'
 import { ToastViewport } from './components/ui/Toast'
@@ -14,8 +19,26 @@ import { Settings } from './pages/Settings'
 import { User } from './pages/User'
 import { Models } from './pages/Models'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const ProtectedRoute = ({ children }: { children?: ReactNode }) => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { isAuthenticated } = useAuth()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const location = useLocation()
 
   if (!isAuthenticated) {
@@ -25,11 +48,29 @@ const ProtectedRoute = ({ children }: { children?: ReactNode }) => {
   return children ? <>{children}</> : <Outlet />
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const PublicOnlyRoute = ({ children }: { children: ReactNode }) => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { isAuthenticated } = useAuth()
   return isAuthenticated ? <Navigate to="/detect" replace /> : children
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 function App() {
   return (
     <>

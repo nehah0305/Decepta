@@ -1,3 +1,8 @@
+# What: This file implements the monitor training module in backend/model/training/monitor_training.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Training Progress Monitor for Decepta.
 Reads the training metrics CSV log and reports progress at equal intervals.
@@ -51,6 +56,12 @@ def format_progress(row: dict, total_epochs: int) -> str:
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Monitor Decepta training progress")
     parser.add_argument("--log", type=str, required=True, help="Path to metrics CSV log")
     parser.add_argument("--interval", type=int, default=300, help="Reporting interval in seconds")

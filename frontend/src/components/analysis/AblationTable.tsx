@@ -1,6 +1,23 @@
+// What: This file implements the AblationTable module in frontend/src/components/analysis/AblationTable.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { Award, Layers, ShieldCheck, Sparkles, Volume2, Video } from 'lucide-react'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const AblationTable = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const ablationData = [
     {
       model: 'Spatial CNN (Scratch)',

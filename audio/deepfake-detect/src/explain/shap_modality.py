@@ -1,3 +1,8 @@
+# What: This file implements the shap modality module in audio/deepfake-detect/src/explain/shap_modality.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 7, part 1: coarse SHAP over the modality split.
 
 Attributes the fused decision between the visual and acoustic pooled
@@ -20,6 +25,12 @@ import torch
 
 
 def _pooled_from_batch(model, batch, device: torch.device) -> tuple:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: model, batch, device.
+    Output: The returned value, or side effects performed by the function.
+    """
     frames, v_mask, features, a_mask, _ = batch
     with torch.no_grad():
         encoded = model.encode(

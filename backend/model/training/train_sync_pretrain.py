@@ -1,3 +1,8 @@
+# What: This file implements the train sync pretrain module in backend/model/training/train_sync_pretrain.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Standalone Stage 3 Audio-Visual Synchronization Contrastive Pretraining Script.
 
@@ -59,6 +64,12 @@ class StandaloneSyncModel(nn.Module):
         sync_dim: int = 256,
         dropout: float = 0.1
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, audio_dim, mouth_dim, sync_dim, dropout.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.audio_cnn = Audio2DCNN(in_channels=1, out_dim=audio_dim)
         self.mouth_encoder = MouthROIEncoder(in_channels=3, embedding_dim=mouth_dim)
@@ -113,6 +124,12 @@ class SyncPretrainDataset(Dataset):
         config: VisualPipelineConfig = DEFAULT_CONFIG,
         min_frames: int = 32
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, samples, config, min_frames.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.samples = samples
         self.config = config
         self.min_frames = min_frames
@@ -134,9 +151,21 @@ class SyncPretrainDataset(Dataset):
         )
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.samples)
 
     def __getitem__(self, idx: int) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, idx.
+        Output: The returned value, or side effects performed by the function.
+        """
         item = self.samples[idx]
         vpath = Path(item.video_path)
 
@@ -193,6 +222,12 @@ class SyncPretrainDataset(Dataset):
             return self._dummy_sample(item.video_id)
 
     def _dummy_sample(self, video_id: str) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, video_id.
+        Output: The returned value, or side effects performed by the function.
+        """
         return {
             "video_id": video_id,
             "mouth_crops": torch.zeros(self.min_frames, 3, self.config.MOUTH_ROI_SIZE, self.config.MOUTH_ROI_SIZE),
@@ -369,6 +404,12 @@ def train_sync_stage3(
 
 
 def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: Optional[str] = None, max_samples: Optional[int] = None) -> List[VideoSampleItem]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: csv_path, data_root, split_name, max_samples.
+    Output: The returned value, or side effects performed by the function.
+    """
     import pandas as pd
     if not csv_path.exists():
         return []
@@ -393,6 +434,12 @@ def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: Optional[
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Stage 3: Standalone Audio-Visual Synchronization InfoNCE Pretraining")
     parser.add_argument("--epochs", type=int, default=15, help="Training epochs (default: 15)")
     parser.add_argument("--batch-size", type=int, default=8, help="Batch size (default: 8)")

@@ -1,3 +1,8 @@
+# What: This file implements the augmentations module in audio/audio-deepfake-detect/src/preprocessing/augmentations.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Train-split-only audio augmentations. Callers must gate these on
 split=="train" themselves -- these functions apply unconditionally when
 called, val/test/calibration data must never be passed through them.
@@ -16,6 +21,12 @@ import numpy as np
 def audio_additive_noise(
     signal: np.ndarray, snr_db: float = 20.0, rng: Optional[np.random.Generator] = None
 ) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: signal, snr_db, rng.
+    Output: The returned value, or side effects performed by the function.
+    """
     rng = rng or np.random.default_rng()
     signal_power = np.mean(signal**2) + 1e-12
     noise_power = signal_power / (10 ** (snr_db / 10))

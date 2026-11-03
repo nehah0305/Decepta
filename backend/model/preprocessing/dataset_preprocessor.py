@@ -1,3 +1,8 @@
+# What: This file implements the dataset preprocessor module in backend/model/preprocessing/dataset_preprocessor.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Dataset Preprocessor Module for Multimodal Deepfake Detection.
 

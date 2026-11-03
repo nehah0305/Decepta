@@ -1,3 +1,8 @@
+# What: This file implements the audio module in audio/deepfake-detect/src/preprocessing/audio.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Audio loading + framing for the acoustic branch: resample to 16kHz mono,
 frame at 25ms window / 10ms hop.
 
@@ -98,5 +103,11 @@ def preprocess_audio(
     frame_ms: float = 25.0,
     hop_ms: float = 10.0,
 ) -> Tuple[np.ndarray, int, int]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, sample_rate, frame_ms, hop_ms.
+    Output: The returned value, or side effects performed by the function.
+    """
     signal = load_audio(path, sample_rate=sample_rate)
     return frame_audio(signal, sample_rate=sample_rate, frame_ms=frame_ms, hop_ms=hop_ms)

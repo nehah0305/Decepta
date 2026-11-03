@@ -1,3 +1,8 @@
+# What: This file implements the debug visual pipeline module in backend/model/evaluation/debug_visual_pipeline.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Master Visual Branch Diagnostic & Debugging Suite.
 
@@ -33,6 +38,12 @@ from training.dataset import VideoSampleItem
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     project_root = Path(__file__).resolve().parents[2]
     artifact_dir = project_root / "artifacts/debug_visual_samples"
     artifact_dir.mkdir(parents=True, exist_ok=True)
@@ -81,6 +92,12 @@ def main():
         val_df = pd.read_csv(val_csv)
 
         def extract_stem_id(p: str) -> str:
+            """
+            What: This function provides the behavior declared by its name.
+            How: It validates and transforms its inputs through the statements in its body.
+            Input: Arguments: p.
+            Output: The returned value, or side effects performed by the function.
+            """
             return Path(p).stem.split("_")[0]
 
         tr_ids = set(tr_df["video_path"].apply(extract_stem_id))
@@ -102,6 +119,12 @@ def main():
     data_root = project_root / "Datasets/raw/faceforensicspp"
 
     def extract_first_id(video_path: str) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: video_path.
+        Output: The returned value, or side effects performed by the function.
+        """
         filename = Path(video_path).stem
         if "_" in filename:
             parts = filename.split("_")

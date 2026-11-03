@@ -1,3 +1,8 @@
+# What: This file implements the train multimodal module in backend/model/training/train_multimodal.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 End-to-End Multimodal Deepfake Detection Training Pipeline.
 
@@ -332,6 +337,12 @@ def train_multimodal_model(
 
 
 def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: str, max_samples: Optional[int] = None) -> List[VideoSampleItem]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: csv_path, data_root, split_name, max_samples.
+    Output: The returned value, or side effects performed by the function.
+    """
     import pandas as pd
     if not csv_path.exists():
         return []
@@ -356,6 +367,12 @@ def load_samples_from_csv(csv_path: Path, data_root: Path, split_name: str, max_
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     try:
         torch.multiprocessing.set_start_method('spawn', force=True)
     except RuntimeError:

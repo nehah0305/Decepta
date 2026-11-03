@@ -1,3 +1,8 @@
+# What: This file implements the checkpointing module in audio/audio-deepfake-detect/src/training/checkpointing.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Resumable checkpointing.
 
 The training loops originally saved bare `model.state_dict()`, which is
@@ -21,6 +26,12 @@ import torch
 
 @dataclass
 class TrainingState:
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     epoch: int = 0
     best_auc: float = -1.0
     best_val_loss: float = float("inf")
@@ -35,6 +46,12 @@ def save_resumable(
     scheduler,
     state: TrainingState,
 ) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, model, optimizer, scheduler, state.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     temp_path = Path(path).with_suffix(".tmp")
     payload = {
         "model": model.state_dict(),

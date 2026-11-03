@@ -1,3 +1,8 @@
+# What: This file implements the manifest module in audio/audio-deepfake-detect/src/preprocessing/manifest.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Dataset indexers: walk raw FakeAVCeleb / DFDC directories into manifest
 dataframes with columns: sample_id, video_path, audio_path, identity_id,
 label, manipulated_modality, source_generator.
@@ -36,6 +41,12 @@ _CATEGORY_MAP = {
 
 
 def _find_sibling_audio(video_path: Path) -> Optional[Path]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: video_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     for ext in AUDIO_EXTENSIONS:
         candidate = video_path.with_suffix(ext)
         if candidate.exists():

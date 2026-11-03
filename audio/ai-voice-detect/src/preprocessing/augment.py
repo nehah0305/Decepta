@@ -1,3 +1,8 @@
+# What: This file implements the augment module in audio/ai-voice-detect/src/preprocessing/augment.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Waveform augmentation, applied *before* the frozen frontend.
 
 A frozen-and-cached frontend cannot be augmented on the fly: by training time
@@ -24,6 +29,12 @@ SAMPLE_RATE = 16000
 
 
 def _rms(signal: np.ndarray) -> float:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: signal.
+    Output: The returned value, or side effects performed by the function.
+    """
     return float(np.sqrt(np.mean(signal**2)) + 1e-12)
 
 

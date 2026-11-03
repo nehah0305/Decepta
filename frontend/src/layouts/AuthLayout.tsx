@@ -1,5 +1,16 @@
+// What: This file implements the AuthLayout module in frontend/src/layouts/AuthLayout.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { Outlet } from 'react-router-dom'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const AuthLayout = () => (
   <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4" style={{
     background: 'linear-gradient(135deg, #0C111D 0%, #142633 50%, #0C111D 100%), radial-gradient(circle at 12% 16%, rgba(38, 184, 181, 0.16), transparent 40%), radial-gradient(circle at 88% 7%, rgba(80, 214, 209, 0.14), transparent 32%), radial-gradient(circle at 50% 100%, rgba(38, 184, 181, 0.08), transparent 50%)',

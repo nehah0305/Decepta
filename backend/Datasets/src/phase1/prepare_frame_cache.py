@@ -1,3 +1,8 @@
+# What: This file implements the prepare frame cache module in backend/Datasets/src/phase1/prepare_frame_cache.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import argparse
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -10,6 +15,12 @@ from .config import DATA_ROOT, FRAME_SIZE, FRAMES_PER_VIDEO, METADATA_ROOT, CACH
 
 
 def read_frames(video_path: Path, frames_per_video: int, frame_size: int) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: video_path, frames_per_video, frame_size.
+    Output: The returned value, or side effects performed by the function.
+    """
     capture = cv2.VideoCapture(str(video_path))
     if not capture.isOpened():
         raise RuntimeError(f"Unable to open video: {video_path}")
@@ -33,6 +44,12 @@ def read_frames(video_path: Path, frames_per_video: int, frame_size: int) -> np.
 
 
 def prepare_split(manifest: pd.DataFrame, split: str, output_dir: Path, frames_per_video: int, frame_size: int) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: manifest, split, output_dir, frames_per_video, frame_size.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     samples = manifest[manifest["split"] == split].reset_index(drop=True)
     frames_path = output_dir / f"{split}_frames.npy"
     labels_path = output_dir / f"{split}_labels.npy"
@@ -58,11 +75,23 @@ def prepare_split(manifest: pd.DataFrame, split: str, output_dir: Path, frames_p
 
 
 def _read_sample(job: tuple[int, Path, int, int, int]) -> tuple[int, np.ndarray, int]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: job.
+    Output: The returned value, or side effects performed by the function.
+    """
     index, video_path, label, frames_per_video, frame_size = job
     return index, read_frames(video_path, frames_per_video, frame_size), label
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Prepare a disk-backed DFD frame cache for fast GPU training.")
     parser.add_argument("--manifest", type=Path, default=METADATA_ROOT / "dfd.csv")
     parser.add_argument("--output-dir", type=Path, default=CACHE_ROOT)

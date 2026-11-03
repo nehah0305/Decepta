@@ -1,3 +1,8 @@
+# What: This file implements the inspect dataset module in audio/deepfake-detect/scripts/inspect_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Verifies the real LAV-DF metadata schema before indexing.
 
 Run this immediately after downloading. The upstream schema isn't publicly
@@ -18,6 +23,12 @@ from src.preprocessing.lavdf import index_lavdf, inspect_metadata
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Inspect LAV-DF metadata schema.")
     parser.add_argument("--root", help="Dataset root containing metadata.json")
     parser.add_argument("--metadata", help="Path directly to metadata.json")

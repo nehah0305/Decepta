@@ -1,5 +1,16 @@
+// What: This file implements the mockData module in frontend/src/data/mockData.ts.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import type { DetectionRecord, SettingsState } from '../types'
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const STORAGE_KEYS = {
   auth: 'decepta_auth',
   detections: 'decepta_detections',
@@ -8,13 +19,43 @@ export const STORAGE_KEYS = {
 } as const
 
 // Helper to safely retrieve storage items while migrating legacy data
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const getSafeStorageItem = (key: keyof typeof STORAGE_KEYS): string | null => {
   try {
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const modernKey = STORAGE_KEYS[key]
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const modernValue = localStorage.getItem(modernKey)
     if (modernValue) return modernValue
 
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const legacyKey = `depecta_${key}`
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const legacyValue = localStorage.getItem(legacyKey)
     if (legacyValue) {
       localStorage.setItem(modernKey, legacyValue)
@@ -26,6 +67,12 @@ export const getSafeStorageItem = (key: keyof typeof STORAGE_KEYS): string | nul
   return null
 }
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const INITIAL_DETECTIONS: DetectionRecord[] = [
   {
     id: 'det-001',
@@ -197,6 +244,12 @@ export const INITIAL_DETECTIONS: DetectionRecord[] = [
   },
 ]
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const DEFAULT_SETTINGS: SettingsState = {
   appName: 'Decepta',
   theme: 'dark',
@@ -208,6 +261,12 @@ export const DEFAULT_SETTINGS: SettingsState = {
   completionNotifications: true,
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const formatDate = (value: string) =>
   new Date(value).toLocaleDateString('en-US', {
     month: 'short',

@@ -1,3 +1,8 @@
+# What: This file implements the verify model module in audio/audio-deepfake-detect/scripts/verify_model.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Verifies models/acoustic_model.joblib is genuinely usable.
 
 Reads ONLY the joblib file (never a training checkpoint or the Hydra
@@ -23,6 +28,12 @@ from src.inference.loader import DEFAULT_MODEL_PATH, audio_settings_from, load_a
 
 
 def main() -> int:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     path = Path(sys.argv[1] if len(sys.argv) > 1 else DEFAULT_MODEL_PATH)
     if not path.exists():
         print(f"FAIL: no artefact at {path}")

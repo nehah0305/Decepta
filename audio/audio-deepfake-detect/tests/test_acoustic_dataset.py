@@ -1,3 +1,8 @@
+# What: This file implements the test acoustic dataset module in audio/audio-deepfake-detect/tests/test_acoustic_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 
 import numpy as np
@@ -8,12 +13,24 @@ from src.preprocessing.dataset import AcousticDataset
 
 
 def _write_tone(path: Path, freq: float, duration_s: float, sample_rate: int = 16000):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, freq, duration_s, sample_rate.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     t = np.linspace(0, duration_s, int(sample_rate * duration_s), endpoint=False)
     signal = 0.5 * np.sin(2 * np.pi * freq * t)
     sf.write(str(path), signal, sample_rate)
 
 
 def _make_manifest(tmp_path: Path) -> Path:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     real_path = tmp_path / "real.wav"
     fake_path = tmp_path / "fake.wav"
     _write_tone(real_path, freq=110, duration_s=0.3)
@@ -31,6 +48,12 @@ def _make_manifest(tmp_path: Path) -> Path:
 
 
 def test_dataset_pads_short_clip(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = AcousticDataset(csv_path, split="val", n_mfcc=13, num_frames=200)
 
@@ -45,6 +68,12 @@ def test_dataset_pads_short_clip(tmp_path: Path):
 
 
 def test_dataset_truncates_long_clip(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = AcousticDataset(csv_path, split="val", n_mfcc=13, num_frames=20)
 
@@ -56,12 +85,24 @@ def test_dataset_truncates_long_clip(tmp_path: Path):
 
 
 def test_train_split_augments_by_default(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = AcousticDataset(csv_path, split="train", n_mfcc=13, num_frames=20)
     assert dataset.augment is True
 
 
 def test_val_split_does_not_augment(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = AcousticDataset(csv_path, split="val", n_mfcc=13, num_frames=20)
     assert dataset.augment is False

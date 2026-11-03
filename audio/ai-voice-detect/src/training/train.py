@@ -1,3 +1,8 @@
+# What: This file implements the train module in audio/ai-voice-detect/src/training/train.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Train the classifier head over cached WavLM embeddings.
 
 Everything expensive already happened in `cache_embeddings.py`, so this loop
@@ -31,6 +36,12 @@ from src.training.metrics import compute_metrics
 
 @dataclass
 class TrainConfig:
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     manifest: str = "data/splits/manifest.csv"
     cache_dir: str = "data/cache"
     layer: int = 6
@@ -51,6 +62,12 @@ class TrainConfig:
 
 
 def _loader(dataset, batch_size, shuffle=False, sampler=None) -> DataLoader:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: dataset, batch_size, shuffle, sampler.
+    Output: The returned value, or side effects performed by the function.
+    """
     return DataLoader(
         dataset,
         batch_size=batch_size,
@@ -82,6 +99,12 @@ def _balanced_sampler(labels: np.ndarray, seed: int) -> WeightedRandomSampler:
 
 @torch.no_grad()
 def evaluate(model, loader, device) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: model, loader, device.
+    Output: The returned value, or side effects performed by the function.
+    """
     model.eval()
     scores, targets = [], []
     for features, mask, labels in loader:
@@ -103,6 +126,12 @@ def collect_logits(model, loader, device):
 
 
 def train(cfg: TrainConfig) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg.
+    Output: The returned value, or side effects performed by the function.
+    """
     torch.manual_seed(cfg.seed)
     np.random.seed(cfg.seed)
 

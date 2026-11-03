@@ -1,3 +1,8 @@
+// What: This file implements the Settings module in frontend/src/pages/Settings.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -7,12 +12,42 @@ import { useToast } from '../hooks/useToast'
 import type { SettingsState } from '../types'
 import { Sparkles, Save, Sliders, Bell, Shield, Monitor } from 'lucide-react'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const Settings = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { showToast } = useToast()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [saving, setSaving] = useState(false)
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [settings, setSettings] = useState<SettingsState>(() => {
     try {
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const stored = getSafeStorageItem('settings')
       if (stored) {
         return JSON.parse(stored) as SettingsState
@@ -23,6 +58,12 @@ export const Settings = () => {
     return DEFAULT_SETTINGS
   })
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const save = async () => {
     setSaving(true)
     await new Promise((resolve) => window.setTimeout(resolve, 600))

@@ -1,3 +1,8 @@
+# What: This file implements the audio service module in backend/audio_service.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Decepta Multimodal Deepfake Detection Service.
 
@@ -59,6 +64,12 @@ _ALIGNER = None
 
 
 def get_pipeline() -> AudioDeepfakePipeline:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     global _PIPELINE
     if _PIPELINE is None:
         if not MODEL_PATH.exists():
@@ -75,6 +86,12 @@ def get_pipeline() -> AudioDeepfakePipeline:
 
 
 def get_visual_detector():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     global _VISUAL_MODEL, _VISUAL_MODEL_LATENT, _ALIGNER
     if _VISUAL_MODEL is None or _VISUAL_MODEL_LATENT is None:
         import torch
@@ -702,6 +719,12 @@ try:
     @app.get("/")
     @app.get("/api/health")
     def health_check():
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: none.
+        Output: The returned value, or side effects performed by the function.
+        """
         return {
             "status": "ready",
             "models": {
@@ -714,6 +737,12 @@ try:
 
     @app.post("/api/detect/audio")
     async def detect_audio(file: UploadFile = File(...)):
+        """
+        What: This asynchronous function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: file.
+        Output: The returned value, or side effects performed by the function.
+        """
         suffix = Path(file.filename).suffix or ".wav"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp_path = tmp.name
@@ -734,6 +763,12 @@ try:
 
     @app.post("/api/detect/video")
     async def detect_video(file: UploadFile = File(...)):
+        """
+        What: This asynchronous function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: file.
+        Output: The returned value, or side effects performed by the function.
+        """
         suffix = Path(file.filename).suffix or ".mp4"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp_path = tmp.name
@@ -761,6 +796,12 @@ try:
 
     @app.post("/api/infer")
     async def infer_generic(file: UploadFile = File(...)):
+        """
+        What: This asynchronous function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: file.
+        Output: The returned value, or side effects performed by the function.
+        """
         ext = Path(file.filename).suffix.lower()
         if ext in (".mp4", ".mov", ".avi", ".webm", ".mkv"):
             return await detect_video(file)
@@ -771,6 +812,12 @@ except ImportError:
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Decepta Multimodal Deepfake Detection CLI & Service")
     parser.add_argument("--file", "-f", type=str, help="Path to video (.mp4, .mov) or audio (.wav, .mp3)")
     parser.add_argument("--serve", action="store_true", help="Launch FastAPI HTTP Server")

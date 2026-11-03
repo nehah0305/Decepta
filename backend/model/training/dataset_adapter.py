@@ -1,3 +1,8 @@
+# What: This file implements the dataset adapter module in backend/model/training/dataset_adapter.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Flexible Dataset Adapter for New Datasets.
 
@@ -176,6 +181,12 @@ class DatasetAdapter:
         rng.shuffle(fake_items)
 
         def split_list(items: list) -> Tuple[list, list, list]:
+            """
+            What: This function provides the behavior declared by its name.
+            How: It validates and transforms its inputs through the statements in its body.
+            Input: Arguments: items.
+            Output: The returned value, or side effects performed by the function.
+            """
             n = len(items)
             n_train = int(n * train_ratio)
             n_val = int(n * val_ratio)

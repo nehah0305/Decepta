@@ -1,3 +1,8 @@
+# What: This file implements the download data module in audio/deepfake-detect/scripts/download_data.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Downloads LAV-DF from HuggingFace.
 
 Requires a HuggingFace token with read access, because the dataset sits
@@ -26,6 +31,12 @@ REPO_ID = "ControlNet/LAV-DF"
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Download the LAV-DF dataset.")
     parser.add_argument("--output-dir", default="data/raw/lavdf")
     parser.add_argument("--token", default=os.environ.get("HF_TOKEN"))

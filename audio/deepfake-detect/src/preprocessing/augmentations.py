@@ -1,3 +1,8 @@
+# What: This file implements the augmentations module in audio/deepfake-detect/src/preprocessing/augmentations.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Train-split-only augmentations. Callers must gate these on split=="train"
 themselves -- these functions apply unconditionally when called, val/test/
 calibration data must never be passed through them.
@@ -10,6 +15,12 @@ import numpy as np
 
 
 def jpeg_compression(frame_rgb: np.ndarray, quality: int = 50) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: frame_rgb, quality.
+    Output: The returned value, or side effects performed by the function.
+    """
     ok, encoded = cv2.imencode(".jpg", cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR),
                                 [cv2.IMWRITE_JPEG_QUALITY, quality])
     if not ok:
@@ -21,12 +32,24 @@ def jpeg_compression(frame_rgb: np.ndarray, quality: int = 50) -> np.ndarray:
 def gaussian_noise(
     frame_rgb: np.ndarray, std: float = 5.0, rng: Optional[np.random.Generator] = None
 ) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: frame_rgb, std, rng.
+    Output: The returned value, or side effects performed by the function.
+    """
     rng = rng or np.random.default_rng()
     noise = rng.normal(0, std, frame_rgb.shape)
     return np.clip(frame_rgb.astype(np.float32) + noise, 0, 255).astype(np.uint8)
 
 
 def horizontal_flip(frame_rgb: np.ndarray) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: frame_rgb.
+    Output: The returned value, or side effects performed by the function.
+    """
     return np.ascontiguousarray(frame_rgb[:, ::-1, :])
 
 
@@ -36,6 +59,12 @@ def random_resized_crop(
     scale: tuple = (0.8, 1.0),
     rng: Optional[np.random.Generator] = None,
 ) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: frame_rgb, output_size, scale, rng.
+    Output: The returned value, or side effects performed by the function.
+    """
     rng = rng or np.random.default_rng()
     height, width = frame_rgb.shape[:2]
 
@@ -53,6 +82,12 @@ def random_resized_crop(
 def audio_additive_noise(
     signal: np.ndarray, snr_db: float = 20.0, rng: Optional[np.random.Generator] = None
 ) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: signal, snr_db, rng.
+    Output: The returned value, or side effects performed by the function.
+    """
     rng = rng or np.random.default_rng()
     signal_power = np.mean(signal**2) + 1e-12
     noise_power = signal_power / (10 ** (snr_db / 10))

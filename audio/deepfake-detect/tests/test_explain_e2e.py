@@ -1,3 +1,8 @@
+# What: This file implements the test explain e2e module in audio/deepfake-detect/tests/test_explain_e2e.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """End-to-end sanity check for Stage 7: trains a tiny fusion model, fits
 the Stage 6 policy, then runs the full explanation pipeline and verifies
 the moderator reports, explanations.json, and attribution agreement rate
@@ -21,6 +26,12 @@ from src.utils.seed import set_seed
 
 
 def _write_video(path: Path, value: int, num_frames=4, size=(48, 48)) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, value, num_frames, size.
+    Output: The returned value, or side effects performed by the function.
+    """
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 8, size)
     if not writer.isOpened():
         return False
@@ -31,11 +42,23 @@ def _write_video(path: Path, value: int, num_frames=4, size=(48, 48)) -> bool:
 
 
 def _write_tone(path: Path, freq: float, amplitude: float, duration_s=0.3, sample_rate=16000):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, freq, amplitude, duration_s, sample_rate.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     t = np.linspace(0, duration_s, int(sample_rate * duration_s), endpoint=False)
     sf.write(str(path), (amplitude * np.sin(2 * np.pi * freq * t)).astype(np.float32), sample_rate)
 
 
 def _build_split_csv(tmp_path: Path, name: str, n_real: int, n_fake: int) -> Path:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path, name, n_real, n_fake.
+    Output: The returned value, or side effects performed by the function.
+    """
     rows = []
     for i in range(n_real):
         video_path = tmp_path / f"{name}_real_{i}.mp4"
@@ -70,6 +93,12 @@ def _build_split_csv(tmp_path: Path, name: str, n_real: int, n_fake: int) -> Pat
 
 
 def _base_cfg(splits_dir: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: splits_dir.
+    Output: The returned value, or side effects performed by the function.
+    """
     return {
         "data": {
             "splits_dir": str(splits_dir),
@@ -96,6 +125,12 @@ def _base_cfg(splits_dir: Path):
 
 @pytest.mark.slow
 def test_explanation_pipeline_end_to_end(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(0, deterministic=False)
 
     splits_dir = tmp_path / "splits"

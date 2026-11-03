@@ -1,3 +1,8 @@
+# What: This file implements the test shipped model module in audio/audio-deepfake-detect/tests/test_shipped_model.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """The shipped artefact is the whole point of this package, so it gets its
 own tests: it must load, rebuild, and score a real clip end to end.
 
@@ -25,6 +30,12 @@ requires_artefact = pytest.mark.skipif(
 
 @requires_artefact
 def test_artefact_rebuilds_and_loads_strictly():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     loaded = load_acoustic_model(str(ARTEFACT))
     assert loaded.metadata["dataset"]
     assert loaded.input_dim == 3 * loaded.n_mfcc + 8  # mfcc+delta+delta2 + 8 scalars
@@ -45,6 +56,12 @@ def test_artefact_is_the_acoustic_model_only():
 
 @requires_artefact
 def test_manifest_digest_matches_the_file_on_disk():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     import hashlib
 
     manifest = json.loads((REPO / "models" / "manifest.json").read_text())
@@ -59,6 +76,12 @@ def test_manifest_digest_matches_the_file_on_disk():
 
 @requires_artefact
 def test_forward_pass_is_finite_and_mask_aware():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     loaded = load_acoustic_model(str(ARTEFACT))
     settings = audio_settings_from(loaded.data_config)
     frames = settings["num_audio_frames"]
@@ -99,6 +122,12 @@ def test_padding_does_not_change_the_score():
 @requires_artefact
 @pytest.mark.skipif(not SAMPLES, reason="no sample clips bundled")
 def test_end_to_end_inference_on_a_sample_clip():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     from src.inference.pipeline import AudioDeepfakePipeline, InferenceConfig
 
     # SHAP off: this test is about the pipeline wiring, and KernelSHAP would

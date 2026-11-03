@@ -1,3 +1,8 @@
+# What: This file implements the make figures module in audio/deepfake-detect/scripts/make_figures.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Generates the results-section figures for the paper from
 outputs_medium/test_raw_arrays.npz (raw per-clip probs + gate values,
 produced by evaluate_test.py) and calibration/policy.json (tau thresholds).
@@ -64,6 +69,12 @@ plt.rcParams.update({
 
 
 def fig_roc(labels, probs, dest):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: labels, probs, dest.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     fig, ax = plt.subplots(figsize=(6, 5.5), dpi=300)
     for key in ["visual", "acoustic", "late_fusion", "cross_attention"]:
         fpr, tpr, _ = roc_curve(labels, probs[key])
@@ -82,6 +93,12 @@ def fig_roc(labels, probs, dest):
 
 
 def fig_pr(labels, probs, dest):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: labels, probs, dest.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     fig, ax = plt.subplots(figsize=(6, 5.5), dpi=300)
     base_rate = labels.mean()
     for key in ["visual", "acoustic", "late_fusion", "cross_attention"]:
@@ -102,6 +119,12 @@ def fig_pr(labels, probs, dest):
 
 
 def fig_confusion(labels, probs, dest, key="cross_attention", threshold=0.5):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: labels, probs, dest, key, threshold.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     pred = (probs[key] >= threshold).astype(int)
     cm = confusion_matrix(labels, pred)
     cm_pct = cm / cm.sum(axis=1, keepdims=True) * 100
@@ -127,6 +150,12 @@ def fig_confusion(labels, probs, dest, key="cross_attention", threshold=0.5):
 
 
 def fig_score_distribution(labels, probs, tau_lo, tau_hi, dest, key="cross_attention"):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: labels, probs, tau_lo, tau_hi, dest, key.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     fig, ax = plt.subplots(figsize=(7, 4.5), dpi=300)
     bins = np.linspace(0, 1, 41)
     ax.hist(probs[key][labels == 0], bins=bins, alpha=0.75, color=BLUE,
@@ -147,6 +176,12 @@ def fig_score_distribution(labels, probs, tau_lo, tau_hi, dest, key="cross_atten
 
 
 def fig_gate_distribution(gate, dest):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: gate, dest.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     fig, ax = plt.subplots(figsize=(7, 4.5), dpi=300)
     ax.hist(gate, bins=40, color=VIOLET, alpha=0.85, edgecolor="white", linewidth=0.3)
     ax.axvline(float(np.mean(gate)), color=INK, linewidth=1.5, linestyle="--",
@@ -161,6 +196,12 @@ def fig_gate_distribution(gate, dest):
 
 
 def fig_auc_bar(test_results_json, dest):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: test_results_json, dest.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     payload = json.loads(Path(test_results_json).read_text())
     order = ["visual", "acoustic", "late_fusion", "cross_attention"]
     aucs = [payload["models"][k]["auc"] for k in order]
@@ -185,6 +226,12 @@ def fig_auc_bar(test_results_json, dest):
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--outputs", default="D:/deepfake-data/outputs_medium")
     args = parser.parse_args()

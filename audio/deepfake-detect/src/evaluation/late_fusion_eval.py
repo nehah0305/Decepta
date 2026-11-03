@@ -1,3 +1,8 @@
+# What: This file implements the late fusion eval module in audio/deepfake-detect/src/evaluation/late_fusion_eval.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 4: evaluate the late-fusion (probability-averaging) baseline on
 the val split, using frozen Stage 2/3 checkpoints. Neither branch is
 modified here -- see src/models/fusion/late_fusion.py.
@@ -24,6 +29,12 @@ from src.utils.logging import ExperimentLogger, get_logger
 
 
 def evaluate_late_fusion(cfg, logger: ExperimentLogger = None) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, logger.
+    Output: The returned value, or side effects performed by the function.
+    """
     logger = logger or get_logger("late_fusion", log_dir=Path(cfg.output_dir))
     device = resolve_device(cfg.device)
 

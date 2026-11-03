@@ -1,3 +1,8 @@
+# What: This file implements the test cross attention module in audio/deepfake-detect/tests/test_cross_attention.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import torch
 
 from src.models.acoustic.encoder import AcousticEncoder
@@ -6,6 +11,12 @@ from src.models.visual.encoder import VisualEncoder
 
 
 def _make_model(embed_dim=32):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: embed_dim.
+    Output: The returned value, or side effects performed by the function.
+    """
     visual_encoder = VisualEncoder(
         backbone="efficientnet_b0", pretrained=False, embed_dim=embed_dim,
         transformer_depth=2, transformer_heads=4, transformer_ff_dim=64, dropout=0.0,
@@ -21,6 +32,12 @@ def _make_model(embed_dim=32):
 
 
 def test_forward_output_shapes_and_keys():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     model = _make_model()
     frames = torch.rand(3, 5, 3, 64, 64)
     v_mask = torch.zeros(3, 5, dtype=torch.bool)
@@ -42,6 +59,12 @@ def test_forward_output_shapes_and_keys():
 
 
 def test_gate_is_bounded_in_unit_interval():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     model = _make_model()
     frames = torch.rand(4, 5, 3, 64, 64)
     v_mask = torch.zeros(4, 5, dtype=torch.bool)
@@ -54,6 +77,12 @@ def test_gate_is_bounded_in_unit_interval():
 
 
 def test_handles_padding_masks_without_error():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     model = _make_model()
     frames = torch.rand(2, 6, 3, 64, 64)
     v_mask = torch.zeros(2, 6, dtype=torch.bool)
@@ -67,6 +96,12 @@ def test_handles_padding_masks_without_error():
 
 
 def test_gradients_flow_to_both_encoders():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     model = _make_model()
     frames = torch.rand(2, 5, 3, 64, 64)
     v_mask = torch.zeros(2, 5, dtype=torch.bool)
@@ -82,6 +117,12 @@ def test_gradients_flow_to_both_encoders():
     loss.backward()
 
     def grad_norm(module):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: module.
+        Output: The returned value, or side effects performed by the function.
+        """
         return sum(p.grad.abs().sum() for p in module.parameters() if p.grad is not None)
 
     assert grad_norm(model.visual_encoder) > 0

@@ -1,3 +1,8 @@
+# What: This file implements the create manifest example module in backend/Datasets/src/phase0/create_manifest_example.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 
 import pandas as pd
@@ -7,6 +12,12 @@ from .config import MASTER_MANIFEST
 
 def create_example_manifest():
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     data = [
 
         {

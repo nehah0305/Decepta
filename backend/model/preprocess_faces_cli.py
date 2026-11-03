@@ -1,3 +1,8 @@
+# What: This file implements the preprocess faces cli module in backend/model/preprocess_faces_cli.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 CLI Entry Point for Video Face Alignment and Mouth ROI Preprocessing.
 
@@ -13,6 +18,12 @@ from preprocessing import VideoFacePreprocessor, VideoPreprocessingOutput
 
 
 def parse_args():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     parser = argparse.ArgumentParser(
         description="Preprocess sampled PNG frames: MTCNN detection -> Alignment -> Mouth ROI extraction -> Metadata."
     )
@@ -93,6 +104,12 @@ def print_summary(result: VideoPreprocessingOutput):
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     args = parse_args()
     input_path = Path(args.input_dir)
 

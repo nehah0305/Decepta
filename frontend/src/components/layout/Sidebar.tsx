@@ -1,13 +1,30 @@
+// What: This file implements the Sidebar module in frontend/src/components/layout/Sidebar.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { BarChart3, History, House, Settings, User, ShieldCheck, Cpu, Sparkles, LogOut, Layers } from 'lucide-react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 
+/**
+ * What: This interface defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export interface NavItem {
   label: string
   to: string
   icon: typeof House
 }
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const primaryNav: NavItem[] = [
   { label: 'Deepfake Analyzer', to: '/detect', icon: House },
   { label: 'History & Audit Logs', to: '/history', icon: History },
@@ -15,11 +32,23 @@ export const primaryNav: NavItem[] = [
   { label: 'Research & Benchmarks', to: '/models', icon: Layers },
 ]
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const secondaryNav: NavItem[] = [
   { label: 'System Settings', to: '/settings', icon: Settings },
   { label: 'User Profile', to: '/user', icon: User },
 ]
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const itemClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-3.5 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200 ${
     isActive
@@ -27,8 +56,26 @@ const itemClass = ({ isActive }: { isActive: boolean }) =>
       : 'text-brand-subtle hover:bg-brand-card2/60 hover:text-brand-text hover:translate-x-1'
   }`
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const Sidebar = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { user, logout } = useAuth()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const navigate = useNavigate()
 
   return (

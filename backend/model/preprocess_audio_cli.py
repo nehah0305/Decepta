@@ -1,3 +1,8 @@
+# What: This file implements the preprocess audio cli module in backend/model/preprocess_audio_cli.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 CLI Entry Point for Audio Preprocessing (16 kHz 4s Mono Waveform and Mel-Spectrogram).
 
@@ -17,6 +22,12 @@ from preprocessing import (
 
 
 def parse_args():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     parser = argparse.ArgumentParser(
         description="Standardize extracted audio to 16 kHz Mono 4s (64,000 samples) and compute Mel-Spectrogram (.npy)."
     )
@@ -103,6 +114,12 @@ def print_summary(result: AudioPreprocessorResult):
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     args = parse_args()
     input_path = Path(args.input_audio)
 

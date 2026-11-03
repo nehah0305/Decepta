@@ -1,3 +1,8 @@
+// What: This file implements the useDetection module in frontend/src/hooks/useDetection.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import {
   createContext,
   useCallback,
@@ -18,6 +23,12 @@ import type {
 } from '../types'
 import { generateUniqueId } from '../utils/id'
 
+/**
+ * What: This interface defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 interface DetectionContextValue {
   detections: DetectionRecord[]
   status: DetectionStatus
@@ -28,12 +39,36 @@ interface DetectionContextValue {
   resetStatus: () => void
 }
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const DetectionContext = createContext<DetectionContextValue | null>(null)
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const getFileHash = (file: File): number => {
   let hash = 0
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const str = file.name + file.size + file.type
   for (let i = 0; i < str.length; i++) {
     hash = (hash << 5) - hash + str.charCodeAt(i)
@@ -42,14 +77,38 @@ const getFileHash = (file: File): number => {
   return Math.abs(hash)
 }
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const generateDynamicReasons = (
   file: File,
   type: DetectionType,
   isFake: boolean,
   confidence: number
 ): ForensicReason[] => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const hash = getFileHash(file)
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const ext = file.name.split('.').pop()?.toUpperCase() || 'WAV'
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const segmentCount = Math.floor(80 + (hash % 120))
 
   if (type === 'audio') {
@@ -100,9 +159,33 @@ const generateDynamicReasons = (
 
   // Video Mode
   if (isFake) {
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const startFrame = 12 + (hash % 18)
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const endFrame = startFrame + 30 + (hash % 35)
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const xPos = 110 + (hash % 45)
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const yPos = 35 + (hash % 30)
 
     return [
@@ -126,6 +209,12 @@ const generateDynamicReasons = (
       },
     ]
   } else {
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const isMobile = /whatsapp|vid|pxl|mov|img|camera|rec|clip/i.test(file.name)
     return [
       {
@@ -152,6 +241,12 @@ const generateDynamicReasons = (
   }
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const generateAcousticShap = (isFake: boolean): AcousticShapItem[] => {
   if (isFake) {
     return [
@@ -177,6 +272,12 @@ const generateAcousticShap = (isFake: boolean): AcousticShapItem[] => {
   ]
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const generateAcousticWaveform = (isFake: boolean): AudioWaveform => {
   if (isFake) {
     return {
@@ -198,11 +299,35 @@ const generateAcousticWaveform = (isFake: boolean): AudioWaveform => {
   }
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const createResult = (file: File, type: DetectionType): DetectionRecord => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const hash = getFileHash(file)
   // Fallback simulation when backend server is offline: deterministic hash-based
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const isFake = hash % 2 === 1
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const confidence = isFake
     ? type === 'audio'
       ? Number((94 + (hash % 5) + Math.random() * 0.9).toFixed(1))
@@ -211,11 +336,41 @@ const createResult = (file: File, type: DetectionType): DetectionRecord => {
     ? Number((96 + (hash % 3) + Math.random() * 0.8).toFixed(1))
     : Number((95 + (hash % 4) + Math.random() * 0.9).toFixed(1))
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const processingTime = type === 'audio' ? 0.82 : Number((2.6 + (hash % 15) / 10).toFixed(2))
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const segments = type === 'audio' ? (isFake ? 102 : 151) : Math.floor(55 + (hash % 110))
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const reasons = generateDynamicReasons(file, type, isFake, confidence)
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const modelVersion =
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     type === 'audio'
       ? 'Acoustic Transformer (97.23% ROC-AUC)'
       : 'ResNet-50 Stage B (95.03%) + Acoustic Transformer (97.23%)'
@@ -238,12 +393,36 @@ const createResult = (file: File, type: DetectionType): DetectionRecord => {
   }
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const DetectionProvider = ({ children }: { children: ReactNode }) => {
   // Synchronous lazy state initialization from localStorage with data sanitization & upgrade
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [detections, setDetections] = useState<DetectionRecord[]>(() => {
     try {
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const stored = getSafeStorageItem('detections')
       if (stored) {
+        /**
+         * What: This declaration defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const parsed = JSON.parse(stored) as DetectionRecord[]
         if (Array.isArray(parsed) && parsed.length > 0) {
           // Upgrade any records that had legacy model version strings or missing reasons
@@ -263,13 +442,37 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     return INITIAL_DETECTIONS
   })
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [status, setStatus] = useState<DetectionStatus>('idle')
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [progress, setProgress] = useState(0)
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [currentResult, setCurrentResult] = useState<DetectionRecord | null>(null)
 
   // Ensure initial detections are persisted if storage was empty
   useEffect(() => {
     try {
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const stored = localStorage.getItem(STORAGE_KEYS.detections)
       if (!stored) {
         localStorage.setItem(STORAGE_KEYS.detections, JSON.stringify(detections))
@@ -279,6 +482,12 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [detections])
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const runDetection = useCallback(async (file: File, type: DetectionType) => {
     setStatus('uploading')
     setCurrentResult(null)
@@ -291,13 +500,43 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     let finalResult: DetectionRecord | null = null
 
     // Attempt live connection to the backend Multimodal Deepfake Detection service
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const endpoint = type === 'audio' ? '/api/detect/audio' : '/api/detect/video'
     try {
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const formData = new FormData()
       formData.append('file', file)
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const controller = new AbortController()
+      /**
+       * What: This function defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const timeoutId = window.setTimeout(() => controller.abort(), type === 'audio' ? 15000 : 60000)
 
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const res = await fetch(endpoint, {
         method: 'POST',
         body: formData,
@@ -306,6 +545,12 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
       clearTimeout(timeoutId)
 
       if (res.ok) {
+        /**
+         * What: This declaration defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const liveData = await res.json()
         if (liveData && liveData.verdict) {
           finalResult = {
@@ -314,6 +559,12 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       } else {
+        /**
+         * What: This function defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const errText = await res.text().catch(() => `HTTP ${res.status}`)
         console.error(`[Decepta] Backend error (${res.status}):`, errText)
         throw new Error(`Inference service error (${res.status}): ${errText || 'Internal Server Error'}`)
@@ -332,6 +583,12 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setDetections((current) => {
+      /**
+       * What: This declaration defines the named behavior or data shape.
+       * How: It processes the values supplied by callers according to its implementation.
+       * Input: Declared parameters, props, imported values, or type members.
+       * Output: The declared return value, rendered elements, exported value, or type contract.
+       */
       const nextRecords = [finalResult!, ...current]
       try {
         localStorage.setItem(STORAGE_KEYS.detections, JSON.stringify(nextRecords))
@@ -348,6 +605,12 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     return finalResult
   }, [])
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const getDetectionById = useCallback(
     (id: string) => {
       if (id === 'latest') {
@@ -358,11 +621,23 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
     [detections],
   )
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const resetStatus = useCallback(() => {
     setStatus('idle')
     setProgress(0)
   }, [])
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const value = useMemo(
     () => ({
       detections,
@@ -379,7 +654,19 @@ export const DetectionProvider = ({ children }: { children: ReactNode }) => {
   return <DetectionContext.Provider value={value}>{children}</DetectionContext.Provider>
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const useDetection = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const context = useContext(DetectionContext)
   if (!context) {
     throw new Error('useDetection must be used inside DetectionProvider')

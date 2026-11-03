@@ -1,3 +1,8 @@
+# What: This file implements the calibrate module in audio/ai-voice-detect/scripts/calibrate.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Fit temperature and the operating threshold on the calibration split."""
 
 import argparse
@@ -18,6 +23,12 @@ from src.training.train import collect_logits
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", default="outputs/run/best.pt")
     parser.add_argument("--manifest", default="data/splits/manifest.csv")

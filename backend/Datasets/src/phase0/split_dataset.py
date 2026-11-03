@@ -1,3 +1,8 @@
+# What: This file implements the split dataset module in backend/Datasets/src/phase0/split_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import pandas as pd
 
 from sklearn.model_selection import GroupShuffleSplit
@@ -14,6 +19,12 @@ def split_dataset(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: df.
+    Output: The returned value, or side effects performed by the function.
+    """
     if "split_group_id" not in df.columns:
         raise ValueError(
             "Manifest must contain split_group_id before splitting."
@@ -123,6 +134,12 @@ def print_split_statistics(
     df: pd.DataFrame,
 ) -> None:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: df.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     print("\n================================")
     print("       SPLIT STATISTICS")
     print("================================")

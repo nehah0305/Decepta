@@ -1,3 +1,8 @@
+# What: This file implements the preprocess dfd faces module in backend/model/training/preprocess_dfd_faces.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 GPU-Accelerated Video Face Preprocessing for Decepta.
 
@@ -207,6 +212,12 @@ def run_preprocessing(
     video_queue = queue.Queue(maxsize=16)
 
     def reader_worker(worker_id: int, sub_records: List[Tuple[str, Path]]):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: worker_id, sub_records.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         for sid, vpath in sub_records:
             if not vpath.exists():
                 video_queue.put((sid, []))
@@ -269,6 +280,12 @@ def run_preprocessing(
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Preprocess video faces for Decepta")
     parser.add_argument("--config", type=str, default="training/train_config_dfd.yaml", help="Path to config YAML")
     parser.add_argument("--output-dir", type=str, default="Datasets/preprocessed/dfd_faces", help="Output directory")

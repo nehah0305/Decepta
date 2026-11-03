@@ -1,3 +1,8 @@
+# What: This file implements the debug audio dataset module in backend/model/evaluation/debug_audio_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Dataset-Independent Audio Integrity Audit Script.
 
@@ -206,6 +211,12 @@ def audit_dataset_audio(
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Dataset-Independent Audio Integrity Audit")
     parser.add_argument("--data-dir", type=str, default=None, help="Directory containing .mp4/.avi/.mov video files")
     parser.add_argument("--manifest", type=str, default=None, help="Path to CSV manifest file")

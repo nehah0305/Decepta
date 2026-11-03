@@ -1,3 +1,8 @@
+# What: This file implements the build splits module in audio/audio-deepfake-detect/scripts/build_splits.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Index the raw dataset and write identity-disjoint split manifests to
 data/splits/*.csv.
 
@@ -32,6 +37,12 @@ from src.utils.seed import set_seed
 
 @hydra.main(version_base=None, config_path="../configs", config_name="config")
 def main(cfg: DictConfig) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(cfg.seed, deterministic=cfg.deterministic)
     logger = get_logger("build_splits", log_dir=Path("outputs") / "build_splits")
 

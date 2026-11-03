@@ -1,3 +1,8 @@
+# What: This file implements the evaluate module in backend/model/evaluation/evaluate.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Video Evaluation and Inference Engine.
 
@@ -44,6 +49,12 @@ class VisualDeepfakeEvaluator:
         config: VisualPipelineConfig = DEFAULT_CONFIG,
         checkpoint_path: Optional[Union[str, Path]] = None
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, model, config, checkpoint_path.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.config = config
         self.device = torch.device(config.DEVICE)
 

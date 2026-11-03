@@ -1,3 +1,8 @@
+# What: This file implements the test pipeline module in audio/ai-voice-detect/tests/test_pipeline.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Guards on the parts that would fail silently."""
 
 import sys
@@ -19,6 +24,12 @@ from src.training.metrics import compute_eer
 
 
 def test_parse_stem_maps_prefix_to_generator():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     assert _parse_stem("el_0001_c_part_002") == ("elevenlabs", "el_0001")
     assert _parse_stem("yt_0000_p2_part_167") == ("youtube", "yt_0000")
 
@@ -26,11 +37,23 @@ def test_parse_stem_maps_prefix_to_generator():
 def test_parse_stem_rejects_unknown_prefix():
     # An unrecognised generator must fail loudly rather than silently become
     # its own pseudo-source and quietly corrupt the holdout.
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     with pytest.raises(ValueError):
         _parse_stem("zz_0001_part_001")
 
 
 def _toy_manifest() -> pd.DataFrame:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     rows = []
     for source, prefix, label in [("polly", "po", 1), ("hume", "hu", 1), ("youtube", "yt", 0)]:
         for group_id in range(6):
@@ -44,26 +67,56 @@ def _toy_manifest() -> pd.DataFrame:
 
 
 def test_splits_never_share_a_group():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = make_splits(_toy_manifest(), held_out_sources=["hume"], seed=0)
     assert_no_group_leakage(splits)
 
 
 def test_held_out_generator_appears_only_in_test():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = make_splits(_toy_manifest(), held_out_sources=["hume"], seed=0)
     assert set(splits[splits["source"] == "hume"]["split"]) == {"test"}
 
 
 def test_eer_is_zero_for_perfect_separation():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     labels = [0, 0, 0, 1, 1, 1]
     assert compute_eer(labels, [0.1, 0.2, 0.3, 0.7, 0.8, 0.9]) == pytest.approx(0.0)
 
 
 def test_eer_is_half_when_scores_are_reversed():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     labels = [0, 0, 0, 1, 1, 1]
     assert compute_eer(labels, [0.9, 0.8, 0.7, 0.3, 0.2, 0.1]) == pytest.approx(1.0)
 
 
 def test_collate_masks_padding_not_content():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     batch = [(torch.ones(10, 768), torch.tensor(1.0)),
              (torch.ones(4, 768), torch.tensor(0.0))]
     features, mask, labels = collate_padded(batch)
@@ -97,6 +150,12 @@ def test_silence_reports_no_voiced_audio():
 
 
 def test_speech_like_signal_reports_voiced_audio():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     rng = np.random.default_rng(0)
     tone = (np.sin(2 * np.pi * 200 * np.arange(16000 * 2) / 16000)
             * (0.5 + 0.5 * np.sin(2 * np.pi * 3 * np.arange(16000 * 2) / 16000)))

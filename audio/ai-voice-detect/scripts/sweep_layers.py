@@ -1,3 +1,8 @@
+# What: This file implements the sweep layers module in audio/ai-voice-detect/scripts/sweep_layers.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Measure which WavLM layer carries the synthesis evidence.
 
 Anti-spoofing cues are widely reported to peak in the middle of a
@@ -38,6 +43,12 @@ def pooled_stats(states) -> np.ndarray:
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", default="data/splits/manifest.csv")
     parser.add_argument("--per-split", type=int, default=400)

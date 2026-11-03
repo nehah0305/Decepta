@@ -1,3 +1,8 @@
+# What: This file implements the loader module in audio/audio-deepfake-detect/src/inference/loader.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Loads the exported acoustic artefact (models/acoustic_model.joblib).
 
 The artefact is self-contained -- weights, the architecture config needed to
@@ -21,10 +26,22 @@ DEFAULT_MODEL_PATH = str(Path(__file__).resolve().parents[2] / "models" / "acous
 
 
 def acoustic_input_dim(n_mfcc: int) -> int:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: n_mfcc.
+    Output: The returned value, or side effects performed by the function.
+    """
     return 3 * n_mfcc + 8
 
 
 def build_acoustic_model(model_cfg) -> AcousticClassifier:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: model_cfg.
+    Output: The returned value, or side effects performed by the function.
+    """
     encoder = AcousticEncoder(
         input_dim=acoustic_input_dim(model_cfg.n_mfcc),
         embed_dim=model_cfg.embed_dim,
@@ -39,6 +56,12 @@ def build_acoustic_model(model_cfg) -> AcousticClassifier:
 
 @dataclass
 class LoadedAcousticModel:
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     model: AcousticClassifier
     model_config: dict
     data_config: dict
@@ -46,14 +69,32 @@ class LoadedAcousticModel:
 
     @property
     def n_mfcc(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return int(self.model_config["n_mfcc"])
 
     @property
     def input_dim(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return int(self.model.encoder.input_norm.num_features)
 
     @property
     def test_metrics(self) -> Dict[str, float]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return self.metadata.get("test_metrics", {})
 
 

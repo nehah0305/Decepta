@@ -1,3 +1,8 @@
+# What: This file implements the pipeline module in audio/audio-deepfake-detect/src/inference/pipeline.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Single-clip audio inference: the one function a caller needs.
 
 preprocess -> named features -> acoustic Transformer -> (optional
@@ -104,6 +109,12 @@ class AudioDeepfakePipeline:
     """
 
     def __init__(self, cfg: InferenceConfig = None):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, cfg.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.cfg = cfg or InferenceConfig()
         self._lock = threading.Lock()
         self.device = torch.device(
@@ -143,6 +154,12 @@ class AudioDeepfakePipeline:
         self._background: Optional[torch.Tensor] = None
 
     def _load_policy(self, policy_json: str) -> None:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, policy_json.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         import json
 
         policy = json.loads(Path(policy_json).read_text())
@@ -155,6 +172,12 @@ class AudioDeepfakePipeline:
     # -- preprocessing -----------------------------------------------------
 
     def _prepare(self, media_path: str):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, media_path.
+        Output: The returned value, or side effects performed by the function.
+        """
         signal = load_audio(media_path, sample_rate=self.sample_rate)
         features, _ = extract_acoustic_features(
             signal,
@@ -182,6 +205,12 @@ class AudioDeepfakePipeline:
             return self._infer_locked(media_path, file_name)
 
     def _infer_locked(self, media_path: str, file_name: Optional[str] = None) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, media_path, file_name.
+        Output: The returned value, or side effects performed by the function.
+        """
         features_t, mask, signal, num_valid = self._prepare(media_path)
 
         with torch.no_grad():
@@ -213,6 +242,12 @@ class AudioDeepfakePipeline:
         }
 
     def _shap(self, features_t, mask) -> List[Dict]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, features_t, mask.
+        Output: The returned value, or side effects performed by the function.
+        """
         if self._background is None:
             # Zero baseline: after the encoder's input BatchNorm this is the
             # per-feature mean, i.e. "an average clip" -- the right SHAP

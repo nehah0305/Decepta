@@ -1,3 +1,8 @@
+# What: This file implements the test overfitting module in backend/model/training/test_overfitting.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Master Pipeline Debugging & 20-Sample Tiny Overfitting Test Suite.
 
@@ -34,7 +39,19 @@ from training.dataset import VideoSampleItem
 
 
 class PureSpatialDetector(nn.Module):
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def __init__(self, feature_dim: int = 256, dropout: float = 0.1):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, feature_dim, dropout.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.spatial_cnn = SpatialCNN(in_channels=3, feature_dim=feature_dim)
         self.classifier = nn.Sequential(
@@ -43,6 +60,12 @@ class PureSpatialDetector(nn.Module):
         )
 
     def forward(self, face_frames: torch.Tensor, padding_mask: torch.Tensor = None):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, face_frames, padding_mask.
+        Output: The returned value, or side effects performed by the function.
+        """
         B, N, C, H, W = face_frames.shape
         flat_frames = face_frames.view(B * N, C, H, W)
         
@@ -66,7 +89,19 @@ class PureSpatialDetector(nn.Module):
 
 
 class PureFFTDetector(nn.Module):
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def __init__(self, feature_dim: int = 256, dropout: float = 0.1):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, feature_dim, dropout.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.fft_module = FFT2DModule()
         self.frequency_cnn = FrequencyCNN(in_channels=1, feature_dim=feature_dim)
@@ -76,6 +111,12 @@ class PureFFTDetector(nn.Module):
         )
 
     def forward(self, face_frames: torch.Tensor, padding_mask: torch.Tensor = None):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, face_frames, padding_mask.
+        Output: The returned value, or side effects performed by the function.
+        """
         B, N, C, H, W = face_frames.shape
         flat_frames = face_frames.view(B * N, C, H, W)
         
@@ -100,6 +141,12 @@ class PureFFTDetector(nn.Module):
 
 
 def run_overfitting_tests():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     project_root = Path(__file__).resolve().parents[2]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("\n" + "=" * 80)

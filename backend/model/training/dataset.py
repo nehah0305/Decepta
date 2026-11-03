@@ -1,3 +1,8 @@
+# What: This file implements the dataset module in backend/model/training/dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Video-Level Dataset and Collation Module.
 
@@ -101,6 +106,12 @@ class VideoDeepfakeDataset(Dataset):
         transform: Optional[Callable] = None,
         device: Optional[Union[str, torch.device]] = None
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, samples, coverage_ratio, min_frames, max_frames, face_size, transform, device.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.samples = samples
         self.coverage_ratio = coverage_ratio
         self.min_frames = min_frames
@@ -120,9 +131,21 @@ class VideoDeepfakeDataset(Dataset):
         )
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.samples)
 
     def __getitem__(self, idx: int) -> Dict[str, Union[torch.Tensor, str, int, float]]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, idx.
+        Output: The returned value, or side effects performed by the function.
+        """
         item = self.samples[idx]
         vpath = Path(item.video_path)
 

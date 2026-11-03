@@ -1,3 +1,8 @@
+// What: This file implements the Analysis module in frontend/src/pages/Analysis.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AnalysisCard } from '../components/analysis/AnalysisCard'
@@ -6,10 +11,34 @@ import { useDetection } from '../hooks/useDetection'
 import { Sparkles, ArrowLeft, Download, ShieldCheck, History } from 'lucide-react'
 import { downloadForensicReport } from '../utils/reportGenerator'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const Analysis = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { id = '' } = useParams()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { detections, getDetectionById } = useDetection()
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const analysis = useMemo(() => {
     if (id === 'latest' && detections.length > 0) {
       return detections[0]

@@ -1,3 +1,8 @@
+# What: This file implements the test acceptance module in backend/model/test_acceptance.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Acceptance Test Script for High-Coverage Visual Deepfake Detection System.
 

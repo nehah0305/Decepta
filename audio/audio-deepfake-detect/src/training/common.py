@@ -1,3 +1,8 @@
+# What: This file implements the common module in audio/audio-deepfake-detect/src/training/common.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Training engine: device resolution, the train/eval epoch loop, and the
 cosine-with-warmup LR schedule.
 
@@ -23,13 +28,31 @@ from src.utils.logging import ExperimentLogger
 
 
 def resolve_device(device_cfg: str) -> torch.device:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: device_cfg.
+    Output: The returned value, or side effects performed by the function.
+    """
     if device_cfg == "auto":
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return torch.device(device_cfg)
 
 
 def make_cosine_warmup_lr_lambda(warmup_epochs: int, max_epochs: int):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: warmup_epochs, max_epochs.
+    Output: The returned value, or side effects performed by the function.
+    """
     def lr_lambda(epoch: int) -> float:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: epoch.
+        Output: The returned value, or side effects performed by the function.
+        """
         if warmup_epochs > 0 and epoch < warmup_epochs:
             return (epoch + 1) / warmup_epochs
         progress = (epoch - warmup_epochs) / max(1, max_epochs - warmup_epochs)

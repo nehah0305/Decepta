@@ -1,3 +1,8 @@
+# What: This file implements the shap acoustic module in audio/deepfake-detect/src/explain/shap_acoustic.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 7, part 2: fine-grained SHAP over the named acoustic features.
 
 KernelSHAP over the ~47-dim per-frame acoustic descriptor vector from

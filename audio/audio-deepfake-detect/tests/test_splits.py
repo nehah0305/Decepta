@@ -1,3 +1,8 @@
+# What: This file implements the test splits module in audio/audio-deepfake-detect/tests/test_splits.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import pandas as pd
 import pytest
 
@@ -9,6 +14,12 @@ from src.preprocessing.splits import (
 
 
 def _synthetic_manifest(num_identities: int = 40) -> pd.DataFrame:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: num_identities.
+    Output: The returned value, or side effects performed by the function.
+    """
     rows = []
     pairings = ["none", "video", "audio", "both"]
     for i in range(num_identities):
@@ -44,12 +55,24 @@ def _synthetic_manifest(num_identities: int = 40) -> pd.DataFrame:
 
 
 def test_splits_are_identity_disjoint():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _synthetic_manifest()
     splits = make_identity_disjoint_splits(manifest, seed=0)
     assert_no_identity_leakage(splits)  # must not raise
 
 
 def test_identity_leakage_is_caught():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _synthetic_manifest(num_identities=10)
     splits = make_identity_disjoint_splits(manifest, seed=0)
 
@@ -63,6 +86,12 @@ def test_identity_leakage_is_caught():
 
 
 def test_split_ratios_are_roughly_respected():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _synthetic_manifest(num_identities=100)
     ratios = {"train": 0.7, "val": 0.15, "calibration": 0.05, "test": 0.10}
     splits = make_identity_disjoint_splits(manifest, split_ratios=ratios, seed=1)
@@ -73,6 +102,12 @@ def test_split_ratios_are_roughly_respected():
 
 
 def test_no_split_is_empty_with_enough_identities():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _synthetic_manifest(num_identities=100)
     splits = make_identity_disjoint_splits(manifest, seed=2)
     for split_name, df in splits.items():
@@ -80,6 +115,12 @@ def test_no_split_is_empty_with_enough_identities():
 
 
 def test_split_stats_reports_expected_columns():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _synthetic_manifest(num_identities=40)
     splits = make_identity_disjoint_splits(manifest, seed=3)
     stats = split_stats(splits)

@@ -1,3 +1,8 @@
+# What: This file implements the calibration module in audio/ai-voice-detect/src/evaluation/calibration.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Temperature scaling and threshold selection.
 
 A trained head emits logits whose *ranking* is good but whose *magnitude*
@@ -32,6 +37,12 @@ def fit_temperature(logits: np.ndarray, labels: np.ndarray) -> float:
     labels = np.asarray(labels, dtype=float)
 
     def nll(log_t: float) -> float:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: log_t.
+        Output: The returned value, or side effects performed by the function.
+        """
         temperature = np.exp(log_t)  # keeps T > 0 without a constrained solver
         probabilities = np.clip(expit(logits / temperature), 1e-7, 1 - 1e-7)
         return float(
@@ -126,10 +137,22 @@ def build_policy(
 
 
 def save_policy(policy: Dict[str, float], path: str) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: policy, path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     out = Path(path)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(policy, indent=2))
 
 
 def load_policy(path: str) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path.
+    Output: The returned value, or side effects performed by the function.
+    """
     return json.loads(Path(path).read_text())

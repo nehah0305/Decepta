@@ -1,3 +1,8 @@
+# What: This file implements the calibration module in audio/audio-deepfake-detect/src/evaluation/calibration.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Post-hoc temperature scaling for the frozen acoustic classifier.
 
 T is fit on the CALIBRATION split (never val/train) by minimizing NLL;
@@ -60,6 +65,12 @@ def fit_temperature(logits: np.ndarray, labels: np.ndarray, max_iter: int = 50) 
     criterion = torch.nn.BCEWithLogitsLoss()
 
     def closure():
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: none.
+        Output: The returned value, or side effects performed by the function.
+        """
         optimizer.zero_grad()
         temperature = torch.exp(log_temperature)
         loss = criterion(logits_t / temperature, labels_t)

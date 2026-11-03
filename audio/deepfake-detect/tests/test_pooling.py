@@ -1,3 +1,8 @@
+# What: This file implements the test pooling module in audio/deepfake-detect/tests/test_pooling.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Tests for the temporal pooling strategies.
 
 Mean pooling assumes evidence is spread across the whole clip. LAV-DF edits
@@ -23,6 +28,12 @@ def test_mean_pool_dilutes_a_short_spike():
 
 
 def test_max_pool_respects_padding():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     x = torch.zeros(1, 5, 3)
     x[0, 4] = 99.0  # large value, but padded
     mask = torch.tensor([[False, False, False, False, True]])
@@ -31,6 +42,12 @@ def test_max_pool_respects_padding():
 
 
 def test_max_pool_all_padded_is_finite():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     x = torch.randn(2, 4, 3)
     mask = torch.ones(2, 4, dtype=torch.bool)
     pooled = masked_max_pool(x, mask)
@@ -38,6 +55,12 @@ def test_max_pool_all_padded_is_finite():
 
 
 def test_attention_pool_output_shape_and_finiteness():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     pool = AttentionPool(embed_dim=16)
     x = torch.randn(3, 10, 16)
     pooled = pool(x)
@@ -46,6 +69,12 @@ def test_attention_pool_output_shape_and_finiteness():
 
 
 def test_attention_weights_sum_to_one_over_valid_steps():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     pool = AttentionPool(embed_dim=8)
     x = torch.randn(2, 6, 8)
     mask = torch.zeros(2, 6, dtype=torch.bool)
@@ -80,12 +109,24 @@ def test_attention_pool_can_learn_to_select_one_timestep():
 
 
 def test_build_pooler_dispatch():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     x = torch.randn(2, 5, 8)
     for name in ["mean", "max", "attention"]:
         assert build_pooler(name, 8)(x, None).shape == (2, 8)
 
 
 def test_build_pooler_rejects_unknown():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     with pytest.raises(ValueError, match="Unknown pooling"):
         build_pooler("median", 8)
 

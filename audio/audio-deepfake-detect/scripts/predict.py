@@ -1,3 +1,8 @@
+# What: This file implements the predict module in audio/audio-deepfake-detect/scripts/predict.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Score one or more audio clips with the trained acoustic model.
 
 Accepts .wav/.flac/.mp3 and video containers with muxed audio (.mp4/.mov/
@@ -22,6 +27,12 @@ from src.inference.pipeline import AudioDeepfakePipeline, InferenceConfig
 
 
 def _print_result(result: dict) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: result.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     verdict = "FAKE" if result["pFake"] >= 0.5 else "REAL"
     print(f"\n{result['fileName']}")
     print(f"  P(fake)        {result['pFake']:.4f}   -> {verdict}")
@@ -42,6 +53,12 @@ def _print_result(result: dict) -> None:
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Audio deepfake detection on single clips.")
     parser.add_argument("media", nargs="+", help="audio or video files to score")
     parser.add_argument("--model", default=DEFAULT_MODEL_PATH, help="path to the joblib artefact")

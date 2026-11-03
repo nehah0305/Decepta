@@ -1,3 +1,8 @@
+# What: This file implements the start all module in audio/ai-voice-detect/scripts/start_all.sh.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 #!/usr/bin/env bash
 # Bring up both models plus the router the UI talks to.
 #

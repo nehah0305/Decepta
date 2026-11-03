@@ -1,3 +1,8 @@
+# What: This file implements the evaluate visual model module in backend/model/evaluation/evaluate_visual_model.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Reusable Evaluation Script for Visual Models on the Full Balanced Validation Partition (320 Samples).
 Evaluates models across ALL validation samples with zero step truncation.
@@ -28,6 +33,12 @@ from training.train_spatial_pretrained_stage_b import PretrainedSpatialDetectorF
 
 
 def evaluate_checkpoint(model_type: str, checkpoint_path: str, batch_size: int = 4):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: model_type, checkpoint_path, batch_size.
+    Output: The returned value, or side effects performed by the function.
+    """
     project_root = Path(__file__).resolve().parents[2]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

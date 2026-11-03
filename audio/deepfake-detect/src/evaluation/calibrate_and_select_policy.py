@@ -1,3 +1,8 @@
+# What: This file implements the calibrate and select policy module in audio/deepfake-detect/src/evaluation/calibrate_and_select_policy.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 6 entry point: fits temperature scaling on the calibration split,
 selects approve/flag/block thresholds on the validation split, and writes
 a results markdown with the reliability diagram and operating-point table.
@@ -26,6 +31,12 @@ from src.utils.logging import ExperimentLogger, get_logger
 
 
 def _build_dataset(cfg, split: str) -> MultimodalDataset:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, split.
+    Output: The returned value, or side effects performed by the function.
+    """
     splits_dir = Path(cfg.data.splits_dir)
     visual_kwargs = dict(
         frame_rate=cfg.data.frame_rate,
@@ -47,6 +58,12 @@ def _build_dataset(cfg, split: str) -> MultimodalDataset:
 
 
 def run_calibration_and_policy(cfg, logger: ExperimentLogger = None) -> Dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, logger.
+    Output: The returned value, or side effects performed by the function.
+    """
     logger = logger or get_logger("calibration", log_dir=Path(cfg.output_dir))
     device = resolve_device(cfg.device)
 
@@ -112,6 +129,12 @@ def _write_results_markdown(
     diagram_filename: str,
     false_suppression_ceiling: float,
 ) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: output_path, temperature, thresholds, reliability_before, reliability_after, diagram_filename, false_suppression_ceiling.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     ceiling_ok = thresholds["false_suppression_rate"] <= false_suppression_ceiling
     ece_improved = reliability_after["ece"] < reliability_before["ece"]
     lines = [

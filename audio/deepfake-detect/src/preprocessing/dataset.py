@@ -1,3 +1,8 @@
+# What: This file implements the dataset module in audio/deepfake-detect/src/preprocessing/dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """PyTorch Datasets wrapping a split manifest CSV for the visual and
 acoustic branches. Both load + preprocess raw media via
 src/preprocessing/{video,audio,acoustic features}, apply train-only
@@ -24,6 +29,12 @@ LABEL_TO_INT = {"real": 0, "fake": 1}
 
 
 class VisualDataset(Dataset):
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def __init__(
         self,
         manifest_csv_path: str,
@@ -35,6 +46,12 @@ class VisualDataset(Dataset):
         seed: int = 42,
         cache: "PreprocessingCache" = None,
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, manifest_csv_path, split, frame_rate, frame_size, num_frames, augment, seed, cache.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.df = pd.read_csv(manifest_csv_path)
         self.split = split
         self.frame_rate = frame_rate
@@ -50,9 +67,21 @@ class VisualDataset(Dataset):
         self.cache = cache
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.df)
 
     def __getitem__(self, idx: int):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, idx.
+        Output: The returned value, or side effects performed by the function.
+        """
         row = self.df.iloc[idx]
 
         if self.cache is not None:
@@ -79,6 +108,12 @@ class VisualDataset(Dataset):
 
 
 class AcousticDataset(Dataset):
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def __init__(
         self,
         manifest_csv_path: str,
@@ -94,6 +129,12 @@ class AcousticDataset(Dataset):
         feature_jitter_std: float = 0.05,
         pitch_tracker: str = "yin",
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, manifest_csv_path, split, sample_rate, frame_ms, hop_ms, n_mfcc, num_frames, augment, seed, cache, feature_jitter_std, pitch_tracker.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.df = pd.read_csv(manifest_csv_path)
         self.split = split
         self.sample_rate = sample_rate
@@ -109,9 +150,21 @@ class AcousticDataset(Dataset):
         self.feature_jitter_std = feature_jitter_std
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.df)
 
     def __getitem__(self, idx: int):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, idx.
+        Output: The returned value, or side effects performed by the function.
+        """
         row = self.df.iloc[idx]
 
         if self.cache is not None:
@@ -173,6 +226,12 @@ class MultimodalDataset(Dataset):
         seed: int = 42,
         cache: "PreprocessingCache" = None,
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, manifest_csv_path, split, visual_kwargs, acoustic_kwargs, seed, cache.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.visual = VisualDataset(
             manifest_csv_path, split=split, seed=seed, cache=cache, **(visual_kwargs or {})
         )
@@ -185,9 +244,21 @@ class MultimodalDataset(Dataset):
         self.df = self.visual.df
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.visual)
 
     def __getitem__(self, idx: int):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, idx.
+        Output: The returned value, or side effects performed by the function.
+        """
         frames, visual_mask, label = self.visual[idx]
         features, acoustic_mask, label_check = self.acoustic[idx]
         assert label.item() == label_check.item(), (

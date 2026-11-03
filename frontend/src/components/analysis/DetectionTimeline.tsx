@@ -1,9 +1,26 @@
+// What: This file implements the DetectionTimeline module in frontend/src/components/analysis/DetectionTimeline.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import type { TimelineEvent } from '../../types'
 
+/**
+ * What: This interface defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 interface DetectionTimelineProps {
   events: TimelineEvent[]
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const DetectionTimeline = ({ events }: DetectionTimelineProps) => (
   <div className="space-y-4">
     {/* Bar Visualizer */}

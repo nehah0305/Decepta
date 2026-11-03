@@ -1,3 +1,8 @@
+# What: This file implements the router module in audio/ai-voice-detect/scripts/router.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """One endpoint that handles both audio and video uploads.
 
 The two models cannot share a process: `deepfake-detect` and
@@ -87,6 +92,12 @@ def _post_file(url: str, path: str, filename: str) -> dict:
 
 
 def _backend_up(url: str) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: url.
+    Output: The returned value, or side effects performed by the function.
+    """
     try:
         with urllib.request.urlopen(f"{url}/api/health", timeout=2) as response:
             return response.status == 200
@@ -190,6 +201,12 @@ def _merge(audio: dict, video: dict) -> dict:
 
 
 def _parse_upload(handler):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: handler.
+    Output: The returned value, or side effects performed by the function.
+    """
     content_type = handler.headers.get("Content-Type", "")
     length = int(handler.headers.get("Content-Length", 0))
     body = handler.rfile.read(length)
@@ -209,7 +226,19 @@ def _parse_upload(handler):
 
 
 class Handler(BaseHTTPRequestHandler):
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def _send(self, code: int, payload: dict) -> None:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, code, payload.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         body = json.dumps(payload).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json")
@@ -220,6 +249,12 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_OPTIONS(self):  # noqa: N802
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
@@ -227,6 +262,12 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):  # noqa: N802
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         path = self.path.rstrip("/")
         audio_up, video_up = _backend_up(AUDIO_BACKEND), _backend_up(VIDEO_BACKEND)
         info = {
@@ -251,6 +292,12 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, {"error": "not found"})
 
     def do_POST(self):  # noqa: N802
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         if self.path.rstrip("/") != "/api/infer":
             self._send(404, {"error": "not found"})
             return
@@ -306,10 +353,22 @@ class Handler(BaseHTTPRequestHandler):
                 Path(temp_path).unlink(missing_ok=True)
 
     def log_message(self, fmt, *args):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, fmt, *args.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         sys.stderr.write(f"{self.address_string()} {fmt % args}\n")
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Route uploads to both models.")
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()

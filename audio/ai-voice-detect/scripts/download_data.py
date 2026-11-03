@@ -1,3 +1,8 @@
+# What: This file implements the download data module in audio/ai-voice-detect/scripts/download_data.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Fetch the AI-vs-human voice corpus from the Hugging Face Hub.
 
 garystafford/deepfake-audio-detection, CC-BY-4.0, ungated: 1,866 clips of
@@ -23,11 +28,23 @@ EXPECTED = {"real": 933, "fake": 933}
 
 
 def verify(local_dir: str) -> dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: local_dir.
+    Output: The returned value, or side effects performed by the function.
+    """
     root = Path(local_dir)
     return {name: len(list((root / name).glob("*.flac"))) for name in EXPECTED}
 
 
 def download(local_dir: str, max_retries: int = 8) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: local_dir, max_retries.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     for attempt in range(1, max_retries + 1):
         counts = verify(local_dir)
         if all(counts[name] >= EXPECTED[name] for name in EXPECTED):

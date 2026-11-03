@@ -1,3 +1,8 @@
+# What: This file implements the dev module in audio/deepfake-detect/scripts/dev.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Cross-platform task runner (Windows has no `make` by default).
 
 Mirrors the Makefile targets: setup, lint, test, train-visual, train-acoustic,
@@ -31,6 +36,12 @@ TASKS = {
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     if len(sys.argv) != 2 or sys.argv[1] not in TASKS:
         print(f"Usage: python scripts/dev.py <{'|'.join(TASKS)}>")
         sys.exit(1)

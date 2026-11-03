@@ -1,3 +1,8 @@
+# What: This file implements the logging module in backend/model/utils/logging.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Logging, Frame-Level Feature Serialization, and Frame Coverage Reporting Module.
 
@@ -63,6 +68,12 @@ class FrameCoverageReport:
         print(sep + "\n")
 
     def to_dict(self) -> Dict[str, Any]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return asdict(self)
 
 

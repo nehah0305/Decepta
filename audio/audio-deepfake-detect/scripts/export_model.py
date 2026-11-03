@@ -1,3 +1,8 @@
+# What: This file implements the export model module in audio/audio-deepfake-detect/scripts/export_model.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Exports a trained acoustic checkpoint into models/ as a self-contained
 joblib artefact.
 
@@ -36,6 +41,12 @@ from src.training.train_acoustic import build_acoustic_model
 
 
 def _sha256(path: Path) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path.
+    Output: The returned value, or side effects performed by the function.
+    """
     h = hashlib.sha256()
     with open(path, "rb") as fh:
         for chunk in iter(lambda: fh.read(1 << 20), b""):
@@ -44,6 +55,12 @@ def _sha256(path: Path) -> str:
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Export the acoustic model to models/.")
     parser.add_argument("--checkpoint", default="outputs/acoustic_branch/checkpoints/best.pt")
     parser.add_argument("--data", default="default", help="which configs/data preset to record")

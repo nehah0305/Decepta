@@ -1,3 +1,8 @@
+# What: This file implements the evaluate ffpp comprehensive module in backend/model/evaluation/evaluate_ffpp_comprehensive.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Comprehensive FF++ Test Set Evaluation Script for Multimodal Deepfake Detector.
 
@@ -47,6 +52,12 @@ logger = logging.getLogger(__name__)
 
 
 def extract_first_id(video_path: str) -> int:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: video_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     filename = Path(video_path).stem
     if "_" in filename:
         parts = filename.split("_")
@@ -66,6 +77,12 @@ def load_ffpp_test_samples(
     data_root: Path,
     max_samples: Optional[int] = None
 ) -> Tuple[List[VideoSampleItem], pd.DataFrame]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: csv_path, data_root, max_samples.
+    Output: The returned value, or side effects performed by the function.
+    """
     if not csv_path.exists():
         raise FileNotFoundError(f"Manifest not found at: {csv_path}")
 
@@ -112,6 +129,12 @@ def run_ffpp_evaluation(
     max_samples: Optional[int] = None,
     config: VisualPipelineConfig = DEFAULT_CONFIG
 ) -> Dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: checkpoint_path, manifest_path, data_root, batch_size, max_samples, config.
+    Output: The returned value, or side effects performed by the function.
+    """
     device = torch.device(config.DEVICE)
     logger.info(f"Using compute device: {device}")
 
@@ -249,6 +272,12 @@ def run_ffpp_evaluation(
     lq_df = test_df[test_df["file_size_mb"] < median_size]
 
     def get_tier_metrics(df_tier):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: df_tier.
+        Output: The returned value, or side effects performed by the function.
+        """
         if len(df_tier) == 0:
             return {}
         t_true = df_tier["label"].values
@@ -330,6 +359,12 @@ def run_ffpp_evaluation(
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Evaluate multimodal_best.pt on FF++ Test Set")
     parser.add_argument("--checkpoint", type=str, default="model/checkpoints/multimodal_best.pt")
     parser.add_argument("--manifest", type=str, default="Datasets/metadata/faceforensicspp.csv")

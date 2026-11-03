@@ -1,3 +1,8 @@
+# What: This file implements the leakage checker module in backend/Datasets/src/phase0/leakage_checker.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import pandas as pd
 
 
@@ -6,6 +11,12 @@ def find_set_overlap(
     second_set: set,
 ) -> set:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: first_set, second_set.
+    Output: The returned value, or side effects performed by the function.
+    """
     return first_set.intersection(second_set)
 
 
@@ -13,6 +24,12 @@ def check_subject_leakage(
     df: pd.DataFrame,
 ) -> dict:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: df.
+    Output: The returned value, or side effects performed by the function.
+    """
     results = {}
 
     train_subjects = set(
@@ -49,6 +66,12 @@ def check_source_leakage(
     df: pd.DataFrame,
 ) -> dict:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: df.
+    Output: The returned value, or side effects performed by the function.
+    """
     results = {}
 
     train_sources = set(
@@ -85,6 +108,12 @@ def check_split_group_leakage(
     df: pd.DataFrame,
 ) -> dict:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: df.
+    Output: The returned value, or side effects performed by the function.
+    """
     split_groups = {
         split: set(
             df[df["split"] == split]["split_group_id"]
@@ -113,6 +142,12 @@ def print_leakage_report(
     source_results: dict,
 ) -> bool:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: subject_results, source_results.
+    Output: The returned value, or side effects performed by the function.
+    """
     print("\n================================")
     print("       LEAKAGE REPORT")
     print("================================")

@@ -1,3 +1,8 @@
+# What: This file implements the embeddings module in audio/ai-voice-detect/src/preprocessing/embeddings.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Frozen WavLM frontend plus an on-disk embedding cache.
 
 Why frozen: fine-tuning a 94M-parameter frontend on an M1 would dominate every
@@ -33,6 +38,12 @@ NUM_LAYERS = 12  # transformer layers; extract_features can return 1..12
 
 
 def pick_device(prefer: str = "auto") -> torch.device:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: prefer.
+    Output: The returned value, or side effects performed by the function.
+    """
     if prefer != "auto":
         return torch.device(prefer)
     if torch.backends.mps.is_available():
@@ -105,6 +116,12 @@ class WavLMFrontend:
     """Frozen WavLM Base+ returning per-frame hidden states at ~50 Hz."""
 
     def __init__(self, device: torch.device = None, layer: int = 6):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, device, layer.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.device = device or pick_device()
         self.layer = layer
         bundle = torchaudio.pipelines.WAVLM_BASE_PLUS
@@ -142,11 +159,23 @@ class EmbeddingCache:
     """
 
     def __init__(self, cache_dir: str, layer: int):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, cache_dir, layer.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.cache_dir = Path(cache_dir) / f"wavlm_base_plus_L{layer}"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.layer = layer
 
     def key(self, audio_path: str, variant: str) -> str:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, audio_path, variant.
+        Output: The returned value, or side effects performed by the function.
+        """
         payload = json.dumps(
             {
                 "source": str(audio_path),
@@ -159,9 +188,21 @@ class EmbeddingCache:
         return hashlib.sha1(payload.encode("utf-8")).hexdigest()
 
     def path_for(self, audio_path: str, variant: str = "clean") -> Path:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, audio_path, variant.
+        Output: The returned value, or side effects performed by the function.
+        """
         return self.cache_dir / f"{self.key(audio_path, variant)}.npy"
 
     def get(self, audio_path: str, variant: str = "clean") -> Optional[np.ndarray]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, audio_path, variant.
+        Output: The returned value, or side effects performed by the function.
+        """
         path = self.path_for(audio_path, variant)
         if not path.exists():
             return None
@@ -174,6 +215,12 @@ class EmbeddingCache:
             return None
 
     def put(self, audio_path: str, features: np.ndarray, variant: str = "clean") -> None:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, audio_path, features, variant.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         path = self.path_for(audio_path, variant)
         tmp = path.with_suffix(".tmp.npy")
         np.save(tmp, features.astype(np.float16))

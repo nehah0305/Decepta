@@ -1,3 +1,8 @@
+# What: This file implements the audio preprocessor module in backend/model/preprocessing/audio_preprocessor.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Audio Preprocessing Module for Multimodal Deepfake Detection.
 
@@ -80,6 +85,12 @@ class AudioPreprocessor:
     """
 
     def __init__(self, config: Optional[AudioPreprocessorConfig] = None):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, config.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.config = config or AudioPreprocessorConfig()
 
     def load_audio(self, audio_path: Union[str, Path]) -> Tuple[np.ndarray, int, int]:

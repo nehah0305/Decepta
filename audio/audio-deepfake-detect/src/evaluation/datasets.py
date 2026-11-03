@@ -1,3 +1,8 @@
+# What: This file implements the datasets module in audio/audio-deepfake-detect/src/evaluation/datasets.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Dataset construction for evaluation and calibration runs.
 
 Kept apart from the training loop's own dataset setup for one reason:

@@ -1,3 +1,8 @@
+# What: This file implements the test calibrate and select policy e2e module in audio/deepfake-detect/tests/test_calibrate_and_select_policy_e2e.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """End-to-end sanity check for Stage 6: trains a tiny fusion model from
 scratch on a synthetic three-way-split (train/val/calibration) dataset,
 then runs calibration + threshold selection against it and checks the
@@ -20,6 +25,12 @@ from src.utils.seed import set_seed
 
 
 def _write_video(path: Path, value: int, num_frames=4, size=(48, 48)) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, value, num_frames, size.
+    Output: The returned value, or side effects performed by the function.
+    """
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 8, size)
     if not writer.isOpened():
         return False
@@ -30,11 +41,23 @@ def _write_video(path: Path, value: int, num_frames=4, size=(48, 48)) -> bool:
 
 
 def _write_tone(path: Path, freq: float, amplitude: float, duration_s=0.3, sample_rate=16000):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, freq, amplitude, duration_s, sample_rate.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     t = np.linspace(0, duration_s, int(sample_rate * duration_s), endpoint=False)
     sf.write(str(path), (amplitude * np.sin(2 * np.pi * freq * t)).astype(np.float32), sample_rate)
 
 
 def _build_split_csv(tmp_path: Path, name: str, n_real: int, n_fake: int) -> Path:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path, name, n_real, n_fake.
+    Output: The returned value, or side effects performed by the function.
+    """
     rows = []
     for i in range(n_real):
         video_path = tmp_path / f"{name}_real_{i}.mp4"
@@ -64,6 +87,12 @@ def _build_split_csv(tmp_path: Path, name: str, n_real: int, n_fake: int) -> Pat
 
 
 def _model_and_data_cfg(splits_dir: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: splits_dir.
+    Output: The returned value, or side effects performed by the function.
+    """
     return {
         "data": {
             "splits_dir": str(splits_dir),
@@ -99,6 +128,12 @@ def test_calibration_and_policy_end_to_end(tmp_path: Path):
     # Seed explicitly: torch/numpy global RNG state otherwise depends on
     # whatever tests ran before this one, making weight init (and therefore
     # the learned thresholds asserted below) order-dependent and flaky.
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(0, deterministic=False)
 
     splits_dir = tmp_path / "splits"

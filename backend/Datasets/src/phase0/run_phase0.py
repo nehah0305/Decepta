@@ -1,3 +1,8 @@
+# What: This file implements the run phase0 module in backend/Datasets/src/phase0/run_phase0.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import pandas as pd
 
 from .config import (
@@ -29,6 +34,12 @@ def save_split_manifests(
     df: pd.DataFrame,
 ) -> None:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: df.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     df[
         df["split"] == "train"
     ].to_csv(
@@ -59,6 +70,12 @@ def generate_statistics(
     df: pd.DataFrame,
 ) -> None:
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: df.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     statistics = {
         "total_samples": len(df),
 
@@ -105,6 +122,12 @@ def generate_statistics(
 
 def main():
 
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     print("\n")
     print("=" * 60)
     print("       DEEPFAKE DETECTION - PHASE 0")

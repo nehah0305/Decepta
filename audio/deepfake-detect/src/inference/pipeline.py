@@ -1,3 +1,8 @@
+# What: This file implements the pipeline module in audio/deepfake-detect/src/inference/pipeline.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Single-clip inference: the one function the UI calls.
 
 Wraps Stages 1-7 end to end -- preprocess -> branches -> fusion ->
@@ -57,6 +62,12 @@ class InferenceConfig:
 
 
 def _to_data_uri(image_rgb: np.ndarray) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: image_rgb.
+    Output: The returned value, or side effects performed by the function.
+    """
     ok, buffer = cv2.imencode(".png", cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR))
     return "data:image/png;base64," + base64.b64encode(buffer).decode("ascii") if ok else ""
 
@@ -113,6 +124,12 @@ class DeepfakeInferencePipeline:
     """
 
     def __init__(self, cfg: InferenceConfig, model_cfg):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, cfg, model_cfg.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.cfg = cfg
         self._lock = threading.Lock()
         self.device = torch.device(
@@ -156,6 +173,12 @@ class DeepfakeInferencePipeline:
         )
 
     def _prepare(self, media_path: str):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, media_path.
+        Output: The returned value, or side effects performed by the function.
+        """
         cfg = self.cfg
         frames = preprocess_video(media_path, frame_rate=cfg.frame_rate, size=cfg.frame_size)
         if frames.shape[0] == 0:
@@ -182,6 +205,12 @@ class DeepfakeInferencePipeline:
     # -- public API --------------------------------------------------------
 
     def infer(self, media_path: str, file_name: Optional[str] = None) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, media_path, file_name.
+        Output: The returned value, or side effects performed by the function.
+        """
         with self._lock:
             if _has_video_stream(media_path):
                 return self._infer_locked(media_path, file_name)
@@ -237,6 +266,12 @@ class DeepfakeInferencePipeline:
         }
 
     def _infer_locked(self, media_path: str, file_name: Optional[str] = None) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, media_path, file_name.
+        Output: The returned value, or side effects performed by the function.
+        """
         cfg = self.cfg
         frames_uint8, frames_t, v_mask, features_t, a_mask, signal = self._prepare(media_path)
 
@@ -274,6 +309,12 @@ class DeepfakeInferencePipeline:
         }
 
     def _modality_split(self, out) -> Dict[str, float]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, out.
+        Output: The returned value, or side effects performed by the function.
+        """
         zeros = torch.zeros_like(out["pooled_v"][0])
         return explain_modality_split(
             self.model, out["pooled_v"], out["pooled_a"], zeros, zeros,
@@ -281,6 +322,12 @@ class DeepfakeInferencePipeline:
         )[0]
 
     def _acoustic_shap(self, features_t, a_mask) -> List[Dict]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, features_t, a_mask.
+        Output: The returned value, or side effects performed by the function.
+        """
         if self._background_acoustic is None:
             # Zero baseline: after the encoder's input BatchNorm this is the
             # per-feature mean, i.e. "an average clip" -- the right SHAP
@@ -298,6 +345,12 @@ class DeepfakeInferencePipeline:
         ]
 
     def _saliency(self, frames_t, v_mask, frames_uint8) -> List[Dict]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, frames_t, v_mask, frames_uint8.
+        Output: The returned value, or side effects performed by the function.
+        """
         heatmaps = GradCAM(self.model.visual_encoder)(
             frames_t, v_mask, self.model.visual_aux_head
         )
@@ -324,6 +377,12 @@ MIN_AUDIO_SECONDS = 0.5
 
 
 def _require_analysable_audio(signal: np.ndarray, sample_rate: int) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: signal, sample_rate.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     seconds = len(signal) / float(sample_rate)
     if seconds < MIN_AUDIO_SECONDS:
         raise ValueError(

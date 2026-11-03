@@ -1,3 +1,8 @@
+# What: This file implements the test attribution agreement module in audio/deepfake-detect/tests/test_attribution_agreement.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import math
 
 from src.explain.attribution_agreement import (
@@ -8,6 +13,12 @@ from src.explain.shap_modality import implicated_modality
 
 
 def _split(visual_share: float) -> dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: visual_share.
+    Output: The returned value, or side effects performed by the function.
+    """
     return {
         "visual_share": visual_share,
         "acoustic_share": 1.0 - visual_share,
@@ -18,6 +29,12 @@ def _split(visual_share: float) -> dict:
 
 
 def test_implicated_modality_thresholds():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     assert implicated_modality(_split(0.9)) == "video"
     assert implicated_modality(_split(0.1)) == "audio"
     assert implicated_modality(_split(0.5)) == "both"
@@ -27,6 +44,12 @@ def test_implicated_modality_thresholds():
 
 
 def test_perfect_agreement():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = [_split(0.9), _split(0.1), _split(0.5)]
     truths = ["video", "audio", "both"]
 
@@ -38,6 +61,12 @@ def test_perfect_agreement():
 
 
 def test_real_samples_are_excluded_from_agreement():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = [_split(0.9), _split(0.9), _split(0.9)]
     truths = ["video", "none", "none"]  # only the first is a manipulated sample
 
@@ -50,6 +79,12 @@ def test_real_samples_are_excluded_from_agreement():
 
 
 def test_zero_agreement_when_modality_is_inverted():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = [_split(0.05), _split(0.95)]
     truths = ["video", "audio"]  # model says the opposite modality each time
 
@@ -58,6 +93,12 @@ def test_zero_agreement_when_modality_is_inverted():
 
 
 def test_per_modality_breakdown_and_confusion():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = [_split(0.9), _split(0.9), _split(0.1)]
     truths = ["video", "audio", "audio"]
 
@@ -70,12 +111,24 @@ def test_per_modality_breakdown_and_confusion():
 
 
 def test_agreement_rate_is_nan_when_no_manipulated_samples():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     result = compute_attribution_agreement([_split(0.9)], ["none"])
     assert math.isnan(result["attribution_agreement_rate"])
     assert result["num_considered"] == 0
 
 
 def test_markdown_flags_below_baseline():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = [_split(0.05), _split(0.95)]
     truths = ["video", "audio"]
     result = compute_attribution_agreement(splits, truths)
@@ -85,6 +138,12 @@ def test_markdown_flags_below_baseline():
 
 
 def test_markdown_reports_ok_above_baseline():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     splits = [_split(0.9), _split(0.1)]
     truths = ["video", "audio"]
     result = compute_attribution_agreement(splits, truths)

@@ -1,3 +1,8 @@
+# What: This file implements the setup local checkpoint module in audio/deepfake-detect/scripts/setup_local_checkpoint.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Unpacks models/fusion_model.joblib into the checkpoint + policy.json layout
 that scripts/serve.py expects.
 
@@ -22,6 +27,12 @@ REPO = Path(__file__).resolve().parents[1]
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     artefact_path = REPO / "models" / "fusion_model.joblib"
     if not artefact_path.exists():
         sys.exit(f"missing {artefact_path}")

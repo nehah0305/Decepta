@@ -1,3 +1,8 @@
+# What: This file implements the train fusion module in audio/deepfake-detect/src/training/train_fusion.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Joint cross-modal fusion training loop (Stage 5 of the build plan, the
 core contribution). Unlike the standalone branches, batches carry both
 modalities at once, and the loss combines the fused prediction with each
@@ -35,6 +40,12 @@ from src.utils.logging import ExperimentLogger, get_logger
 
 
 def build_fusion_model(cfg) -> CrossModalFusion:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg.
+    Output: The returned value, or side effects performed by the function.
+    """
     visual_cfg, acoustic_cfg = cfg.model.visual, cfg.model.acoustic
     assert visual_cfg.embed_dim == acoustic_cfg.embed_dim, (
         "visual/acoustic embed_dim must match for cross-attention to combine Hv and Ha"
@@ -147,6 +158,12 @@ def run_fusion_epoch(
 def _compare_with_late_fusion(
     logger: ExperimentLogger, late_fusion_path: str, fusion_metrics: Dict
 ) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: logger, late_fusion_path, fusion_metrics.
+    Output: The returned value, or side effects performed by the function.
+    """
     late_fusion_metrics = load_metrics_json(late_fusion_path)
     if late_fusion_metrics is None:
         return (
@@ -173,6 +190,12 @@ def _compare_with_late_fusion(
 
 
 def train_fusion(cfg, logger: ExperimentLogger = None) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, logger.
+    Output: The returned value, or side effects performed by the function.
+    """
     logger = logger or get_logger("fusion", log_dir=Path(cfg.output_dir))
     device = resolve_device(cfg.device)
     logger.info(f"Training cross-modal fusion on device={device}")

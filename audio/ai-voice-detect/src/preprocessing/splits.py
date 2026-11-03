@@ -1,3 +1,8 @@
+# What: This file implements the splits module in audio/ai-voice-detect/src/preprocessing/splits.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Split the manifest without leaking a speaker, a recording, or a generator.
 
 Two independent constraints, both of which the naive random split violates:

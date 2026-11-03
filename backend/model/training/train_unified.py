@@ -1,3 +1,8 @@
+# What: This file implements the train unified module in backend/model/training/train_unified.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Unified Training Script for Decepta Deepfake Detection.
 
@@ -73,6 +78,12 @@ class ResNet50StageBModel(nn.Module):
         dropout: float = 0.1,
         unfreeze_strategy: str = "layer3_layer4"
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, feature_dim, dropout, unfreeze_strategy.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         weights = models.ResNet50_Weights.DEFAULT
         resnet = models.resnet50(weights=weights)
@@ -125,6 +136,12 @@ class ResNet50StageBModel(nn.Module):
                     f"({trainable/total*100:.1f}%)")
 
     def extract_features(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, x.
+        Output: The returned value, or side effects performed by the function.
+        """
         x = self.stem(x)
         x = self.layer1(x)
         x = self.layer2(x)
@@ -138,6 +155,12 @@ class ResNet50StageBModel(nn.Module):
         face_frames: torch.Tensor,
         padding_mask: Optional[torch.Tensor] = None
     ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, face_frames, padding_mask.
+        Output: The returned value, or side effects performed by the function.
+        """
         B, N, C, H, W = face_frames.shape
         flat_frames = face_frames.view(B * N, C, H, W)
 
@@ -276,6 +299,12 @@ class EarlyStopping:
     """Early stopping tracker based on validation AUC."""
 
     def __init__(self, patience: int = 10, min_delta: float = 0.001):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, patience, min_delta.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.patience = patience
         self.min_delta = min_delta
         self.best_score = -float("inf")
@@ -283,6 +312,12 @@ class EarlyStopping:
         self.should_stop = False
 
     def step(self, score: float) -> bool:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, score.
+        Output: The returned value, or side effects performed by the function.
+        """
         if score > self.best_score + self.min_delta:
             self.best_score = score
             self.counter = 0
@@ -301,11 +336,23 @@ class MetricsLogger:
     """Logs training metrics to CSV for analysis."""
 
     def __init__(self, log_path: Path):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, log_path.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.log_path = log_path
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         self._header_written = False
 
     def log(self, epoch: int, metrics: Dict[str, Any]):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, epoch, metrics.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         metrics["epoch"] = epoch
         mode = "a" if self._header_written else "w"
         with open(self.log_path, mode, newline="") as f:
@@ -1131,6 +1178,12 @@ def dry_run(cfg: Dict):
 # =============================================================================
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(
         description="Decepta Unified Training Script",
         formatter_class=argparse.RawDescriptionHelpFormatter,

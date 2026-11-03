@@ -1,3 +1,8 @@
+# What: This file implements the celebdf adapter module in backend/Datasets/src/phase0/adapters/celebdf_adapter.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 import re
 
@@ -21,10 +26,22 @@ VIDEO_EXTENSIONS = {".mp4", ".avi", ".mov", ".mkv", ".webm"}
 
 
 def _normalise_path(value: str) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: value.
+    Output: The returned value, or side effects performed by the function.
+    """
     return value.strip().replace("\\", "/")
 
 
 def _testing_videos() -> dict[str, int]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     if not TEST_LIST.exists():
         raise FileNotFoundError(f"Celeb-DF testing list not found: {TEST_LIST}")
 
@@ -43,6 +60,12 @@ def _testing_videos() -> dict[str, int]:
 
 
 def _metadata(video_path: Path) -> tuple[int, int, int, str]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: video_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     capture = cv2.VideoCapture(str(video_path))
     if not capture.isOpened():
         capture.release()
@@ -57,15 +80,33 @@ def _metadata(video_path: Path) -> tuple[int, int, int, str]:
 
 
 def _identity_group_ids(relative_paths: list[str]) -> dict[str, str]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: relative_paths.
+    Output: The returned value, or side effects performed by the function.
+    """
     parent = {}
 
     def find(identity: str) -> str:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: identity.
+        Output: The returned value, or side effects performed by the function.
+        """
         parent.setdefault(identity, identity)
         if parent[identity] != identity:
             parent[identity] = find(parent[identity])
         return parent[identity]
 
     def union(first: str, second: str) -> None:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: first, second.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         first_root = find(first)
         second_root = find(second)
         if first_root != second_root:
@@ -94,6 +135,12 @@ def _identity_group_ids(relative_paths: list[str]) -> dict[str, str]:
 
 
 def _group_id(relative_path: str, identity_groups: dict[str, str]) -> tuple[str, str, str]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: relative_path, identity_groups.
+    Output: The returned value, or side effects performed by the function.
+    """
     path = Path(relative_path)
     stem = path.stem
     directory = path.parts[0]
@@ -113,6 +160,12 @@ def _group_id(relative_path: str, identity_groups: dict[str, str]) -> tuple[str,
 
 
 def create_manifest() -> pd.DataFrame:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     testing = _testing_videos()
     video_paths = sorted(
         path for path in DATASET_ROOT.rglob("*")
@@ -166,6 +219,12 @@ def create_manifest() -> pd.DataFrame:
 
 
 def assign_splits(manifest: pd.DataFrame) -> pd.DataFrame:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: manifest.
+    Output: The returned value, or side effects performed by the function.
+    """
     manifest = manifest.copy()
     manifest["split"] = None
     group_counts = manifest.groupby("split_group_id")["label"].agg(["size", "sum"])
@@ -190,6 +249,12 @@ def assign_splits(manifest: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = assign_splits(create_manifest())
     METADATA_DIR.mkdir(parents=True, exist_ok=True)
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)

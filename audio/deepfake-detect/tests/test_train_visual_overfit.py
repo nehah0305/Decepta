@@ -1,3 +1,8 @@
+# What: This file implements the test train visual overfit module in audio/deepfake-detect/tests/test_train_visual_overfit.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """End-to-end sanity check for the Stage 2 training loop: since real
 FakeAVCeleb data isn't available yet, this trains on a tiny synthetic
 dataset with a trivially learnable signal (near-black "real" clips vs.
@@ -21,6 +26,12 @@ from src.utils.seed import set_seed
 
 
 def _write_video(path: Path, value: int, num_frames: int = 4, size=(48, 48)) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, value, num_frames, size.
+    Output: The returned value, or side effects performed by the function.
+    """
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 8, size)
     if not writer.isOpened():
         return False
@@ -31,6 +42,12 @@ def _write_video(path: Path, value: int, num_frames: int = 4, size=(48, 48)) -> 
 
 
 def _build_split_csv(tmp_path: Path, name: str, n_real: int, n_fake: int) -> Path:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path, name, n_real, n_fake.
+    Output: The returned value, or side effects performed by the function.
+    """
     rows = []
     for i in range(n_real):
         path = tmp_path / f"{name}_real_{i}.mp4"
@@ -51,6 +68,12 @@ def _build_split_csv(tmp_path: Path, name: str, n_real: int, n_fake: int) -> Pat
 
 @pytest.mark.slow
 def test_visual_training_loop_learns_trivial_signal(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(0, deterministic=False)  # keep results independent of test execution order
     splits_dir = tmp_path / "splits"
     splits_dir.mkdir()

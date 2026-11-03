@@ -1,3 +1,8 @@
+# What: This file implements the extract parquet module in audio/ai-voice-detect/scripts/extract_parquet.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Materialise the corpus from the Hub's parquet shards into real/ and fake/.
 
 Pulling 1,866 files individually gets rate-limited hard (the Hub degraded to
@@ -16,6 +21,12 @@ LABEL_DIRS = {0: "real", 1: "fake"}
 
 
 def extract(parquet_dir: str, out_dir: str) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: parquet_dir, out_dir.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     shards = sorted(Path(parquet_dir).rglob("*.parquet"))
     if not shards:
         raise SystemExit(f"no parquet shards under {parquet_dir}")

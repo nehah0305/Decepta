@@ -1,19 +1,54 @@
+// What: This file implements the Toast module in frontend/src/components/ui/Toast.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const iconMap = {
   success: CheckCircle2,
   error: AlertCircle,
   info: Info,
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const ToastViewport = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { toasts, dismissToast } = useToast()
 
   return (
     <div className="pointer-events-none fixed right-4 top-4 z-50 flex w-full max-w-sm flex-col gap-2">
       {toasts.map((toast) => {
+        /**
+         * What: This declaration defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const variant = toast.variant ?? 'info'
+        /**
+         * What: This declaration defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const Icon = iconMap[variant]
         return (
           <div

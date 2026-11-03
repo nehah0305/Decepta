@@ -1,10 +1,27 @@
+// What: This file implements the DashboardLayout module in frontend/src/components/layout/DashboardLayout.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { Outlet, Link } from 'react-router-dom'
 import { MobileNav } from './MobileNav'
 import { Sidebar } from './Sidebar'
 import { Bell, Search } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const DashboardLayout = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { user } = useAuth()
 
   return (

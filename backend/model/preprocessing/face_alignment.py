@@ -1,3 +1,8 @@
+# What: This file implements the face alignment module in backend/model/preprocessing/face_alignment.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Face Detection and Canonical Alignment Module using MTCNN.
 
@@ -33,6 +38,12 @@ class AlignedFaceData:
     status: str  # "success", "no_face", "alignment_failed", "unusable_frame"
 
     def to_dict(self) -> dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         d = asdict(self)
         # Exclude large raw numpy array from dict for lightweight metadata serialization
         d.pop("aligned_face", None)

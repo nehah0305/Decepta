@@ -1,8 +1,37 @@
+// What: This file implements the reportGenerator module in frontend/src/utils/reportGenerator.ts.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import type { DetectionRecord } from '../types'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const generateReportHTML = (analysis: DetectionRecord): string => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE')
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const isAudio = analysis.fileType === 'audio'
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const formattedDate = new Date(analysis.createdAt).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -13,6 +42,12 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
     timeZoneName: 'short',
   })
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const reasons = analysis.reasons || [
     {
       category: isAudio ? 'Acoustic Cepstral Discontinuity' : 'Facial Boundary & Edge Blending',
@@ -24,6 +59,12 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
     },
   ]
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const shapItems = analysis.acousticShap || []
 
   return `
@@ -353,13 +394,43 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
   `
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const downloadForensicReport = (analysis: DetectionRecord) => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const htmlContent = generateReportHTML(analysis)
   
   // Create a blob URL and download as printable HTML report
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const blob = new Blob([htmlContent], { type: 'text/html' })
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const url = URL.createObjectURL(blob)
   
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const printWindow = window.open(url, '_blank')
   if (printWindow) {
     printWindow.onload = () => {
@@ -371,6 +442,12 @@ export const downloadForensicReport = (analysis: DetectionRecord) => {
   }
 
   // Also trigger a direct download of the report HTML document
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const link = document.createElement('a')
   link.href = url
   link.download = `Decepta_Forensic_Report_${analysis.fileName.replace(/\.[^/.]+$/, '')}_${analysis.id.slice(0, 6)}.html`

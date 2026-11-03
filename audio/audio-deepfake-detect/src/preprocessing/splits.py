@@ -1,3 +1,8 @@
+# What: This file implements the splits module in audio/audio-deepfake-detect/src/preprocessing/splits.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Identity-disjoint train/val/calibration/test splitting for FakeAVCeleb.
 
 No identity_id may appear in more than one split -- entire identities are
@@ -75,6 +80,12 @@ def make_identity_disjoint_splits(
         # share (as a fraction of that split's total target), summed across
         # the balance columns -- a simple greedy multi-label group balancer.
         def deficit(split: str) -> float:
+            """
+            What: This function provides the behavior declared by its name.
+            How: It validates and transforms its inputs through the statements in its body.
+            Input: Arguments: split.
+            Output: The returned value, or side effects performed by the function.
+            """
             target = targets[split].replace(0, 1e-9)
             return float(((target - running[split]) / target).sum())
 

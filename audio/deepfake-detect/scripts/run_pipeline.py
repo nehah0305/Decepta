@@ -1,3 +1,8 @@
+# What: This file implements the run pipeline module in audio/deepfake-detect/scripts/run_pipeline.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Runs the whole trained pipeline end to end, in dependency order.
 
   visual branch -> acoustic branch -> late-fusion baseline
@@ -26,6 +31,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _run(name: str, command: list, log_path: Path) -> dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: name, command, log_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     log_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"\n=== {name} ===\n  {' '.join(command[1:])}", flush=True)
 
@@ -59,6 +70,12 @@ def _run(name: str, command: list, log_path: Path) -> dict:
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Run the full pipeline.")
     parser.add_argument("--data", default="lean")
     parser.add_argument("--training", default="lean")

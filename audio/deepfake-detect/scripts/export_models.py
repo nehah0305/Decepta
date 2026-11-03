@@ -1,3 +1,8 @@
+# What: This file implements the export models module in audio/deepfake-detect/scripts/export_models.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Exports the trained checkpoints into `models/` as self-contained joblib artefacts.
 
 The raw training checkpoints are bare `state_dict`s: weights only, with no
@@ -47,6 +52,12 @@ EXPORTS = {
 
 
 def _sha256(path: Path) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path.
+    Output: The returned value, or side effects performed by the function.
+    """
     h = hashlib.sha256()
     with open(path, "rb") as fh:
         for chunk in iter(lambda: fh.read(1 << 20), b""):
@@ -64,6 +75,12 @@ def _build(name, cfg):
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Export trained models to models/ as joblib artefacts.")
     parser.add_argument("--outputs", default="D:/deepfake-data/outputs_medium")
     parser.add_argument("--data", default="medium")

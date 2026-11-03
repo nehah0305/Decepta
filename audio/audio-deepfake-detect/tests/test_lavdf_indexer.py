@@ -1,3 +1,8 @@
+# What: This file implements the test lavdf indexer module in audio/audio-deepfake-detect/tests/test_lavdf_indexer.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import json
 from pathlib import Path
 
@@ -7,6 +12,12 @@ from src.preprocessing.lavdf import index_lavdf, inspect_metadata
 
 
 def _write_metadata(tmp_path: Path, entries, filename="metadata.json") -> Path:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path, entries, filename.
+    Output: The returned value, or side effects performed by the function.
+    """
     (tmp_path / filename).write_text(json.dumps(entries), encoding="utf-8")
     for entry in entries if isinstance(entries, list) else entries.values():
         file_field = entry.get("file") or entry.get("filename")
@@ -18,6 +29,12 @@ def _write_metadata(tmp_path: Path, entries, filename="metadata.json") -> Path:
 
 
 def test_index_maps_modality_flags_to_labels(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     entries = [
         {"file": "id0/real.mp4", "modify_video": False, "modify_audio": False,
          "original": "id0/src.mp4"},
@@ -97,6 +114,12 @@ def test_fake_groups_with_the_real_clip_it_came_from(tmp_path: Path):
 
 
 def test_audio_path_points_at_muxed_video(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     entries = [{"file": "x/1.mp4", "modify_video": True, "modify_audio": False}]
     _write_metadata(tmp_path, entries)
 
@@ -105,6 +128,12 @@ def test_audio_path_points_at_muxed_video(tmp_path: Path):
 
 
 def test_dict_keyed_metadata_is_supported(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     entries = {
         "id0/a.mp4": {"modify_video": True, "modify_audio": False},
         "id0/b.mp4": {"modify_video": False, "modify_audio": False},
@@ -120,6 +149,12 @@ def test_dict_keyed_metadata_is_supported(tmp_path: Path):
 
 
 def test_alternate_field_spellings_resolve(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     entries = [{"filename": "y/1.mp4", "video_modified": True, "audio_modified": False}]
     _write_metadata(tmp_path, entries)
 
@@ -138,11 +173,23 @@ def test_missing_required_field_fails_loudly(tmp_path: Path):
 
 
 def test_missing_metadata_file_raises_actionable_error(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     with pytest.raises(FileNotFoundError, match="metadata.json"):
         index_lavdf(str(tmp_path))
 
 
 def test_inspect_metadata_reports_schema(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     entries = [{"file": "a.mp4", "modify_video": True, "modify_audio": False, "extra": 1}]
     metadata_path = _write_metadata(tmp_path, entries)
 

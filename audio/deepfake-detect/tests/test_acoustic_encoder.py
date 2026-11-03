@@ -1,3 +1,8 @@
+# What: This file implements the test acoustic encoder module in audio/deepfake-detect/tests/test_acoustic_encoder.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import torch
 
 from src.models.acoustic.encoder import AcousticClassifier, AcousticEncoder
@@ -5,6 +10,12 @@ from src.models.common import masked_mean_pool
 
 
 def _make_encoder(input_dim=47, embed_dim=32):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: input_dim, embed_dim.
+    Output: The returned value, or side effects performed by the function.
+    """
     return AcousticEncoder(
         input_dim=input_dim,
         embed_dim=embed_dim,
@@ -16,6 +27,12 @@ def _make_encoder(input_dim=47, embed_dim=32):
 
 
 def test_acoustic_encoder_output_shape():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     encoder = _make_encoder()
     features = torch.rand(2, 10, 47)
 
@@ -24,6 +41,12 @@ def test_acoustic_encoder_output_shape():
 
 
 def test_acoustic_encoder_respects_padding_mask():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     encoder = _make_encoder()
     features = torch.rand(2, 10, 47)
     mask = torch.zeros(2, 10, dtype=torch.bool)
@@ -34,6 +57,12 @@ def test_acoustic_encoder_respects_padding_mask():
 
 
 def test_acoustic_classifier_output_shape():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     encoder = _make_encoder()
     classifier = AcousticClassifier(encoder, embed_dim=32)
     features = torch.rand(3, 10, 47)
@@ -43,6 +72,12 @@ def test_acoustic_classifier_output_shape():
 
 
 def test_masked_mean_pool_matches_manual_average():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     x = torch.arange(12).float().view(1, 4, 3)
     mask = torch.tensor([[False, False, False, True]])
     pooled = masked_mean_pool(x, mask)

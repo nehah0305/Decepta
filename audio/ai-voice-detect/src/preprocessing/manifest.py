@@ -1,3 +1,8 @@
+# What: This file implements the manifest module in audio/ai-voice-detect/src/preprocessing/manifest.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Index the raw audio tree into a labelled manifest.
 
 The dataset ships as two flat directories, `real/` and `fake/`, with the
@@ -94,6 +99,12 @@ def build_manifest(raw_dir: str, with_duration: bool = False) -> pd.DataFrame:
         import soundfile as sf
 
         def _seconds(path: str) -> Optional[float]:
+            """
+            What: This function provides the behavior declared by its name.
+            How: It validates and transforms its inputs through the statements in its body.
+            Input: Arguments: path.
+            Output: The returned value, or side effects performed by the function.
+            """
             try:
                 info = sf.info(path)
                 return info.frames / float(info.samplerate)

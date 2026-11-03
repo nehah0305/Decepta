@@ -1,3 +1,8 @@
+# What: This file implements the audio windowing module in backend/model/preprocessing/audio_windowing.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Audio Extraction, Windowing, and Log-Mel Spectrogram Module.
 
@@ -36,6 +41,12 @@ class AudioWindowData:
     corresponding_frame_indices: List[int] = None
 
     def to_dict(self) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return {
             "video_id": self.video_id,
             "window_id": self.window_id,
@@ -77,6 +88,12 @@ class AudioWindowExtractor:
         f_max: float = 8000.0,
         top_db: float = 80.0
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, sample_rate, window_seconds, hop_seconds, n_mels, n_fft, hop_length, win_length, f_min, f_max, top_db.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.sample_rate = sample_rate
         self.window_seconds = window_seconds
         self.hop_seconds = hop_seconds

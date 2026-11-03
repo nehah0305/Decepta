@@ -1,3 +1,8 @@
+# What: This file implements the build splits module in audio/ai-voice-detect/scripts/build_splits.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Index the corpus and split it without leaking a recording or a generator.
 
 Writes data/splits/manifest.csv. Prints the tables worth checking before any
@@ -23,6 +28,12 @@ from src.preprocessing.splits import (
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw", default="data/raw")
     parser.add_argument("--out", default="data/splits/manifest.csv")

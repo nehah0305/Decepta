@@ -1,3 +1,8 @@
+# What: This file implements the cam visual module in audio/deepfake-detect/src/explain/cam_visual.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 7, part 3: Grad-CAM saliency over the visual branch's CNN backbone.
 
 Per the build plan's architecture decision, the visual modality is
@@ -41,6 +46,12 @@ class GradCAM:
     """
 
     def __init__(self, visual_encoder, target_layer: Optional[torch.nn.Module] = None):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, visual_encoder, target_layer.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.visual_encoder = visual_encoder
         self.target_layer = target_layer or _find_target_layer(visual_encoder)
         self._activations = None
@@ -48,16 +59,40 @@ class GradCAM:
         self._handles = []
 
     def _register(self):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         def forward_hook(_module, _inputs, output):
+            """
+            What: This function provides the behavior declared by its name.
+            How: It validates and transforms its inputs through the statements in its body.
+            Input: Arguments: _module, _inputs, output.
+            Output: Side effects performed by the function; no value is explicitly returned.
+            """
             self._activations = output
             output.register_hook(self._save_gradient)
 
         self._handles.append(self.target_layer.register_forward_hook(forward_hook))
 
     def _save_gradient(self, grad):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, grad.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self._gradients = grad
 
     def _remove(self):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         for handle in self._handles:
             handle.remove()
         self._handles = []

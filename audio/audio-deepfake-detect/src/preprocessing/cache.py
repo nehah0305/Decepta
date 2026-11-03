@@ -1,3 +1,8 @@
+# What: This file implements the cache module in audio/audio-deepfake-detect/src/preprocessing/cache.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """One-time acoustic preprocessing cache.
 
 Without this, every epoch re-runs feature extraction on every audio clip.
@@ -26,18 +31,42 @@ from src.preprocessing.audio import load_audio
 
 
 def _cache_key(source_path: str, params: dict) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: source_path, params.
+    Output: The returned value, or side effects performed by the function.
+    """
     payload = json.dumps({"source": str(source_path), **params}, sort_keys=True)
     return hashlib.sha1(payload.encode("utf-8")).hexdigest()
 
 
 class PreprocessingCache:
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def __init__(self, cache_dir: str, enabled: bool = True):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, cache_dir, enabled.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.cache_dir = Path(cache_dir)
         self.enabled = enabled
         if self.enabled:
             (self.cache_dir / "acoustic").mkdir(parents=True, exist_ok=True)
 
     def acoustic_path(self, audio_path: str, params: dict) -> Path:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, audio_path, params.
+        Output: The returned value, or side effects performed by the function.
+        """
         return self.cache_dir / "acoustic" / f"{_cache_key(audio_path, params)}.npz"
 
     def get_acoustic(
@@ -99,6 +128,12 @@ class PreprocessingCache:
             raise
 
     def stats(self) -> dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         if not self.enabled:
             return {"enabled": False}
         acoustic_files = list((self.cache_dir / "acoustic").glob("*.npz"))
@@ -164,6 +199,12 @@ def warm_cache(
 def get_shared_cache(
     cache_dir: Optional[str], enabled: bool = True
 ) -> Optional[PreprocessingCache]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cache_dir, enabled.
+    Output: The returned value, or side effects performed by the function.
+    """
     if not cache_dir or not enabled:
         return None
     return PreprocessingCache(cache_dir, enabled=True)

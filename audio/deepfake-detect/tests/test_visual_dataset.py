@@ -1,3 +1,8 @@
+# What: This file implements the test visual dataset module in audio/deepfake-detect/tests/test_visual_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 
 import cv2
@@ -11,6 +16,12 @@ from src.preprocessing.dataset import VisualDataset
 def _write_synthetic_video(
     path: Path, num_frames: int, fps: int = 10, size=(64, 64), value=20
 ) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, num_frames, fps, size, value.
+    Output: The returned value, or side effects performed by the function.
+    """
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter(str(path), fourcc, fps, size)
     if not writer.isOpened():
@@ -23,6 +34,12 @@ def _write_synthetic_video(
 
 
 def _make_manifest(tmp_path: Path) -> Path:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     real_path = tmp_path / "real.mp4"
     fake_path = tmp_path / "fake.mp4"
     if not _write_synthetic_video(real_path, num_frames=3, value=10) or not _write_synthetic_video(
@@ -58,6 +75,12 @@ def _make_manifest(tmp_path: Path) -> Path:
 
 
 def test_dataset_pads_short_clip_and_masks_correctly(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = VisualDataset(csv_path, split="val", frame_rate=10, frame_size=32, num_frames=6)
 
@@ -71,6 +94,12 @@ def test_dataset_pads_short_clip_and_masks_correctly(tmp_path: Path):
 
 
 def test_dataset_truncates_long_clip(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = VisualDataset(csv_path, split="val", frame_rate=10, frame_size=32, num_frames=4)
 
@@ -82,12 +111,24 @@ def test_dataset_truncates_long_clip(tmp_path: Path):
 
 
 def test_dataset_val_split_does_not_augment(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = VisualDataset(csv_path, split="val", frame_rate=10, frame_size=32, num_frames=4)
     assert dataset.augment is False
 
 
 def test_dataset_train_split_augments_by_default(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = VisualDataset(csv_path, split="train", frame_rate=10, frame_size=32, num_frames=4)
     assert dataset.augment is True

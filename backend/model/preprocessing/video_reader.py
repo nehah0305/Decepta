@@ -1,3 +1,8 @@
+# What: This file implements the video reader module in backend/model/preprocessing/video_reader.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Video Reader and Metadata Extraction Module.
 
@@ -29,6 +34,12 @@ class VideoMetadata:
     is_valid: bool = True
 
     def to_dict(self) -> dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return asdict(self)
 
 
@@ -38,6 +49,12 @@ class VideoReader:
     """
 
     def __init__(self, video_path: Union[str, Path]):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, video_path.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.video_path = Path(video_path).resolve()
         if not self.video_path.exists():
             raise FileNotFoundError(f"Video file not found: {self.video_path}")

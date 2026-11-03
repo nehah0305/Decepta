@@ -1,3 +1,8 @@
+# What: This file implements the evaluate test dataset module in backend/model/evaluation/evaluate_test_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Test Dataset Evaluation Script for Multimodal Deepfake Detection.
 
@@ -38,6 +43,12 @@ logger = logging.getLogger(__name__)
 
 
 def load_test_samples(csv_path: Path, data_root: Path, max_samples: Optional[int] = None) -> List[VideoSampleItem]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: csv_path, data_root, max_samples.
+    Output: The returned value, or side effects performed by the function.
+    """
     if not csv_path.exists():
         raise FileNotFoundError(f"Test manifest not found at: {csv_path}")
 
@@ -78,6 +89,12 @@ def evaluate_test_dataset(
     max_samples: Optional[int] = None,
     config: VisualPipelineConfig = DEFAULT_CONFIG
 ):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: checkpoint_path, test_manifest_path, data_root_path, batch_size, max_samples, config.
+    Output: The returned value, or side effects performed by the function.
+    """
     device = torch.device(config.DEVICE)
     logger.info(f"Using device: {device} for test evaluation.")
 
@@ -240,6 +257,12 @@ def evaluate_test_dataset(
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Evaluate Multimodal Deepfake Detector on Test Dataset")
     parser.add_argument("--checkpoint", type=str, default="checkpoints/multimodal_best.pt", help="Path to trained model checkpoint")
     parser.add_argument("--test-manifest", type=str, default="Datasets/metadata/test.csv", help="Test CSV manifest path")

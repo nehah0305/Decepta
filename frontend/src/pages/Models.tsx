@@ -1,9 +1,26 @@
+// What: This file implements the Models module in frontend/src/pages/Models.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { useState } from 'react'
 import { Sparkles, Activity, Database, Volume2, Video } from 'lucide-react'
 import { Badge } from '../components/ui/Badge'
 import { AblationTable } from '../components/analysis/AblationTable'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const Models = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [activeTab, setActiveTab] = useState<'spatial' | 'fft' | 'temporal' | 'acoustic'>('spatial')
 
   return (

@@ -1,3 +1,8 @@
+# What: This file implements the test multimodal dataset module in audio/deepfake-detect/tests/test_multimodal_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 
 import cv2
@@ -10,6 +15,12 @@ from src.preprocessing.dataset import MultimodalDataset
 
 
 def _write_video(path: Path, value: int, num_frames=4, size=(48, 48)) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, value, num_frames, size.
+    Output: The returned value, or side effects performed by the function.
+    """
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 8, size)
     if not writer.isOpened():
         return False
@@ -20,11 +31,23 @@ def _write_video(path: Path, value: int, num_frames=4, size=(48, 48)) -> bool:
 
 
 def _write_tone(path: Path, freq: float, duration_s=0.3, sample_rate=16000):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, freq, duration_s, sample_rate.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     t = np.linspace(0, duration_s, int(sample_rate * duration_s), endpoint=False)
     sf.write(str(path), (0.3 * np.sin(2 * np.pi * freq * t)).astype(np.float32), sample_rate)
 
 
 def _make_manifest(tmp_path: Path) -> Path:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: The returned value, or side effects performed by the function.
+    """
     video_path = tmp_path / "clip.mp4"
     audio_path = tmp_path / "clip.wav"
     if not _write_video(video_path, value=100):
@@ -41,6 +64,12 @@ def _make_manifest(tmp_path: Path) -> Path:
 
 
 def test_multimodal_dataset_returns_paired_tensors(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = MultimodalDataset(
         csv_path,
@@ -59,6 +88,12 @@ def test_multimodal_dataset_returns_paired_tensors(tmp_path: Path):
 
 
 def test_multimodal_dataset_length_matches_manifest(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     csv_path = _make_manifest(tmp_path)
     dataset = MultimodalDataset(
         csv_path, split="val",

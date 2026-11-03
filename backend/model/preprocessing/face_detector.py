@@ -1,3 +1,8 @@
+# What: This file implements the face detector module in backend/model/preprocessing/face_detector.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 MTCNN Face Detector and Coarse Landmark Extraction Module.
 

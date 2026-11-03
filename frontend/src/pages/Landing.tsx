@@ -1,7 +1,18 @@
+// What: This file implements the Landing module in frontend/src/pages/Landing.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { ArrowRight, ShieldCheck, Cpu, Layers, Activity, Lock, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const Landing = () => (
   <div className="relative min-h-screen overflow-hidden text-brand-text bg-[#070B14]">
     {/* Ambient Glow Orbs */}

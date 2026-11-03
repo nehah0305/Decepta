@@ -1,6 +1,17 @@
+// What: This file implements the ForensicReasonsCard module in frontend/src/components/analysis/ForensicReasonsCard.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { CheckCircle2, Crosshair, Layers, ShieldAlert, Volume2, Activity } from 'lucide-react'
 import type { AcousticShapItem, DetectionType, ForensicReason } from '../../types'
 
+/**
+ * What: This interface defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 interface ForensicReasonsCardProps {
   verdict?: 'DEEPFAKE' | 'GENUINE'
   resultLabel: string
@@ -10,6 +21,12 @@ interface ForensicReasonsCardProps {
   acousticShap?: AcousticShapItem[]
 }
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const ForensicReasonsCard = ({
   verdict = 'DEEPFAKE',
   resultLabel,
@@ -18,7 +35,19 @@ export const ForensicReasonsCard = ({
   reasons = [],
   acousticShap = [],
 }: ForensicReasonsCardProps) => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const isFake = verdict === 'DEEPFAKE' || resultLabel.includes('FAKE')
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const isAudio = fileType === 'audio'
 
   return (
@@ -95,8 +124,26 @@ export const ForensicReasonsCard = ({
 
           <div className="grid gap-2 sm:grid-cols-2">
             {acousticShap.map((item, i) => {
+              /**
+               * What: This declaration defines the named behavior or data shape.
+               * How: It processes the values supplied by callers according to its implementation.
+               * Input: Declared parameters, props, imported values, or type members.
+               * Output: The declared return value, rendered elements, exported value, or type contract.
+               */
               const isPositive = item.value >= 0
+              /**
+               * What: This declaration defines the named behavior or data shape.
+               * How: It processes the values supplied by callers according to its implementation.
+               * Input: Declared parameters, props, imported values, or type members.
+               * Output: The declared return value, rendered elements, exported value, or type contract.
+               */
               const absVal = Math.min(Math.abs(item.value) / 4.0, 1.0)
+              /**
+               * What: This declaration defines the named behavior or data shape.
+               * How: It processes the values supplied by callers according to its implementation.
+               * Input: Declared parameters, props, imported values, or type members.
+               * Output: The declared return value, rendered elements, exported value, or type contract.
+               */
               const widthPct = Math.max(absVal * 100, 8)
 
               return (

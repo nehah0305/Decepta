@@ -1,3 +1,8 @@
+// What: This file implements the AnalysisCard module in frontend/src/components/analysis/AnalysisCard.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { formatDate } from '../../data/mockData'
 import type { DetectionRecord } from '../../types'
 import { Badge } from '../ui/Badge'
@@ -12,13 +17,37 @@ import { ForensicReasonsCard } from './ForensicReasonsCard'
 import { downloadForensicReport } from '../../utils/reportGenerator'
 import { Link } from 'react-router-dom'
 
+/**
+ * What: This interface defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 interface AnalysisCardProps {
   analysis: DetectionRecord
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const isAudio = analysis.fileType === 'audio'
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const timeline = isAudio
     ? [
         { label: 'Audio Ingestion & Framing (16 kHz)', start: 0, end: 25, active: true },
@@ -33,6 +62,12 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
         { label: 'Anomaly Localization', start: 84, end: 100, active: true },
       ]
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const isFake = analysis.verdict === 'DEEPFAKE' || analysis.result.includes('FAKE')
 
   return (
@@ -159,6 +194,12 @@ export const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
             {/* Waveform Bar Spectrum */}
             <div className="h-16 flex items-center justify-between gap-1 p-2 rounded-xl bg-brand-bg/80 border border-brand-border overflow-hidden">
               {analysis.waveform.peaks.slice(0, 48).map((peak, idx) => {
+                /**
+                 * What: This declaration defines the named behavior or data shape.
+                 * How: It processes the values supplied by callers according to its implementation.
+                 * Input: Declared parameters, props, imported values, or type members.
+                 * Output: The declared return value, rendered elements, exported value, or type contract.
+                 */
                 const heightPct = Math.max(peak * 100, 10)
                 return (
                   <div

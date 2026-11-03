@@ -1,3 +1,8 @@
+# What: This file implements the predict module in audio/ai-voice-detect/src/inference/predict.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """End-to-end inference on an arbitrary audio file.
 
 Two behaviours here exist because of failures measured in the predecessor
@@ -79,6 +84,12 @@ MAX_REGION_COVERAGE = 0.60
 
 @dataclass
 class Prediction:
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     file_name: str
     verdict: str                 # "ai" | "human" | "abstain"
     probability: Optional[float]  # calibrated P(AI-generated)
@@ -90,6 +101,12 @@ class Prediction:
     regions: List[Dict] = None
 
     def to_dict(self) -> Dict:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return {
             "fileName": self.file_name,
             "verdict": self.verdict,
@@ -128,6 +145,12 @@ def voiced_seconds(signal: np.ndarray, sample_rate: int = SAMPLE_RATE) -> float:
 
 
 def _windows(signal: np.ndarray, sample_rate: int = SAMPLE_RATE):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: signal, sample_rate.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     size = int(WINDOW_SECONDS * sample_rate)
     hop = int(HOP_SECONDS * sample_rate)
     if len(signal) <= size:
@@ -184,8 +207,20 @@ def merge_regions(spans, duration, threshold=REGION_THRESHOLD,
 
 
 class VoicePredictor:
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def __init__(self, checkpoint: str, policy: Dict[str, float], layer: int = None,
                  device: torch.device = None):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, checkpoint, policy, layer, device.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.device = device or pick_device()
         state = torch.load(checkpoint, map_location=self.device, weights_only=False)
         cfg = state["config"]
@@ -205,6 +240,12 @@ class VoicePredictor:
 
     @torch.no_grad()
     def _score(self, signal: np.ndarray) -> float:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, signal.
+        Output: The returned value, or side effects performed by the function.
+        """
         features = self.frontend.embed(signal)
         tensor = torch.from_numpy(features).unsqueeze(0).to(self.device)
         return float(self.model(tensor).item())
@@ -259,6 +300,12 @@ class VoicePredictor:
         return spans, detail
 
     def predict(self, path: str) -> Prediction:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, path.
+        Output: The returned value, or side effects performed by the function.
+        """
         signal = load_audio(path)
         duration = len(signal) / SAMPLE_RATE
         speech = voiced_seconds(signal)

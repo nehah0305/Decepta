@@ -1,3 +1,8 @@
+# What: This file implements the evaluate module in audio/audio-deepfake-detect/scripts/evaluate.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Evaluates the trained acoustic model on the held-out TEST split.
 
 Separate from the training loop on purpose: that loop reports validation
@@ -54,6 +59,12 @@ def auc_ci(labels: np.ndarray, probs: np.ndarray, n_boot: int = 2000, seed: int 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="config")
 def main(cfg: DictConfig) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     set_seed(cfg.seed, deterministic=cfg.deterministic)
     logger = get_logger("evaluate", log_dir=Path(cfg.output_dir))
     device = resolve_device(cfg.device)

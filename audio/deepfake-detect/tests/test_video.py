@@ -1,3 +1,8 @@
+# What: This file implements the test video module in audio/deepfake-detect/tests/test_video.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 
 import cv2
@@ -8,6 +13,12 @@ from src.preprocessing.video import align_face, detect_face_bbox, preprocess_vid
 
 
 def _write_synthetic_video(path: Path, num_frames: int = 10, fps: int = 10, size=(64, 64)) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, num_frames, fps, size.
+    Output: The returned value, or side effects performed by the function.
+    """
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter(str(path), fourcc, fps, size)
     if not writer.isOpened():
@@ -21,6 +32,12 @@ def _write_synthetic_video(path: Path, num_frames: int = 10, fps: int = 10, size
 
 
 def test_sample_frames_from_synthetic_video(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     video_path = tmp_path / "clip.mp4"
     if not _write_synthetic_video(video_path):
         pytest.skip("mp4v codec unavailable in this environment")
@@ -31,6 +48,12 @@ def test_sample_frames_from_synthetic_video(tmp_path: Path):
 
 
 def test_sample_frames_missing_file_raises(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     with pytest.raises(FileNotFoundError):
         sample_frames(str(tmp_path / "missing.mp4"), frame_rate=5)
 
@@ -38,6 +61,12 @@ def test_sample_frames_missing_file_raises(tmp_path: Path):
 def test_align_face_no_face_falls_back_to_center_crop():
     # Flat color frame -> Haar cascade will find nothing, exercising the
     # center-crop fallback path.
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     frame = np.full((100, 200, 3), 128, dtype=np.uint8)
     aligned = align_face(frame, size=224)
     assert aligned.shape == (224, 224, 3)
@@ -45,6 +74,12 @@ def test_align_face_no_face_falls_back_to_center_crop():
 
 
 def test_preprocess_video_returns_stacked_tensor(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     video_path = tmp_path / "clip.mp4"
     if not _write_synthetic_video(video_path):
         pytest.skip("mp4v codec unavailable in this environment")

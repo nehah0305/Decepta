@@ -1,3 +1,8 @@
+# What: This file implements the metrics module in audio/audio-deepfake-detect/src/training/metrics.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Shared classification metrics used by every branch's training/eval loop:
 accuracy, precision, recall, macro-F1, AUC, EER.
 
@@ -32,6 +37,12 @@ def compute_eer(y_true: Sequence[int], y_prob: Sequence[float]) -> float:
 def compute_binary_classification_metrics(
     y_true: Sequence[int], y_prob: Sequence[float], threshold: float = 0.5
 ) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: y_true, y_prob, threshold.
+    Output: The returned value, or side effects performed by the function.
+    """
     y_true = np.asarray(y_true)
     y_prob = np.asarray(y_prob)
     y_pred = (y_prob >= threshold).astype(int)

@@ -1,3 +1,8 @@
+# What: This file implements the train spatial pretrained module in backend/model/training/train_spatial_pretrained.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Experiment 3 — ImageNet Pretrained Spatial ResNet-50 Baseline.
 
@@ -40,6 +45,12 @@ class PretrainedSpatialDetector(nn.Module):
     Classification Head: Conv / Pooling -> Linear(2048 -> 256) -> LayerNorm -> ReLU -> Linear(256 -> 1)
     """
     def __init__(self, feature_dim: int = 256, dropout: float = 0.1, freeze_backbone: bool = True):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, feature_dim, dropout, freeze_backbone.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         # Load torchvision ImageNet weights
         weights = models.ResNet50_Weights.DEFAULT
@@ -61,6 +72,12 @@ class PretrainedSpatialDetector(nn.Module):
         self.classifier = nn.Linear(feature_dim, 1)
 
     def forward(self, face_frames: torch.Tensor, padding_mask: torch.Tensor = None) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, face_frames, padding_mask.
+        Output: The returned value, or side effects performed by the function.
+        """
         B, N, C, H, W = face_frames.shape
         flat_frames = face_frames.view(B * N, C, H, W)
 
@@ -94,6 +111,12 @@ def train_pretrained_stage_a(
     data_root: str = "Datasets/raw/faceforensicspp",
     output_checkpoint: str = "model/checkpoints/spatial_pretrained_stage_a_best.pt"
 ):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: epochs, batch_size, classifier_lr, train_manifest, val_manifest, data_root, output_checkpoint.
+    Output: The returned value, or side effects performed by the function.
+    """
     project_root = Path(__file__).resolve().parents[2]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\n--- STARTING EXPERIMENT 3 STAGE A: PRETRAINED RESNET-50 (FROZEN BACKBONE) ON {device} ---")
@@ -103,6 +126,12 @@ def train_pretrained_stage_a(
     d_root = project_root / data_root
 
     def create_items(df, split):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: df, split.
+        Output: The returned value, or side effects performed by the function.
+        """
         items = []
         for _, row in df.iterrows():
             rel_path = str(row["video_path"])

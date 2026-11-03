@@ -1,19 +1,42 @@
+// What: This file implements the FileUploader module in frontend/src/components/ui/FileUploader.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { UploadCloud, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import type { DetectionType } from '../../types'
 import { Button } from './Button'
 
+/**
+ * What: This interface defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 interface FileUploaderProps {
   acceptType: DetectionType
   file: File | null
   onFileSelect: (file: File | null) => void
 }
 
+/**
+ * What: This declaration defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const acceptedMimeMap: Record<DetectionType, string[]> = {
   video: ['video/mp4', 'video/quicktime', 'video/x-matroska', 'video/webm'],
   audio: ['audio/wav', 'audio/mpeg', 'audio/webm', 'audio/x-wav'],
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 const formatSize = (bytes: number) => {
   if (bytes < 1024 * 1024) {
     return `${(bytes / 1024).toFixed(1)} KB`
@@ -21,14 +44,56 @@ const formatSize = (bytes: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
 }
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const FileUploader = ({ acceptType, file, onFileSelect }: FileUploaderProps) => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const inputRef = useRef<HTMLInputElement | null>(null)
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [isOver, setIsOver] = useState(false)
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [error, setError] = useState('')
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const accept = acceptType === 'video' ? 'video/*' : 'audio/*'
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const validate = (nextFile: File) => {
+    /**
+     * What: This function defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const isValid = acceptedMimeMap[acceptType].some((mime) => nextFile.type.includes(mime.split('/')[0]))
     if (!isValid) {
       setError(`Invalid file type. Please upload a ${acceptType} file.`)
@@ -40,9 +105,21 @@ export const FileUploader = ({ acceptType, file, onFileSelect }: FileUploaderPro
     onFileSelect(nextFile)
   }
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const onDropFile = (event: React.DragEvent<HTMLButtonElement>) => {
     event.preventDefault()
     setIsOver(false)
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const droppedFile = event.dataTransfer.files[0]
     if (droppedFile) {
       validate(droppedFile)
@@ -70,6 +147,12 @@ export const FileUploader = ({ acceptType, file, onFileSelect }: FileUploaderPro
           accept={accept}
           className="sr-only"
           onChange={(event) => {
+            /**
+             * What: This declaration defines the named behavior or data shape.
+             * How: It processes the values supplied by callers according to its implementation.
+             * Input: Declared parameters, props, imported values, or type members.
+             * Output: The declared return value, rendered elements, exported value, or type contract.
+             */
             const selected = event.target.files?.[0]
             if (selected) {
               validate(selected)

@@ -1,3 +1,8 @@
+# What: This file implements the report module in audio/deepfake-detect/src/explain/report.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 7, part 4: the moderator view.
 
 Given one sample, produces a single self-contained HTML report with:
@@ -30,6 +35,12 @@ def _frame_to_data_uri(frame_rgb: np.ndarray) -> str:
 
 
 def _decision_color(decision: str) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: decision.
+    Output: The returned value, or side effects performed by the function.
+    """
     return {"approve": "#1a7f37", "flag": "#9a6700", "block": "#cf222e"}.get(decision, "#57606a")
 
 
@@ -44,6 +55,12 @@ def build_report_html(
     ground_truth_label: Optional[str] = None,
     ground_truth_modality: Optional[str] = None,
 ) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: sample_id, authenticity_score, decision, modality_split, top_acoustic_features, saliency_frames, frame_indices, ground_truth_label, ground_truth_modality.
+    Output: The returned value, or side effects performed by the function.
+    """
     visual_pct = modality_split["visual_share"] * 100
     acoustic_pct = modality_split["acoustic_share"] * 100
 
@@ -115,6 +132,12 @@ def build_report_html(
 
 
 def write_report(output_path: str, html: str) -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: output_path, html.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(html, encoding="utf-8")

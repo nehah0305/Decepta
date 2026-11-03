@@ -42,6 +42,8 @@ Comprehensive forensic benchmark across visual, acoustic, and multimodal archite
 
 ## 🏗️ Project Architecture & Directory Map
 
+> For the complete input → processing → output trace and file-by-file flow, see [`CODE_FLOW_README.md`](./CODE_FLOW_README.md).
+
 ```text
 Decepta/
 ├── audio/                           # Audio Deepfake Detection Research Subsystems

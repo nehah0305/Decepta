@@ -1,3 +1,8 @@
+# What: This file implements the prepare dataset module in backend/model/training/prepare_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Dataset Preparation Utility for Decepta.
 
@@ -271,6 +276,12 @@ def show_stats(manifest_path: str) -> None:
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(
         description="Decepta Dataset Preparation Utility",
         formatter_class=argparse.RawDescriptionHelpFormatter

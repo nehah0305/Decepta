@@ -1,3 +1,8 @@
+// What: This file implements the Detect module in frontend/src/pages/Detect.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { ArrowRight, Cpu, Sparkles, Play, RefreshCw, Volume2, Video } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -10,10 +15,40 @@ import { useDetection } from '../hooks/useDetection'
 import { useToast } from '../hooks/useToast'
 import { Badge } from '../components/ui/Badge'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const Detect = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [tab, setTab] = useState<DetectionType>('video')
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { status, progress, runDetection, currentResult, resetStatus } = useDetection()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { showToast } = useToast()
 
   useEffect(() => {
@@ -22,12 +57,36 @@ export const Detect = () => {
     }
   }, [showToast, status])
 
+  /**
+   * What: This function defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const handleQuickSampleSelect = async (sampleName: string, sampleUrl?: string) => {
     if (sampleUrl) {
       try {
+        /**
+         * What: This declaration defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const resp = await fetch(sampleUrl)
         if (resp.ok) {
+          /**
+           * What: This declaration defines the named behavior or data shape.
+           * How: It processes the values supplied by callers according to its implementation.
+           * Input: Declared parameters, props, imported values, or type members.
+           * Output: The declared return value, rendered elements, exported value, or type contract.
+           */
           const blob = await resp.blob()
+          /**
+           * What: This declaration defines the named behavior or data shape.
+           * How: It processes the values supplied by callers according to its implementation.
+           * Input: Declared parameters, props, imported values, or type members.
+           * Output: The declared return value, rendered elements, exported value, or type contract.
+           */
           const file = new File([blob], sampleName, {
             type: tab === 'audio' ? 'audio/wav' : 'video/mp4',
           })
@@ -39,6 +98,12 @@ export const Detect = () => {
         // Fallback to in-memory file if fetch is restricted
       }
     }
+    /**
+     * What: This declaration defines the named behavior or data shape.
+     * How: It processes the values supplied by callers according to its implementation.
+     * Input: Declared parameters, props, imported values, or type members.
+     * Output: The declared return value, rendered elements, exported value, or type contract.
+     */
     const dummyFile = new File(['dummy_content'], sampleName, {
       type: tab === 'audio' ? 'audio/wav' : 'video/mp4',
     })

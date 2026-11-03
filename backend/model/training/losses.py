@@ -1,3 +1,8 @@
+# What: This file implements the losses module in backend/model/training/losses.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Loss Functions for End-to-End Multimodal Deepfake Detection Training.
 
@@ -26,6 +31,12 @@ class DeepfakeDetectionLoss(nn.Module):
         pos_weight: Optional[float] = None,
         focal_gamma: float = 0.0
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, label_smoothing, pos_weight, focal_gamma.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.label_smoothing = label_smoothing
         self.focal_gamma = focal_gamma
@@ -78,6 +89,12 @@ class InfoNCESyncLoss(nn.Module):
     """
 
     def __init__(self, temperature: float = 0.07):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, temperature.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.temperature = max(1e-4, temperature)
 
@@ -164,6 +181,12 @@ class AudioVisualSyncLoss(nn.Module):
         temperature: float = 0.07,
         margin: float = 0.5
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, loss_type, temperature, margin.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.loss_type = loss_type.lower()
         self.infonce = InfoNCESyncLoss(temperature=temperature)
@@ -176,6 +199,12 @@ class AudioVisualSyncLoss(nn.Module):
         mouth_embeddings: Optional[torch.Tensor] = None,
         audio_embeddings: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, pos_similarities, neg_similarities, mouth_embeddings, audio_embeddings.
+        Output: The returned value, or side effects performed by the function.
+        """
         if self.loss_type == "infonce":
             return self.infonce(
                 mouth_embeddings=mouth_embeddings,
@@ -207,6 +236,12 @@ class MultimodalCompoundLoss(nn.Module):
         sync_temperature: float = 0.07,
         sync_margin: float = 0.5
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, lambda_sync, label_smoothing, sync_loss_type, sync_temperature, sync_margin.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.lambda_sync = lambda_sync
         self.cls_loss = DeepfakeDetectionLoss(label_smoothing=label_smoothing)

@@ -1,3 +1,8 @@
+# What: This file implements the subset module in audio/audio-deepfake-detect/src/preprocessing/subset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Class-aware subsetting for the lean training configuration.
 
 Naively sampling N clips from a deepfake dataset is a trap: these datasets

@@ -1,3 +1,8 @@
+# What: This file implements the inspect raw inference module in backend/model/evaluation/inspect_raw_inference.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Diagnostic Inspection Script for Multimodal Deepfake Detector.
 
@@ -29,6 +34,12 @@ from training.dataset import VideoSampleItem
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     project_root = Path(__file__).resolve().parents[2]
     checkpoint_path = project_root / "model/checkpoints/multimodal_best.pt"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -64,6 +75,12 @@ def main():
     df_ffpp = pd.read_csv(ffpp_csv)
 
     def extract_first_id(video_path: str) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: video_path.
+        Output: The returned value, or side effects performed by the function.
+        """
         filename = Path(video_path).stem
         if "_" in filename:
             parts = filename.split("_")

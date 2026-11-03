@@ -1,3 +1,8 @@
+# What: This file implements the debug sync pipeline module in backend/model/evaluation/debug_sync_pipeline.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Audio-Visual Synchronization Pre-Training Diagnostic Script.
 
@@ -131,6 +136,12 @@ def run_sync_diagnostic_suite(
     video_paths: List[Path],
     config: VisualPipelineConfig = DEFAULT_CONFIG
 ):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: video_paths, config.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     print("\n" + "=" * 78)
     print("        AUDIO-VISUAL SYNCHRONIZATION DIAGNOSTIC SUITE")
     print("=" * 78)
@@ -160,6 +171,12 @@ def run_sync_diagnostic_suite(
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Audio-Visual Synchronization Pre-Training Diagnostic")
     parser.add_argument("--data-dir", type=str, default=None, help="Folder containing videos")
     parser.add_argument("--sample-video", type=str, default="model/sample_test_video.mp4", help="Sample video file")

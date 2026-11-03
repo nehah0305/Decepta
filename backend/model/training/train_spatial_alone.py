@@ -1,3 +1,8 @@
+# What: This file implements the train spatial alone module in backend/model/training/train_spatial_alone.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Standalone Experiment 1: Spatial CNN Alone Training & Evaluation.
 
@@ -47,6 +52,12 @@ class PureSpatialDetector(nn.Module):
     Face Frames -> SpatialCNN -> Frame Average Pooling -> Linear Classifier
     """
     def __init__(self, feature_dim: int = 256, dropout: float = 0.1):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, feature_dim, dropout.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         super().__init__()
         self.spatial_cnn = SpatialCNN(in_channels=3, feature_dim=feature_dim)
         self.classifier = nn.Sequential(
@@ -143,6 +154,12 @@ def train_spatial_experiment(
     data_root: str = "Datasets/raw/faceforensicspp",
     output_checkpoint: str = "model/checkpoints/spatial_cnn_best.pt"
 ):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: epochs, batch_size, backbone_lr, classifier_lr, train_manifest, val_manifest, data_root, output_checkpoint.
+    Output: The returned value, or side effects performed by the function.
+    """
     project_root = Path(__file__).resolve().parents[2]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\n--- STARTING STANDALONE SPATIAL CNN EXPERIMENT ON {device} ---")
@@ -153,6 +170,12 @@ def train_spatial_experiment(
     d_root = project_root / data_root
 
     def create_items(df, split):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: df, split.
+        Output: The returned value, or side effects performed by the function.
+        """
         items = []
         for _, row in df.iterrows():
             rel_path = str(row["video_path"])

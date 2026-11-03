@@ -1,14 +1,31 @@
+# What: This file implements the test manifest module in audio/audio-deepfake-detect/tests/test_manifest.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 
 from src.preprocessing.manifest import index_dfdc, index_fakeavceleb
 
 
 def _touch(path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     path.touch()
 
 
 def test_index_fakeavceleb_builds_expected_manifest(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     root = tmp_path / "FakeAVCeleb_v1.2"
 
     _touch(root / "RealVideo-RealAudio" / "asian" / "men" / "id00001" / "clip1.mp4")
@@ -35,11 +52,23 @@ def test_index_fakeavceleb_builds_expected_manifest(tmp_path: Path):
 
 
 def test_index_fakeavceleb_empty_dir_returns_empty_manifest(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = index_fakeavceleb(str(tmp_path / "does_not_exist"))
     assert manifest.empty
 
 
 def test_index_dfdc_reads_metadata(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     import json
 
     part_dir = tmp_path / "dfdc_train_part_0"

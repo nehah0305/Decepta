@@ -1,3 +1,8 @@
+# What: This file implements the dataset module in audio/ai-voice-detect/src/preprocessing/dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Torch Dataset over cached WavLM embeddings.
 
 Reads float16 `.npy` files written by `scripts/cache_embeddings.py`; no audio
@@ -33,6 +38,12 @@ class EmbeddingDataset(Dataset):
         spec_augment: bool = False,
         seed: int = 42,
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, manifest, cache, variants, max_frames, random_crop, spec_augment, seed.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.cache = cache
         self.max_frames = max_frames
         self.random_crop = random_crop
@@ -54,9 +65,21 @@ class EmbeddingDataset(Dataset):
         self.rows = rows
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.rows)
 
     def _crop(self, features: np.ndarray) -> np.ndarray:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, features.
+        Output: The returned value, or side effects performed by the function.
+        """
         total = features.shape[0]
         if total <= self.max_frames:
             return features
@@ -93,6 +116,12 @@ class EmbeddingDataset(Dataset):
         return features
 
     def __getitem__(self, index: int):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, index.
+        Output: The returned value, or side effects performed by the function.
+        """
         path, variant, label, _ = self.rows[index]
         features = self.cache.get(path, variant)
         if features is None:
@@ -105,9 +134,21 @@ class EmbeddingDataset(Dataset):
         return torch.from_numpy(features), torch.tensor(float(label))
 
     def labels(self) -> np.ndarray:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return np.array([row[2] for row in self.rows])
 
     def sources(self) -> List[str]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return [row[3] for row in self.rows]
 
 

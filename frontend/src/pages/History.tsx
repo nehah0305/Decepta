@@ -1,3 +1,8 @@
+// What: This file implements the History module in frontend/src/pages/History.tsx.
+// How: It defines the module logic, declarations, and integrations used by its callers.
+// Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+// Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import { Search, Sparkles, ExternalLink, Download } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -7,15 +12,57 @@ import { useDetection } from '../hooks/useDetection'
 import { Badge } from '../components/ui/Badge'
 import { downloadForensicReport } from '../utils/reportGenerator'
 
+/**
+ * What: This function defines the named behavior or data shape.
+ * How: It processes the values supplied by callers according to its implementation.
+ * Input: Declared parameters, props, imported values, or type members.
+ * Output: The declared return value, rendered elements, exported value, or type contract.
+ */
 export const History = () => {
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const { detections } = useDetection()
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [query, setQuery] = useState('')
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const [filter, setFilter] = useState<'all' | 'video' | 'audio'>('all')
 
+  /**
+   * What: This declaration defines the named behavior or data shape.
+   * How: It processes the values supplied by callers according to its implementation.
+   * Input: Declared parameters, props, imported values, or type members.
+   * Output: The declared return value, rendered elements, exported value, or type contract.
+   */
   const filtered = useMemo(
     () =>
       detections.filter((item) => {
+        /**
+         * What: This declaration defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const matchedQuery = item.fileName.toLowerCase().includes(query.toLowerCase())
+        /**
+         * What: This declaration defines the named behavior or data shape.
+         * How: It processes the values supplied by callers according to its implementation.
+         * Input: Declared parameters, props, imported values, or type members.
+         * Output: The declared return value, rendered elements, exported value, or type contract.
+         */
         const matchedType = filter === 'all' ? true : item.fileType === filter
         return matchedQuery && matchedType
       }),
@@ -83,6 +130,12 @@ export const History = () => {
       ) : (
         <div className="space-y-3">
           {filtered.map((item) => {
+            /**
+             * What: This declaration defines the named behavior or data shape.
+             * How: It processes the values supplied by callers according to its implementation.
+             * Input: Declared parameters, props, imported values, or type members.
+             * Output: The declared return value, rendered elements, exported value, or type contract.
+             */
             const isFake = item.verdict === 'DEEPFAKE' || item.result.includes('FAKE')
 
             return (

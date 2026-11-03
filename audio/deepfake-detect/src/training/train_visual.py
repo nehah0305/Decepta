@@ -1,3 +1,8 @@
+# What: This file implements the train visual module in audio/deepfake-detect/src/training/train_visual.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Standalone visual-branch training loop (Stage 2 of the build plan).
 
 `train_visual(cfg)` is the reusable entry point (called by scripts/train.py
@@ -19,6 +24,12 @@ from src.utils.logging import ExperimentLogger, get_logger
 
 
 def build_visual_model(model_cfg) -> VisualClassifier:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: model_cfg.
+    Output: The returned value, or side effects performed by the function.
+    """
     encoder = VisualEncoder(
         backbone=model_cfg.backbone,
         pretrained=model_cfg.pretrained,
@@ -33,6 +44,12 @@ def build_visual_model(model_cfg) -> VisualClassifier:
 
 
 def train_visual(cfg, logger: ExperimentLogger = None) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, logger.
+    Output: The returned value, or side effects performed by the function.
+    """
     logger = logger or get_logger("visual_branch", log_dir=Path(cfg.output_dir))
 
     splits_dir = Path(cfg.data.splits_dir)

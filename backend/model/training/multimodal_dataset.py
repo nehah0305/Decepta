@@ -1,3 +1,8 @@
+# What: This file implements the multimodal dataset module in backend/model/training/multimodal_dataset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Multimodal Video Dataset with Strict Video-Level Partitioning.
 
@@ -50,6 +55,12 @@ class MultimodalVideoDataset(Dataset):
         preprocessed_faces_dir: Optional[Union[str, Path]] = None,
         visual_only: bool = False
     ):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, samples, coverage_ratio, min_frames, max_frames, face_size, mouth_size, audio_window_sec, audio_hop_sec, enable_sync_shifts, device, preprocessed_faces_dir, visual_only.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.samples = samples
         self.coverage_ratio = coverage_ratio
         self.min_frames = min_frames
@@ -80,9 +91,21 @@ class MultimodalVideoDataset(Dataset):
         )
 
     def __len__(self) -> int:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: The returned value, or side effects performed by the function.
+        """
         return len(self.samples)
 
     def __getitem__(self, idx: int) -> Dict[str, Any]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, idx.
+        Output: The returned value, or side effects performed by the function.
+        """
         item = self.samples[idx]
 
         # Fast path: Load preprocessed faces directly from SSD in < 1ms
@@ -214,6 +237,12 @@ class MultimodalVideoDataset(Dataset):
             raise RuntimeError(f"Error loading multimodal sample {vpath.name}: {e}") from e
 
     def _create_dummy_sample(self, video_id: str, label: int) -> Dict[str, Any]:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, video_id, label.
+        Output: The returned value, or side effects performed by the function.
+        """
         return {
             "video_id": video_id,
             "face_frames": torch.zeros(self.min_frames, 3, self.face_size, self.face_size),

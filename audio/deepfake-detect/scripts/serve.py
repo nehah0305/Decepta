@@ -1,3 +1,8 @@
+# What: This file implements the serve module in audio/deepfake-detect/scripts/serve.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """HTTP server exposing the inference pipeline to the Next.js UI.
 
   POST /api/infer   multipart file upload -> InferenceResult JSON
@@ -32,7 +37,19 @@ CHECKPOINT_NAME = ""
 
 
 class Handler(BaseHTTPRequestHandler):
+    """
+    What: This class provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Constructor arguments and class attributes supplied by callers.
+    Output: Instances exposing the class attributes and methods.
+    """
     def _send(self, code: int, payload: dict) -> None:
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, code, payload.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         body = json.dumps(payload).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json")
@@ -44,6 +61,12 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_OPTIONS(self):  # noqa: N802 - BaseHTTPRequestHandler naming
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
@@ -51,6 +74,12 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):  # noqa: N802
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         path = self.path.rstrip("/")
 
         if path == "/api/health":
@@ -75,6 +104,12 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, {"error": "not found", "try": ["/api/health", "/api/infer"]})
 
     def do_POST(self):  # noqa: N802
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         if self.path.rstrip("/") != "/api/infer":
             self._send(404, {"error": "not found"})
             return
@@ -106,10 +141,22 @@ class Handler(BaseHTTPRequestHandler):
             self._send(500, {"error": str(error)})
 
     def log_message(self, fmt, *args):
+        """
+        What: This function provides the behavior declared by its name.
+        How: It validates and transforms its inputs through the statements in its body.
+        Input: Arguments: self, fmt, *args.
+        Output: Side effects performed by the function; no value is explicitly returned.
+        """
         sys.stderr.write(f"{self.address_string()} {fmt % args}\n")
 
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     global PIPELINE, CHECKPOINT_NAME
 
     parser = argparse.ArgumentParser(description="Serve the deepfake inference pipeline.")

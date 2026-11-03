@@ -1,3 +1,8 @@
+# What: This file implements the policy module in audio/deepfake-detect/src/evaluation/policy.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 6, part 2: three-way approve/flag/block decision policy over the
 calibrated authenticity score c = 1 - sigmoid(logit / T).
 
@@ -20,6 +25,12 @@ DEFAULT_FALSE_SUPPRESSION_CEILING = 0.02
 
 
 def decide(c_score: float, tau_lo: float, tau_hi: float) -> str:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: c_score, tau_lo, tau_hi.
+    Output: The returned value, or side effects performed by the function.
+    """
     if c_score >= tau_hi:
         return "approve"
     if c_score < tau_lo:
@@ -58,6 +69,12 @@ def detection_recall(c_scores: np.ndarray, labels: np.ndarray, tau_hi: float) ->
 def operating_point_metrics(
     c_scores: np.ndarray, labels: np.ndarray, tau_lo: float, tau_hi: float
 ) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: c_scores, labels, tau_lo, tau_hi.
+    Output: The returned value, or side effects performed by the function.
+    """
     return {
         "false_suppression_rate": false_suppression_rate(c_scores, labels, tau_lo),
         "review_queue_rate": review_queue_rate(c_scores, tau_lo, tau_hi),

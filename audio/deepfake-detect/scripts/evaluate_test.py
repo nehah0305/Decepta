@@ -1,3 +1,8 @@
+# What: This file implements the evaluate test module in audio/deepfake-detect/scripts/evaluate_test.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Final evaluation on the held-out TEST split, plus a DeLong significance test.
 
 Why this exists separately from the training loops: those report validation
@@ -45,6 +50,12 @@ from src.training.train_visual import build_visual_model
 # ---------------------------------------------------------------- DeLong
 
 def _midrank(x: np.ndarray) -> np.ndarray:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: x.
+    Output: The returned value, or side effects performed by the function.
+    """
     order = np.argsort(x)
     sorted_x = x[order]
     n = len(x)
@@ -112,6 +123,12 @@ def auc_ci(labels: np.ndarray, probs: np.ndarray, n_boot: int = 2000, seed: int 
 # ---------------------------------------------------------------- eval
 
 def main() -> None:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     parser = argparse.ArgumentParser(description="Evaluate all models on the test split.")
     parser.add_argument("--outputs", default="D:/deepfake-data/outputs_medium")
     parser.add_argument("--splits", default="D:/deepfake-data/splits_medium")

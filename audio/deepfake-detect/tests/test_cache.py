@@ -1,3 +1,8 @@
+# What: This file implements the test cache module in audio/deepfake-detect/tests/test_cache.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 from pathlib import Path
 
 import cv2
@@ -9,6 +14,12 @@ from src.preprocessing.cache import PreprocessingCache
 
 
 def _write_video(path: Path, value: int, num_frames=3, size=(48, 48)) -> bool:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, value, num_frames, size.
+    Output: The returned value, or side effects performed by the function.
+    """
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 8, size)
     if not writer.isOpened():
         return False
@@ -19,11 +30,23 @@ def _write_video(path: Path, value: int, num_frames=3, size=(48, 48)) -> bool:
 
 
 def _write_tone(path: Path, freq=220.0, duration_s=0.3, sample_rate=16000):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: path, freq, duration_s, sample_rate.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     t = np.linspace(0, duration_s, int(sample_rate * duration_s), endpoint=False)
     sf.write(str(path), (0.3 * np.sin(2 * np.pi * freq * t)).astype(np.float32), sample_rate)
 
 
 def test_visual_cache_roundtrip_matches_uncached(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     video_path = tmp_path / "clip.mp4"
     if not _write_video(video_path, value=90):
         pytest.skip("mp4v codec unavailable in this environment")
@@ -37,6 +60,12 @@ def test_visual_cache_roundtrip_matches_uncached(tmp_path: Path):
 
 
 def test_acoustic_cache_roundtrip_preserves_feature_names(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     audio_path = tmp_path / "clip.wav"
     _write_tone(audio_path)
 
@@ -64,6 +93,12 @@ def test_cache_key_changes_with_params(tmp_path: Path):
 
 
 def test_disabled_cache_writes_nothing(tmp_path: Path):
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: tmp_path.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     audio_path = tmp_path / "clip.wav"
     _write_tone(audio_path)
 

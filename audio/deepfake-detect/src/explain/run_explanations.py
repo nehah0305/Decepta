@@ -1,3 +1,8 @@
+# What: This file implements the run explanations module in audio/deepfake-detect/src/explain/run_explanations.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Stage 7 driver: runs the full explanation pipeline over a split.
 
 For each requested sample: computes the calibrated score + policy decision
@@ -40,6 +45,12 @@ from src.utils.logging import ExperimentLogger, get_logger
 
 
 def _build_dataset(cfg, split: str) -> MultimodalDataset:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, split.
+    Output: The returned value, or side effects performed by the function.
+    """
     splits_dir = Path(cfg.data.splits_dir)
     return MultimodalDataset(
         splits_dir / f"{split}.csv",
@@ -67,6 +78,12 @@ def _frames_to_uint8(frames: torch.Tensor) -> np.ndarray:
 
 
 def run_explanations(cfg, logger: ExperimentLogger = None) -> Dict:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, logger.
+    Output: The returned value, or side effects performed by the function.
+    """
     logger = logger or get_logger("explain", log_dir=Path(cfg.output_dir))
     device = resolve_device(cfg.device)
 

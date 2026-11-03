@@ -1,3 +1,8 @@
+# What: This file implements the train acoustic module in audio/deepfake-detect/src/training/train_acoustic.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """Standalone acoustic-branch training loop (Stage 3 of the build plan).
 
 `train_acoustic(cfg)` is the reusable entry point (called by scripts/train.py
@@ -26,10 +31,22 @@ NUM_SCALAR_FEATURES = 8
 
 
 def acoustic_input_dim(n_mfcc: int) -> int:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: n_mfcc.
+    Output: The returned value, or side effects performed by the function.
+    """
     return 3 * n_mfcc + NUM_SCALAR_FEATURES
 
 
 def build_acoustic_model(model_cfg) -> AcousticClassifier:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: model_cfg.
+    Output: The returned value, or side effects performed by the function.
+    """
     encoder = AcousticEncoder(
         input_dim=acoustic_input_dim(model_cfg.n_mfcc),
         embed_dim=model_cfg.embed_dim,
@@ -43,6 +60,12 @@ def build_acoustic_model(model_cfg) -> AcousticClassifier:
 
 
 def train_acoustic(cfg, logger: ExperimentLogger = None) -> Dict[str, float]:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: cfg, logger.
+    Output: The returned value, or side effects performed by the function.
+    """
     logger = logger or get_logger("acoustic_branch", log_dir=Path(cfg.output_dir))
 
     splits_dir = Path(cfg.data.splits_dir)

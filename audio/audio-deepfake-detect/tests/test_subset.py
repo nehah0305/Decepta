@@ -1,9 +1,20 @@
+# What: This file implements the test subset module in audio/audio-deepfake-detect/tests/test_subset.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 import pandas as pd
 
 from src.preprocessing.subset import subset_manifest, subset_stats, warn_if_too_few_real
 
 
 def _manifest(n_real: int, n_fake_per_pairing: int) -> pd.DataFrame:
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: n_real, n_fake_per_pairing.
+    Output: The returned value, or side effects performed by the function.
+    """
     rows = []
     for i in range(n_real):
         rows.append(
@@ -22,6 +33,12 @@ def _manifest(n_real: int, n_fake_per_pairing: int) -> pd.DataFrame:
 
 
 def test_subset_hits_target_size():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _manifest(n_real=500, n_fake_per_pairing=3000)
     subset = subset_manifest(manifest, target_size=2000, seed=0)
     assert len(subset) == 2000
@@ -66,12 +83,24 @@ def test_all_manipulation_pairings_survive_subsetting():
 
 
 def test_subset_larger_than_dataset_returns_everything():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _manifest(n_real=10, n_fake_per_pairing=10)
     subset = subset_manifest(manifest, target_size=10_000, seed=0)
     assert len(subset) == len(manifest)
 
 
 def test_keep_all_real_false_respects_target_fraction():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _manifest(n_real=500, n_fake_per_pairing=3000)
     subset = subset_manifest(
         manifest, target_size=1000, target_real_fraction=0.1, seed=0, keep_all_real=False
@@ -81,6 +110,12 @@ def test_keep_all_real_false_respects_target_fraction():
 
 
 def test_warn_when_too_few_real_clips():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _manifest(n_real=20, n_fake_per_pairing=1000)
     subset = subset_manifest(manifest, target_size=500, seed=0)
     stats = subset_stats(subset)
@@ -91,12 +126,24 @@ def test_warn_when_too_few_real_clips():
 
 
 def test_no_warning_when_enough_real_clips():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _manifest(n_real=500, n_fake_per_pairing=3000)
     subset = subset_manifest(manifest, target_size=2000, seed=0)
     assert warn_if_too_few_real(subset_stats(subset), min_real=200) is None
 
 
 def test_subset_is_deterministic_for_a_seed():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     manifest = _manifest(n_real=200, n_fake_per_pairing=1000)
     first = subset_manifest(manifest, target_size=500, seed=7)
     second = subset_manifest(manifest, target_size=500, seed=7)

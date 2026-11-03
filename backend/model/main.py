@@ -1,3 +1,8 @@
+# What: This file implements the main module in backend/model/main.py.
+# How: It defines the module logic, declarations, and integrations used by its callers.
+# Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
+# Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
+
 """
 Main CLI entry point for the Multimodal Deepfake Detection Preprocessing Pipeline.
 
@@ -14,6 +19,12 @@ from preprocessing import MultimodalPreprocessor, PreprocessingOutput
 
 
 def parse_args():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: The returned value, or side effects performed by the function.
+    """
     parser = argparse.ArgumentParser(
         description="Multimodal Deepfake Detection Preprocessing Pipeline: Separate Video Frames and Audio Stream."
     )
@@ -98,6 +109,12 @@ def print_summary(result: PreprocessingOutput):
 
 
 def main():
+    """
+    What: This function provides the behavior declared by its name.
+    How: It validates and transforms its inputs through the statements in its body.
+    Input: Arguments: none.
+    Output: Side effects performed by the function; no value is explicitly returned.
+    """
     args = parse_args()
     input_path = Path(args.input)
 
