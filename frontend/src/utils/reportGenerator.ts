@@ -66,6 +66,36 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
    * Output: The declared return value, rendered elements, exported value, or type contract.
    */
   const shapItems = analysis.acousticShap || []
+  const raw = analysis.raw || {}
+  const formatPercent = (value?: number | null) =>
+    typeof value === 'number' ? `${(value * 100).toFixed(1)}%` : 'Not available'
+  const formatNumber = (value?: number | null, digits = 2) =>
+    typeof value === 'number' ? value.toFixed(digits) : 'Not available'
+  const waveformDuration =
+    analysis.waveform && typeof analysis.waveform.durationSeconds === 'number'
+      ? `${analysis.waveform.durationSeconds.toFixed(2)} seconds`
+      : 'Not available'
+  const evidenceRows = isAudio
+    ? [
+        ['Audio duration', waveformDuration],
+        ['Analyzed audio windows', `${analysis.segments}`],
+        ['Synthetic probability', formatPercent(raw.pFake)],
+        ['Model decision signal', raw.decision || 'Not available'],
+        ['Waveform loud regions', `${analysis.waveform?.loudRegions?.length || 0}`],
+      ]
+    : [
+        ['Analyzed face frames', `${analysis.segments}`],
+        ['Final multimodal fake probability', formatPercent(raw.pFakeMultimodal)],
+        ['Visual fake probability', formatPercent(raw.pFakeVisual)],
+        ['Embedded audio fake probability', formatPercent(raw.pFakeAudio)],
+        ['Fake frame fraction', formatPercent(raw.fakeFrameFraction)],
+        ['Median frame probability', formatPercent(raw.medianFrameProb)],
+        ['Maximum frame probability', formatPercent(raw.maxFrameProb)],
+        ['Temporal frame difference (MSE)', formatNumber(raw.avgConsecutiveMse, 1)],
+        ['Video resolution', raw.resolution || 'Not available'],
+        ['Estimated bitrate', typeof raw.bitrateKbps === 'number' ? `${raw.bitrateKbps.toFixed(1)} kbps` : 'Not available'],
+        ['Compression/mobile indicator', raw.isCompressedMobile === undefined ? 'Not available' : raw.isCompressedMobile ? 'Detected' : 'Not detected'],
+      ]
 
   return `
 <!DOCTYPE html>
@@ -224,6 +254,29 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
       background: #f0fdfa;
       font-weight: 700;
     }
+    .evidence-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+    .evidence-table td {
+      padding: 9px 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .evidence-table td:first-child {
+      width: 42%;
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+    }
+    .interpretation-box {
+      background: #f8fafc;
+      border-left: 4px solid ${isFake ? '#ef4444' : '#10b981'};
+      padding: 14px;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
     .footer-note {
       margin-top: 32px;
       padding-top: 16px;
@@ -269,12 +322,12 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
         <span class="meta-val">${formattedDate}</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Detection Engine</span>
-        <span class="meta-val">${analysis.modelVersion}</span>
+        <span class="meta-label">Analysis Scope</span>
+        <span class="meta-val">${isAudio ? 'Audio waveform and acoustic behavior' : 'Visual frames, face geometry, temporal behavior, and embedded audio'}</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Processing Time & Segments</span>
-        <span class="meta-val">${analysis.processingTime}s (${analysis.segments} Analyzed Windows)</span>
+        <span class="meta-label">Processing Summary</span>
+        <span class="meta-val">${analysis.processingTime}s • ${analysis.segments} analyzed ${isAudio ? 'windows' : 'face frames'}</span>
       </div>
     </div>
 
@@ -283,9 +336,9 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
       <div>
         <div class="verdict-title">${isFake ? '🔴 CLASSIFICATION: DEEPFAKE (FAKE)' : '🟢 CLASSIFICATION: GENUINE (REAL)'}</div>
         <div class="verdict-desc">
-          ${isFake 
-            ? `Target file exhibits structural anomalies with a ${analysis.confidence}% manipulation probability.` 
-            : `Target file exhibits authentic physical dynamics with a ${(100 - analysis.confidence).toFixed(1)}% organic score.`}
+          ${isFake
+            ? `The analyzed file contains evidence consistent with synthetic or manipulated content. Confidence: ${analysis.confidence}%.`
+            : `The analyzed file contains evidence consistent with authentic ${isAudio ? 'speech acoustics' : 'facial and temporal behavior'}. Confidence: ${analysis.confidence}%.`}
         </div>
       </div>
       <div style="text-align: right;">
@@ -294,11 +347,29 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
       </div>
     </div>
 
+    <!-- File-specific evidence -->
+    <div class="section-header">1. FILE-SPECIFIC DETECTION EVIDENCE</div>
+    <p style="font-size: 11px; color: #475569; margin-bottom: 12px;">
+      Measurements below describe the submitted file and the signals that contributed to its classification. They are not general model benchmark results.
+    </p>
+    <table class="evidence-table">
+      <tbody>
+        ${evidenceRows.map(([label, value]) => `<tr><td>${label}</td><td><strong>${value}</strong></td></tr>`).join('')}
+      </tbody>
+    </table>
+
+    <div class="interpretation-box">
+      <strong>Detection interpretation:</strong>
+      ${isFake
+        ? `The result is classified as DEEPFAKE because one or more file-specific signals exceeded the decision threshold. Review the localized findings below to identify whether the dominant evidence is acoustic, visual, temporal, or multimodal.`
+        : `The result is classified as GENUINE because the analyzed file-specific signals remained consistent with natural ${isAudio ? 'speech' : 'media'} behavior. This is an automated assessment and should be reviewed alongside source and chain-of-custody information.`}
+    </div>
+
     <!-- Acoustic SHAP Attributions (if audio record) -->
     ${isAudio && shapItems.length > 0 ? `
-    <div class="section-header">1. KERNELSHAP ACOUSTIC DESCRIPTOR ATTRIBUTIONS</div>
+    <div class="section-header">2. ACOUSTIC FEATURE CONTRIBUTIONS</div>
     <p style="font-size: 11px; color: #475569; margin-bottom: 12px;">
-      KernelSHAP attributions over 68 named acoustic descriptors (+ values push toward synthetic/fake, - values push toward organic/genuine):
+      The highest file-specific acoustic feature contributions are shown below. Positive values push toward synthetic speech; negative values push toward organic speech.
     </p>
     <table class="shap-table">
       <thead>
@@ -325,7 +396,7 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
     ` : ''}
 
     <!-- Detailed Forensic Reasons & Anomaly Localization -->
-    <div class="section-header">${isAudio && shapItems.length > 0 ? '2' : '1'}. FORENSIC ANOMALY BREAKDOWN & LOCALIZATION</div>
+    <div class="section-header">${isAudio && shapItems.length > 0 ? '3' : '2'}. FORENSIC ANOMALY BREAKDOWN & LOCALIZATION</div>
     <table class="reasons-table">
       <thead>
         <tr>
@@ -351,35 +422,9 @@ export const generateReportHTML = (analysis: DetectionRecord): string => {
       </tbody>
     </table>
 
-    <!-- Multimodal Research & Ablation Benchmark -->
-    <div class="section-header">${isAudio && shapItems.length > 0 ? '3' : '2'}. MULTI-BRANCH RESEARCH & ABLATION MATRIX</div>
-    <p style="font-size: 11px; color: #475569; margin-bottom: 12px;">
-      Cross-validated on DeepFakeDetection (DFD) and Language-Agnostic Video-Audio DeepFake (LAV-DF) benchmarks:
-    </p>
-    <table class="ablation-table">
-      <thead>
-        <tr>
-          <th>Model Architecture</th>
-          <th>Modality Domain</th>
-          <th>Validation ROC-AUC</th>
-          <th>Benchmark Findings</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Spatial CNN (Scratch)</td><td>RGB Spatial</td><td>52.62%</td><td>Scratch baseline</td></tr>
-        <tr><td>ResNet-50 (Frozen)</td><td>ImageNet Spatial</td><td>56.82%</td><td>Feature extraction baseline</td></tr>
-        <tr><td>FFT 2D Frequency CNN</td><td>2D FFT Log-Magnitude</td><td>58.44%</td><td>Spectral grid noise detection</td></tr>
-        <tr><td>Spatial + FFT Concat</td><td>Spatial + 2D FFT</td><td>61.49%</td><td>Multi-domain feature concatenation</td></tr>
-        <tr><td>Spatial + Temporal Transformer</td><td>Spatial Sequence</td><td>64.54%</td><td>Sequence temporal modeling</td></tr>
-        <tr class="highlight-row"><td>ResNet-50 Stage B (Full 30-Epoch DFD) ⭐</td><td>Visual Deep Layers</td><td>95.03%</td><td>Visual Champion (99.70% Precision, 94.23% F1)</td></tr>
-        <tr class="highlight-row"><td>Acoustic Transformer (LAV-DF Audio Branch) ⭐</td><td>68 Acoustic Descriptors</td><td>97.23%</td><td>Audio Champion (97.25% Precision, 286K params)</td></tr>
-        <tr class="highlight-row"><td>Bidirectional Cross-Attention Fusion ⭐</td><td>Joint Audio-Visual</td><td>99.32%</td><td>Multimodal Champion (99.55% Precision, 4.9M params)</td></tr>
-      </tbody>
-    </table>
-
     <!-- Audit Disclosure -->
     <div style="background: #f0fdf4; border: 1px solid #86efac; padding: 12px; border-radius: 6px; font-size: 11px; color: #166534; margin-top: 20px;">
-      <strong>Forensic Certification:</strong> Audited with Decepta Multimodal Forensic Suite. Visual predictions validated with ResNet-50 Stage B on DFD; acoustic predictions validated with the 68-descriptor Acoustic Transformer on LAV-DF.
+      <strong>Report scope:</strong> This document records the result and file-specific evidence available at detection time. It is not a substitute for original-media verification, provenance review, or expert examination.
     </div>
 
     <!-- Sign-off Footer -->

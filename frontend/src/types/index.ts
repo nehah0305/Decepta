@@ -68,6 +68,32 @@ export interface AudioWaveform {
 }
 
 /**
+ * What: This interface describes raw, file-specific evidence returned by the backend.
+ * How: It stores modality scores and media measurements used to explain one detection.
+ * Input: Numeric and boolean evidence produced during audio/video inference.
+ * Output: Structured evidence available to the analysis screen and downloadable report.
+ */
+export interface DetectionRawEvidence {
+  pFake?: number
+  pFakeMultimodal?: number
+  pFakeVisual?: number
+  pFakeAudio?: number | null
+  pFakeLatent?: number
+  fakeFrameFraction?: number
+  medianFrameProb?: number
+  maxFrameProb?: number
+  avgConsecutiveMse?: number
+  aspectRatio?: number
+  isCompressedMobile?: boolean
+  resolution?: string
+  bitrateKbps?: number
+  framesAnalysed?: number
+  cScore?: number
+  decision?: string
+  logit?: number
+}
+
+/**
  * What: This interface defines the named behavior or data shape.
  * How: It processes the values supplied by callers according to its implementation.
  * Input: Declared parameters, props, imported values, or type members.
@@ -88,6 +114,7 @@ export interface DetectionRecord {
   reasons?: ForensicReason[]
   acousticShap?: AcousticShapItem[]
   waveform?: AudioWaveform
+  raw?: DetectionRawEvidence
 }
 
 /**
