@@ -55,7 +55,7 @@ Decepta/
 │   └── ai-voice-detect/             # WavLM-Base+ Synthetic Voice Detector
 │
 ├── backend/                         # Backend Services & Detection Engines
-│   ├── audio_service.py             # FastAPI + CLI Audio Deepfake Detection API (/api/detect/audio)
+│   ├── deepfake_detection_service.py # FastAPI + CLI Multimodal Deepfake Detection API
 │   ├── model/                       # Modality Separation & Preprocessing
 │   │   ├── preprocessing/           # Video, Audio, Face Alignment & Mel-Spectrogram Modules
 │   │   │   ├── ffmpeg_utils.py      # FFmpeg Discovery & Media Probing
@@ -152,10 +152,10 @@ The Audio Stream Audit engine is powered by the trained PyTorch Acoustic Transfo
 
 ```powershell
 # Option A: Start the FastAPI HTTP Server (port 8000) for the React frontend
-python backend/audio_service.py --serve --port 8000
+python backend/deepfake_detection_service.py --serve --port 8000
 
 # Option B: Run Standalone CLI Inference with KernelSHAP Attribution
-python backend/audio_service.py --file frontend/public/samples/audio/LAVDF_Synthetic_Voice_042.wav
+python backend/deepfake_detection_service.py --file frontend/public/samples/audio/LAVDF_Synthetic_Voice_042.wav
 ```
 
 ---

@@ -18,8 +18,7 @@ backend_dir = Path(__file__).resolve().parent
 if str(backend_dir) not in sys.path:
     sys.path.insert(0, str(backend_dir))
 
-from audio_service import app, main, run_video_detection, run_audio_detection
+from deepfake_detection_service import app, main, run_video_detection, run_audio_detection
 
 if __name__ == "__main__":
     main()
-

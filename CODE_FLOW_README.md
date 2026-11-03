@@ -15,7 +15,7 @@ frontend/src/hooks/useDetection.tsx
         |
         | POST multipart file
         v
-backend/audio_service.py
+backend/deepfake_detection_service.py
         |
         +--> Audio input: run_audio_detection()
         |       |
@@ -84,7 +84,7 @@ Verdict, confidence, forensic reasons, timeline, waveform, and report
 
 ### Service configuration and model loading
 
-**File:** [`backend/audio_service.py`](./backend/audio_service.py)
+**File:** [`backend/deepfake_detection_service.py`](./backend/deepfake_detection_service.py)
 
 Important locations:
 
@@ -112,7 +112,7 @@ Lazy loading means model files are loaded only when the first request needs them
 
 **Function:** `detect_audio(file: UploadFile)`
 
-**File:** [`backend/audio_service.py`](./backend/audio_service.py)
+**File:** [`backend/deepfake_detection_service.py`](./backend/deepfake_detection_service.py)
 
 **Input:** Multipart upload containing one audio file.
 
@@ -129,7 +129,7 @@ Lazy loading means model files are loaded only when the first request needs them
 
 **Function:** `run_audio_detection(file_path, file_name=None)`
 
-**File:** [`backend/audio_service.py`](./backend/audio_service.py)
+**File:** [`backend/deepfake_detection_service.py`](./backend/deepfake_detection_service.py)
 
 **Input:**
 
@@ -170,7 +170,7 @@ Lazy loading means model files are loaded only when the first request needs them
 
 **Function:** `detect_video(file: UploadFile)`
 
-**File:** [`backend/audio_service.py`](./backend/audio_service.py)
+**File:** [`backend/deepfake_detection_service.py`](./backend/deepfake_detection_service.py)
 
 **Input:** Multipart upload containing a video file.
 
@@ -182,7 +182,7 @@ Lazy loading means model files are loaded only when the first request needs them
 
 **Function:** `run_video_detection(file_path, file_name=None)`
 
-**File:** [`backend/audio_service.py`](./backend/audio_service.py)
+**File:** [`backend/deepfake_detection_service.py`](./backend/deepfake_detection_service.py)
 
 **Input:**
 
@@ -233,7 +233,7 @@ Lazy loading means model files are loaded only when the first request needs them
 | `/api/detect/video` | `POST` | Multipart video file | `detect_video()` → `run_video_detection()` | Multimodal `DetectionRecord` |
 | `/api/infer` | `POST` | Multipart audio or video file | `infer_generic()` | Dispatches by file extension |
 
-The routes are defined in [`backend/audio_service.py`](./backend/audio_service.py). The frontend calls the audio and video detection routes from [`frontend/src/hooks/useDetection.tsx`](./frontend/src/hooks/useDetection.tsx).
+The routes are defined in [`backend/deepfake_detection_service.py`](./backend/deepfake_detection_service.py). The frontend calls the audio and video detection routes from [`frontend/src/hooks/useDetection.tsx`](./frontend/src/hooks/useDetection.tsx).
 
 ## 7. Result display and persistence
 
@@ -268,14 +268,14 @@ These components consume the `DetectionRecord` and render:
 
 ## 8. Command-line flow
 
-**File:** [`backend/audio_service.py`](./backend/audio_service.py)
+**File:** [`backend/deepfake_detection_service.py`](./backend/deepfake_detection_service.py)
 
 The `main()` function supports two command-line modes:
 
 ```text
-python backend/audio_service.py --file path/to/audio.wav
-python backend/audio_service.py --file path/to/video.mp4
-python backend/audio_service.py --serve --host 0.0.0.0 --port 8000
+python backend/deepfake_detection_service.py --file path/to/audio.wav
+python backend/deepfake_detection_service.py --file path/to/video.mp4
+python backend/deepfake_detection_service.py --serve --host 0.0.0.0 --port 8000
 ```
 
 **Input:** CLI arguments `--file`, `--serve`, `--host`, and `--port`.

@@ -15,7 +15,7 @@ This directory houses the acoustic deepfake detection engines integrated into th
   - Short-Time Energy & Zero-Crossing Rate (ZCR)
 - **Benchmark Performance**: Validated on LAV-DF with **97.23% ROC-AUC**, **97.25% Precision**, and **91.42% Accuracy**.
 - **Explainability**: Integrated **KernelSHAP** feature attribution explaining model verdicts across all 68 descriptors.
-- **Service Integration**: Served via `backend/audio_service.py` to Decepta's React frontend.
+- **Service Integration**: Served via `backend/deepfake_detection_service.py` to Decepta's React frontend.
 
 ### 2. `deepfake-detect/` (Multimodal Reference Pipeline)
 - **Model Checkpoint**: `models/fusion_model.joblib` (4.9M parameters)
@@ -29,8 +29,8 @@ This directory houses the acoustic deepfake detection engines integrated into th
 
 ```powershell
 # Start the FastAPI Audio Detection Service (port 8000)
-python backend/audio_service.py --serve --port 8000
+python backend/deepfake_detection_service.py --serve --port 8000
 
 # Run direct CLI inference on an audio file
-python backend/audio_service.py --file frontend/public/samples/audio/LAVDF_Synthetic_Voice_042.wav
+python backend/deepfake_detection_service.py --file frontend/public/samples/audio/LAVDF_Synthetic_Voice_042.wav
 ```

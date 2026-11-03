@@ -1,4 +1,4 @@
-# What: This file implements the audio service module in backend/audio_service.py.
+# What: This file implements the multimodal deepfake detection service in backend/deepfake_detection_service.py.
 # How: It defines the module logic, declarations, and integrations used by its callers.
 # Input: Imported values, function arguments, configuration, and runtime events supplied by callers.
 # Output: Exported values, returned results, rendered UI, or runtime side effects produced by this module.
@@ -20,7 +20,7 @@ Integrates:
 
 Provides:
 - FastAPI HTTP API: /api/detect/audio, /api/detect/video, /api/health
-- Standalone CLI execution: python audio_service.py --file <path>
+- Standalone CLI execution: python deepfake_detection_service.py --file <path>
 """
 
 import argparse
